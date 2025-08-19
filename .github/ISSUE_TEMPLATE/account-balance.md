@@ -19,32 +19,48 @@ Capstone Group Todo: Add wireframes
 - The balance includes the sum of all incomes and expenses.
 - The balance updates in real-time as transactions are added, edited, or deleted.
 - The account balance has a visual distinction based on its value (positive or negative).
+- Display the income and expense for the current day 
 
 ## Tasks
 
 - [ ] Create feature branch `feature/account-balance`
 - [ ] Capstone Group Todo: Add tasks
+- [ ] Create a Header  <h1> 
+- [ ] Create a component for the balance 
+- [ ] Create a <nav> component at the bottom of the page 
+- [ ] Create a H3 heading with current date
+---------------
+- [ ] Implement in format Euro(cents) the currency
+- [ ]
 
 
+Summen & Anzeige
+ Saldo berechnen und darstellen (Format € 1.000,00).
 
-┌────────────────────────────── App Bar ───────────────────────────────┐
-│  ←  Accounts                                        ☰               │
-└──────────────────────────────────────────────────────────────────────┘
+AK: Bei Beispiel [ +1000€, −500€ ] wird 500€ angezeigt.
 
-┌────────────── Balance (sticky) ──────────────────────────────────────┐
-│  Kontostand                                                          │
-│  [ + € 1.245,32  ↑ ]   In: € 2.300,00   Out: € 1.054,68   [+ Neu]   │
-│   ^positiv (grün)  ^Icon                                              
-└──────────────────────────────────────────────────────────────────────┘
+ Heutige Einnahmen/Ausgaben berechnen (separat, als positive Beträge zeigen).
 
-┌────────────────────────── Transaktionen ─────────────────────────────┐
-│  Heute · 19. Aug 2025                                               │
-│  • Supermarkt                − € 42,80      ⋯ (Bearbeiten | Löschen) │
-│  • Gehalt                    + € 2.300,00   ⋯                        │
-│  Gestern                                                          ▼  │
-│  • Kaffee                    − € 3,20       ⋯                        │
-│  • Rückerstattung            + € 15,00      ⋯                        │
-└──────────────────────────────────────────────────────────────────────┘
+AK: Keine heutigen Einnahmen ⇒ Text „Keine!“.
 
 
+Echtzeit-Updates
+
+ Add: Beim Hinzufügen neuer Transaktion sofort neu berechnen.
+
+ Edit: Beim Bearbeiten (Betrag, Typ, Datum) Saldo & Tageswerte aktualisieren.
+
+ Delete: Beim Löschen neu berechnen.
+
+AK: Alle drei Aktionen aktualisieren Saldo/Tageswerte ohne Reload.
+
+Tech-Hinweis: In React useMemo für Selektoren; mit SWR mutate (optimistic).
+
+Visuelle Unterscheidung des Saldos
+
+ Positiv: grüner Stil/Icon (z. B. ▲), Negativ: roter Stil/Icon (▼), 0: neutral.
+
+AK: Farbe + Symbol (nicht nur Farbe → Barrierefreiheit), Kontrast erfüllt WCAG.
+
+ Sanfte Animation bei Wertänderung (z. B. Zahl „count up/down“).
 
