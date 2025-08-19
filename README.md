@@ -16,4 +16,4 @@ You can use the following commands:
 - `npm run build` to build the project
 - `npm run start` to start a production server
 - `npm run test` to run the tests
-- `npm run lint` to run the linter .
+- `npm run lint` to run the linter ....
