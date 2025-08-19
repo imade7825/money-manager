@@ -1,4 +1,3 @@
-
 # Account Balance
 
 ## Value Proposition
@@ -19,48 +18,28 @@ Capstone Group Todo: Add wireframes
 - The balance includes the sum of all incomes and expenses.
 - The balance updates in real-time as transactions are added, edited, or deleted.
 - The account balance has a visual distinction based on its value (positive or negative).
-- Display the income and expense for the current day 
+- Display the income and expense for the current day
 
 ## Tasks
 
 - [ ] Create feature branch `feature/account-balance`
 - [ ] Capstone Group Todo: Add tasks
-- [ ] Create a Header  <h1> 
-- [ ] Create a component for the balance 
-- [ ] Create a <nav> component at the bottom of the page 
+- [ ] Create a Header <h1>
+- [ ] Create a component for the balance
+- [ ] Create a <nav> component at the bottom of the page
 - [ ] Create a H3 heading with current date
----------------
-- [ ] Implement in format Euro(cents) the currency
-- [ ]
 
+---
 
-Summen & Anzeige
- Saldo berechnen und darstellen (Format € 1.000,00).
+- [ ] Money formatting
+  - Implement in format Euro(cents) the currency -new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(
+  number,) to show format like € 1 000,00
+  
+- [ ] Implement using now Date(today) the current day
+- [ ] Display in <h3> income if >= 0 "Keine"
+- [ ] Display in <h3> expenses if 0 - "Keine"
+- [ ] Create function and use SWR("/api/transactions") to fetch the data from database(MongoDB)
+- [ ] if there's an error throw an error
+- [ ] Bound the navigation to subppages
 
-AK: Bei Beispiel [ +1000€, −500€ ] wird 500€ angezeigt.
-
- Heutige Einnahmen/Ausgaben berechnen (separat, als positive Beträge zeigen).
-
-AK: Keine heutigen Einnahmen ⇒ Text „Keine!“.
-
-
-Echtzeit-Updates
-
- Add: Beim Hinzufügen neuer Transaktion sofort neu berechnen.
-
- Edit: Beim Bearbeiten (Betrag, Typ, Datum) Saldo & Tageswerte aktualisieren.
-
- Delete: Beim Löschen neu berechnen.
-
-AK: Alle drei Aktionen aktualisieren Saldo/Tageswerte ohne Reload.
-
-Tech-Hinweis: In React useMemo für Selektoren; mit SWR mutate (optimistic).
-
-Visuelle Unterscheidung des Saldos
-
- Positiv: grüner Stil/Icon (z. B. ▲), Negativ: roter Stil/Icon (▼), 0: neutral.
-
-AK: Farbe + Symbol (nicht nur Farbe → Barrierefreiheit), Kontrast erfüllt WCAG.
-
- Sanfte Animation bei Wertänderung (z. B. Zahl „count up/down“).
 
