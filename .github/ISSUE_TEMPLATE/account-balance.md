@@ -22,24 +22,26 @@ Capstone Group Todo: Add wireframes
 
 ## Tasks
 
+### Account-Balance
+
 - [ ] Create feature branch `feature/account-balance`
-- [ ] Capstone Group Todo: Add tasks
 - [ ] Create a Header <h1>
 - [ ] Create a component for the balance
-- [ ] Create a <nav> component at the bottom of the page
-- [ ] Create a H3 heading with current date
-
----
-
-- [ ] Money formatting
+  - [ ] Compute account balance
+  - [ ] Money formatting (in Euro-Format)
   - Implement in format Euro(cents) the currency -new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(
-  number,) to show format like € 1 000,00
-  
-- [ ] Implement using now Date(today) the current day
-- [ ] Display in <h3> income if >= 0 "Keine"
-- [ ] Display in <h3> expenses if 0 - "Keine"
-- [ ] Create function and use SWR("/api/transactions") to fetch the data from database(MongoDB)
-- [ ] if there's an error throw an error
-- [ ] Bound the navigation to subppages
+    number,) to show format like € 1 000,00
+  - [ ] Display title and amount
 
+### Transactions-List
 
+- [ ] Create a list 3th last transactions <ul>
+- [ ] <li> elements should contains 
+          - [ ] name
+          - [ ] amount
+          - [ ] type (as colored field red/green)
+          - [ ] date
+
+### Navigation
+
+- [ ] Create a <nav> component at the bottom of the page -[ ] Home -[ ] Categories -[ ] Transactions-list

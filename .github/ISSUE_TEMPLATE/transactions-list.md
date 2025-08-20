@@ -27,5 +27,10 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 - [ ] Create feature branch `feature/transactions-list`
-- [ ] Inspect and adapt the example data in the [assets folder](./assets/transactions.json)
-- [ ] Capstone Group Todo: Add tasks
+-------
+- [ ] Create a list 3th last transactions <ul>
+- [ ] <li> elements should contains 
+          - [ ] name
+          - [ ] amount
+          - [ ] type (as colored field red/green)
+          - [ ] date
