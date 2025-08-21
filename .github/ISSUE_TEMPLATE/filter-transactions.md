@@ -27,4 +27,9 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 - [ ] Create feature branch `feature/filter-transactions`
-- [ ] Capstone Group Todo: Add tasks
+- [ ] Add <form> element
+- [ ] Implement drop down picker:
+    - [ ] Add <select> field with default value **_Please select a category_**
+    - [ ] Loop over <option> elements with the category items
+- [ ] Display filter results underneath
+- [ ] If no results display -> "No results available"

@@ -28,6 +28,18 @@ Capstone Group Todo: Add wireframes
 - Upon confirming the save, the updated transaction is saved and reflected in the transactions list.
 
 ## Tasks
-
 - [ ] Create feature branch `feature/update-transaction`
-- [ ] Capstone Group Todo: Add tasks
+- [ ] Display <h2> Edit Transaction
+- [ ] All fields has to be filled with previous transactions values 
+- [ ] Create a component for update transaction
+- [ ] Create a <form>
+- [ ] Create a <label> "name" to <input> - field with type="text" (required)
+- [ ] Create a <label> "Amount" to <input> - field with type="text" (required)
+- [ ] Create a <label> "Category" to <select> - field as dropdown menu (required)
+  - [ ] As a default value - placeholder "please select a category"
+- [ ] Create a <label> "Type" to <input> - field with type="radio" (required)
+  - [ ] <input> - field with type="radio" <label> income
+  - [ ] <input> - field with type="radio" <label> expense
+- [ ] Create a <label> "Date" to <input> - field with type="date" (required)
+- [ ] Create <button> type="submit" with button text "Update" 
+- [ ] Create <button> type="reset" with button text "Cancel"

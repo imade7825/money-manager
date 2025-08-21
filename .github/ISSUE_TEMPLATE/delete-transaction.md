@@ -25,11 +25,10 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 ## Tasks for Transactions List & Delete Confirmation
-
 - [ ] Create feature branch `feature/delete-transaction`
 
 **Transactions List**
-
+- [ ] Create **"Add Transaction"** <button>
 - [ ] Add headline: **"Transactions"**.
 - [ ] Display list of existing transactions with:
   - Name ( "Salary").
@@ -40,7 +39,6 @@ Capstone Group Todo: Add wireframes
 - [ ] Add **Add Transaction** button below the list.
 
 **Delete Flow**
-
 - [ ] Clicking **Delete** opens a confirmation modal.
   - [ ] Modal headline: **"Delete Transaction"**.
   - [ ] Modal body text: **"Are you sure you want to delete this transaction?"**

@@ -33,5 +33,16 @@ Capstone Group Todo: Add wireframes
 
 ## Tasks
 
+### Frontend
 - [ ] Create feature branch `feature/income-expense-view`
-- [ ] Capstone Group Todo: Add tasks
+- [ ] Add  <button> with text "Income"
+- [ ] Add  <button> with text "Expenses"
+- [ ] Add  <button> with text "All" -> (Default active)
+- [ ] If no results fetched - information "No transactions found"
+- [ ] 
+- [ ] Implement useSWR() Hook to update transaction-list when switching filters
+- [ ] Implement useSWR() Hook to update account balance
+- [ ] Calculate the sum of expenses
+- [ ] Calculate the sum of incomes 
+
+---
