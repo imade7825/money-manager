@@ -11,7 +11,7 @@
 ## Description
 
 Capstone Group Todo: Add wireframes
- 
+
 ## Acceptance Criteria
 
 - The transactions list includes a section with filter options.
@@ -27,9 +27,13 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 - [ ] Create feature branch `feature/filter-transactions`
-- [ ] Add <form> element
+- [ ] Create a `<form>` element
 - [ ] Implement drop down picker:
-    - [ ] Add <select> field with default value **_Please select a category_**
-    - [ ] Loop over <option> elements with the category items
-- [ ] Display filter results underneath
+  - [ ] Add `<select>` field with default value "Please select a category"
+  - [ ] Loop over `<option>` elements with the category items
+- [ ] Add handleFilterCategory to the HomePage
+- [ ] Add state : const [filterCategory, setFilterCategory] = useState('')
+- [ ] Inside the handleSubmit function of the form call the prop onSubmit and pass the formData to it
+- [ ] Implement the filter functionality depending of useState()
+- [ ] Fill the list with the filtered data
 - [ ] If no results display -> "No results available"
