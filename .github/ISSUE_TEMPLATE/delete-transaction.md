@@ -10,7 +10,7 @@
 
 ## Description
 
-Capstone Group Todo: Add wireframes
+<img width="402" height="688" alt="Image" src="https://github.com/user-attachments/assets/51d3919c-a28a-4ec0-a546-f6846069c238" />
 
 ## Acceptance Criteria
 
@@ -25,23 +25,21 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 ## Tasks for Transactions List & Delete Confirmation
-- [ ] Create feature branch `feature/delete-transaction`
 
-**Transactions List**
-- [ ] Create **"Add Transaction"** <button>
-- [ ] Add headline: **"Transactions"**.
-- [ ] Display list of existing transactions with:
-  - Name ( "Salary").
-  - Type - red (expences) green (incomes)
-  - Amount ("2000 €").
-  - **Delete** create button next to each transaction.
-- [ ] If no transactions exist, show text: **"No transactions"**.
-- [ ] Add **Add Transaction** button below the list.
+- [ ] Create feature branch `feature/delete-transaction`
+- [ ] create delete `<button>` next to each transaction.
 
 **Delete Flow**
+
 - [ ] Clicking **Delete** opens a confirmation modal.
   - [ ] Modal headline: **"Delete Transaction"**.
-  - [ ] Modal body text: **"Are you sure you want to delete this transaction?"**
+  - [ ] Modal body text: **"Are you sure you want to delete this transaction or cancel it?"**
   - [ ] Modal buttons:
     - **Cancel** → closes modal without deleting.
     - **Confirm** → deletes transaction and updates list.
+    - [ ] Implement the API route
+    - [ ] Create a handleDelete() function to manage deleting
+    - [ ] Create a API route in directory `"pages/api/transactions"`  
+    - [ ] DELETE request to API route `"/api/transactions/id"`
+- [ ] If no transactions prompt the `<p>`message 'no transactions available, do you want to add a new one?'
+- [ ] Research: Implementing Modal

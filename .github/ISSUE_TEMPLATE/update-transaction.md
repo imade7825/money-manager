@@ -10,7 +10,7 @@
 
 ## Description
 
-Capstone Group Todo: Add wireframes
+<img width="909" height="688" alt="Image" src="https://github.com/user-attachments/assets/53923849-446c-44af-9afa-438d2b8e30e8" />
 
 ## Acceptance Criteria
 
@@ -22,24 +22,43 @@ Capstone Group Todo: Add wireframes
   - Transaction Type
   - Transaction Date
 - All fields are mandatory.
+- All fields has to be filled with previous transactions values
 - The form section includes options for both saving and cancelling the action.
 - The cancellation option allows the user to back out of the edit process if selected by mistake or if they change their mind
 - Submissions with empty mandatory fields are blocked, with validation messages indicating the missing required fields
 - Upon confirming the save, the updated transaction is saved and reflected in the transactions list.
 
 ## Tasks
+
 - [ ] Create feature branch `feature/update-transaction`
-- [ ] Display <h2> Edit Transaction
-- [ ] All fields has to be filled with previous transactions values 
-- [ ] Create a component for update transaction
-- [ ] Create a <form>
-- [ ] Create a <label> "name" to <input> - field with type="text" (required)
-- [ ] Create a <label> "Amount" to <input> - field with type="text" (required)
-- [ ] Create a <label> "Category" to <select> - field as dropdown menu (required)
-  - [ ] As a default value - placeholder "please select a category"
-- [ ] Create a <label> "Type" to <input> - field with type="radio" (required)
-  - [ ] <input> - field with type="radio" <label> income
-  - [ ] <input> - field with type="radio" <label> expense
-- [ ] Create a <label> "Date" to <input> - field with type="date" (required)
-- [ ] Create <button> type="submit" with button text "Update" 
-- [ ] Create <button> type="reset" with button text "Cancel"
+- [ ] Add a link to the each transaction list item with href="/edit/:id"
+- [ ] Create dynamic edit page `"/pages/edit/[id].js"``
+- [ ] Reuse transaction form on a edit page
+- [ ] Update transaction form:
+  - [ ] Add the props onSubmit, defaultValue, editMode
+  - [ ] if defaultValue is present, use its value as default values for the inputs
+  - [ ] Move create logic from the form into a new function handleAddTransaction on the HomePage
+  - [ ] Pass down this new function as the prop onSubmit to the form
+  - [ ] Depending on the boolean editMode display fitting text for the title and the submit button of the form
+  - [ ] Inside the handleSubmit function of the form call the prop onSubmit and pass the formData to it
+- [ ] Inside the edit page create a function handleEdit
+- [ ] Take the formData and send to the PUT request to the endpoint /api/transactions/id
+- [ ] If the response was successful send the user to the HomePage with router.push("/")
+- [ ] Use useSWR("/transactions/id") Hook to GET the data from transaction to update the form
+- [ ] Use the Hook useRouter() to get the id of transaction  
+
+
+---
+
+- [ ] Make branch: `feature/update-transaction`.
+- [ ] Reuse `CreateForm` for editing.
+- [ ] Get `id` from router on the detail/edit page.
+- [ ] Load data with `useSWR(`/api/transactions/${id}`)` and pass as `initialValues` to the form.
+- [ ] Form fields: name, transactionType (income|expense), amount, category, date.
+- [ ] Add state `const [isEditMode, setIsEditMode] = useState(true)`.
+- [ ] Show title and button by mode: **Create** vs **Edit** (use a `submitLabel` prop).
+- [ ] On edit submit: `PUT /api/transactions/${id}` with `formData`.
+- [ ] On success: `mutate(`/api/transactions/${id}`)` and `mutate('/api/transactions')`.
+- [ ] Show `<p role="status">` for success/error.
+- [ ] Use these keys/routes only: - List: `/api/transactions` - Detail: `/api/transactions/${id}`
+- [ ] Disable button while submitting; enable again after response.
