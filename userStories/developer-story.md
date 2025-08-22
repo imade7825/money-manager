@@ -17,7 +17,7 @@ The app **“money-manager”** should have two MongoDB collections: one to stor
   - `name`: name of transaction
   - `amount`: amount of transaction
   - `category`: category of transaction
-  - `type`: expence or income
+  - `type`: expense or income
   - `date`: date of the transaction
 - **categories** collection should have the following field:
   - `name`: name of categories
