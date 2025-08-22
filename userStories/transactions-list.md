@@ -27,10 +27,11 @@ Capstone Group Todo: Add wireframes
 ## Tasks
 
 - [ ] Create feature branch `feature/transactions-list`
--------
-- [ ] Create a list 3th last transactions <ul>
-- [ ] <li> elements should contains 
-          - [ ] name
-          - [ ] amount
-          - [ ] type (as colored field red/green)
-          - [ ] date
+- [ ] Create a component Transactions-list
+- [ ] Add prop transactions to the component
+- [ ] In the Transactions-list component loop over the transactions-data (name, category, date, amount, type) and create `<ul>`-list
+- [ ] `<li>` elements contains: - [ ] category - [ ] amount - [ ] type (as colored field red/green) - [ ] date
+
+- [ ] Receive the transactions from the useSWR() Hook
+- [ ] Render Transactions-List component underneath account balance component
+- [ ] If no data available display text - "No data available!"

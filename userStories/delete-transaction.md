@@ -27,19 +27,11 @@
 ## Tasks for Transactions List & Delete Confirmation
 
 - [ ] Create feature branch `feature/delete-transaction`
-- [ ] create delete `<button>` next to each transaction.
-
-**Delete Flow**
-
-- [ ] Clicking **Delete** opens a confirmation modal.
-  - [ ] Modal headline: **"Delete Transaction"**.
-  - [ ] Modal body text: **"Are you sure you want to delete this transaction or cancel it?"**
-  - [ ] Modal buttons:
-    - **Cancel** → closes modal without deleting.
-    - **Confirm** → deletes transaction and updates list.
-    - [ ] Implement the API route
-    - [ ] Create a handleDelete() function to manage deleting
-    - [ ] Create a API route in directory `"pages/api/transactions"`  
-    - [ ] DELETE request to API route `"/api/transactions/id"`
-- [ ] If no transactions prompt the `<p>`message 'no transactions available, do you want to add a new one?'
+- [ ] Create delete `<button>` next to each transaction.
 - [ ] Research: Implementing Modal
+- [ ] Make the modal visible by clicking on the delete `<button>`
+- [ ] Implement cancel and delete functionality
+- [ ] Implement the API route:
+  - [ ] Create a handleDelete() function to manage deleting
+  - [ ] Create a API route in directory `"pages/api/transactions/[id].js"`
+  - [ ] Inside the delete functionality send a DELETE request to API route `"/api/transactions/:id"`

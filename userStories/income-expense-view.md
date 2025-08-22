@@ -10,7 +10,7 @@
 
 ## Description
 
-Capstone Group Todo: Add wireframes
+<img width="419" height="707" alt="Image" src="https://github.com/user-attachments/assets/23a7f5b7-cb12-4da5-adea-1a0554aa7536" />
 
 ## Acceptance Criteria
 
@@ -33,16 +33,15 @@ Capstone Group Todo: Add wireframes
 
 ## Tasks
 
-### Frontend
 - [ ] Create feature branch `feature/income-expense-view`
-- [ ] Add  <button> with text "Income"
-- [ ] Add  <button> with text "Expenses"
-- [ ] Add  <button> with text "All" -> (Default active)
-- [ ] If no results fetched - information "No transactions found"
-- [ ] 
-- [ ] Implement useSWR() Hook to update transaction-list when switching filters
-- [ ] Implement useSWR() Hook to update account balance
-- [ ] Calculate the sum of expenses
-- [ ] Calculate the sum of incomes 
-
----
+- [ ] Create enum with STATE = all/expense/income
+- [ ] Create a `<form>`
+  - [ ] Create a `<label>` "All" to `<input>` - field with type="radio"
+  - [ ] Create a `<label>` "Income" to `<input>` - field with type="radio"
+  - [ ] Create a `<label>` "Expense" to `<input>` - field with type="radio"
+- [ ] Add handleFilterType function to the HomePage
+- [ ] Add state: const [filterType, setFilterType] = useState(STATE.all).
+- [ ] Inside the handleSubmit function of the form call the prop onSubmit and pass the formData to it
+  - [ ] Implement the filter functionality depending of useState()
+  - [ ] Add function to calculate the sum of expense/income transactions
+- [ ] Fill the list with the filtered data

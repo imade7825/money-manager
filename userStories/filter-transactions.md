@@ -11,7 +11,7 @@
 ## Description
 
 Capstone Group Todo: Add wireframes
-
+ 
 ## Acceptance Criteria
 
 - The transactions list includes a section with filter options.
