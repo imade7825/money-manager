@@ -1,6 +1,6 @@
 import useSWR from "swr";
 
-const fetcher = (url) => fetch(url).then((response) => response.json());
+
 
 export default function HomePage() {
   const {
@@ -8,7 +8,7 @@ export default function HomePage() {
     error,
     isLoading,
     mutate,
-  } = useSWR("/api/transactions", fetcher);
+  } = useSWR("/api/transactions");
   //const { data: categories } = useSWR("/api/categories", fetcher);
 
   if (error) return;
@@ -20,9 +20,9 @@ export default function HomePage() {
 
   const expenseTotal = transactions
     .filter((transaction) => transaction.type === "expense")
-    .reduce((acc, transaction) => acc + transaction.amount, 0);
-    const balanceTotal = incomeTotal - expenseTotal;
-    console.log(balanceTotal)
+    .reduce((acc, transaction) => acc - transaction.amount, 0);
+  const balanceTotal = incomeTotal - expenseTotal;
+  console.log(balanceTotal);
 
   return (
     <>
@@ -31,7 +31,7 @@ export default function HomePage() {
           return <li key={transaction._id}>{transaction.amount}</li>;
         })}
       </ul>
-      <p>total Balance: {balanceTotal}</p>
+      <h2>total Balance: {balanceTotal}</h2>
     </>
   );
 }
