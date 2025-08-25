@@ -1,6 +1,5 @@
 import useSWR from "swr";
-
-
+import styled from "styled-components";
 
 export default function HomePage() {
   const {
@@ -26,12 +25,23 @@ export default function HomePage() {
 
   return (
     <>
-      <ul>
-        {transactions.map((transaction) => {
-          return <li key={transaction._id}>{transaction.amount}</li>;
-        })}
-      </ul>
-      <h2>total Balance: {balanceTotal}</h2>
+     <StyledAccountBalance balance={balanceTotal}>
+        <p>Account balance</p>
+        {balanceTotal}
+      </StyledAccountBalance>
+    
+     
     </>
   );
 }
+
+const StyledAccountBalance = styled.h2`
+  color: ${({ balance }) =>
+    balance > 0 ? "green" :  "red" };
+  padding: 25px 35px;
+  background: whitesmoke;
+  border-radius: 25px;
+  text-align: center;
+  border: 2px solid black;
+  max-width: 450px;
+`;
