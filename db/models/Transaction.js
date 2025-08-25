@@ -1,4 +1,7 @@
 import mongoose from "mongoose";
+import "./Category";
+
+
 const { Schema } = mongoose;
 
 const transactionSchema = new Schema({
@@ -7,6 +10,7 @@ const transactionSchema = new Schema({
   category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
   type: { type: String, enum: ["income", "expense"], required: true },
   date: { type: Date, required: true },
+
 });
 
 const Transaction =
