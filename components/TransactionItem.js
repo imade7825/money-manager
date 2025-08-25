@@ -1,27 +1,22 @@
 import styled from "styled-components";
 
-
-export default function TransactionItem({transaction}){
- return(
-
+export default function TransactionItem({ transaction }) {
+  return (
     <StyledTransactionItem key={transaction._id}>
-              {new Intl.NumberFormat("de-DE", {
-                style: "currency",
-                currency: "EUR",
-              }).format(Number(transaction.amount) || 0)}
-              <Amount $type={transaction.type}>
-                {transaction.type && `${transaction.type}`}
-              </Amount>
-              <CategoryBadge>
-                {transaction.category ?? "Uncategorisiert"}
-              </CategoryBadge>
-              <DateText>
-                {new Date(transaction.date).toLocaleDateString("de-DE")}
-              </DateText>
-            </StyledTransactionItem>
- )
+      {new Intl.NumberFormat("de-DE", {
+        style: "currency",
+        currency: "EUR",
+      }).format(Number(transaction.amount) || 0)}
+      <Amount $type={transaction.type}>
+        {transaction.type && `${transaction.type}`}
+      </Amount>
+      <CategoryBadge>{transaction.category ?? "Uncategorisiert"}</CategoryBadge>
+      <DateText>
+        {new Date(transaction.date).toLocaleDateString("de-DE")}
+      </DateText>
+    </StyledTransactionItem>
+  );
 }
-
 
 const StyledTransactionItem = styled.li`
   display: flex;
@@ -32,6 +27,7 @@ const StyledTransactionItem = styled.li`
   font-size: 1rem;
   text-align: center;
   border-radius: 15px;
+  max-width: 450px;
 `;
 
 const Amount = styled.span`
@@ -51,4 +47,4 @@ const CategoryBadge = styled.span`
   border-radius: 10px;
   background: #fff;
   font-size: 0.85rem;
-  `
+`;

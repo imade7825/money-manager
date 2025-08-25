@@ -5,14 +5,17 @@ import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/CreateTransaction";
 
 export default function HomePage() {
-  const { data: transactions, error, isLoading, mutate } = useSWR("/api/transactions");
+  const {
+    data: transactions,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR("/api/transactions");
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <p>is Loading...</p>;
 
-
-   async function handleSubmit(formData) {
-    
+  async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -26,7 +29,7 @@ export default function HomePage() {
 
     const created = await response.json();
 
-   await mutate()
+    await mutate();
   }
   return (
     <>
@@ -49,4 +52,4 @@ const TransactionsList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-`
+`;

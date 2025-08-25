@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function Form({ onSubmit }) {
+export default function Form({ onSubmit, submitting = false }) {
   function handleSubmit(event) {
     event.preventDefault();
     const form = event.currentTarget;
@@ -9,8 +9,11 @@ export default function Form({ onSubmit }) {
     data.amount = Number(data.amount);
     onSubmit(data);
     form.reset();
-  }
 
+    //  Fokus wieder auf Name
+    form.querySelector("#name")?.focus();
+  }
+  const today = new Date().toISOString().slice(0, 10);
   return (
     <>
       <HeaderForm>Please fill out all fields</HeaderForm>
@@ -66,15 +69,27 @@ export default function Form({ onSubmit }) {
           required
         ></Input>
         <Label htmlFor="date">Date</Label>
-        <Input id="date" name="date" type="date" required></Input>
-        <button type="submit">Add</button>
-        <button type="reset">Cancel</button>
+        <Input
+          id="date"
+          name="date"
+          type="date"
+          required
+          defaultValue={today}
+        ></Input>
+        <Button type="submit" disabled={submitting}>
+          {submitting ? "Save" : "Add"}
+        </Button>
+        <Ghost type="reset" submitting={submitting}>
+          Cancel
+        </Ghost>
       </FormContainer>
     </>
   );
 }
 
-const HeaderForm = styled.h2``;
+const HeaderForm = styled.h3`
+  margin: 0 0 0.25rem;
+`;
 
 const FormContainer = styled.form`
   display: flex;
@@ -88,5 +103,19 @@ const Input = styled.input`
 `;
 
 const Label = styled.label`
-  font-weight: bold;
+  font-weight: 600;
+`;
+
+const Button = styled.button`
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 2px solid #000;
+  background: #000;
+  color: #fff;
+`;
+const Ghost = styled.button`
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: 2px solid #000;
+  background: transparent;
 `;
