@@ -42,7 +42,7 @@ export default function HomePage() {
                 {transaction.type && `${transaction.type}`}
               </Amount>
               <CategoryBadge>
-                {transaction.name ?? "Uncategorisiert"}
+                {transaction.category ?? "Uncategorisiert"}
               </CategoryBadge>
               <DateText>
                 {new Date(transaction.date).toLocaleDateString("de-DE")}

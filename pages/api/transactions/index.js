@@ -8,7 +8,7 @@ export default async function handler(request, response) {
     
     try {
       await dbConnect();
-      const transactions = await Transaction.find().populate("category", "name");
+      const transactions = await Transaction.find().populate("category");
       response.status(200).json(transactions);
       return;
     } catch (error) {
