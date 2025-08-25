@@ -9,10 +9,8 @@ export default function HomePage() {
     mutate,
   } = useSWR("/api/transactions");
 
-  const { data: categories } = useSWR("/api/categories");
-
   if (error) return <div>failed to load</div>;
-  if (isLoading ) return <p>is Loading...</p>;
+  if (isLoading) return <p>is Loading...</p>;
 
   const incomeTotal = transactions
     .filter((transaction) => transaction.type === "income")
