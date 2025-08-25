@@ -2,13 +2,32 @@ import useSWR from "swr";
 import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
+import Form from "@/components/CreateTransaction";
 
 export default function HomePage() {
-  const { data: transactions, error, isLoading } = useSWR("/api/transactions");
+  const { data: transactions, error, isLoading, mutate } = useSWR("/api/transactions");
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <p>is Loading...</p>;
 
+
+   async function handleSubmit(formData) {
+    
+    const response = await fetch("/api/transactions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+
+    if (!response.ok) {
+      console.error("POST failed");
+      return;
+    }
+
+    const created = await response.json();
+
+   await mutate()
+  }
   return (
     <>
       <AccountBalance transactions={transactions} />
@@ -18,6 +37,7 @@ export default function HomePage() {
           <TransactionItem transaction={transaction} key={transaction._id} />
         ))}
       </TransactionsList>
+      <Form onSubmit={handleSubmit}></Form>
     </>
   );
 }
@@ -29,4 +49,4 @@ const TransactionsList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-`;
+`
