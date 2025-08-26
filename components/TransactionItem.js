@@ -14,6 +14,7 @@ export default function TransactionItem({ transaction }) {
       <DateText>
         {new Date(transaction.date).toLocaleDateString("de-DE")}
       </DateText>
+      
     </StyledTransactionItem>
   );
 }

@@ -1,19 +1,29 @@
+import { useState } from "react";
 import styled from "styled-components";
+import useSWR from "swr";
 
-export default function Form({ onSubmit, submitting = false }) {
-  function handleSubmit(event) {
+export default function Form({ onSubmit }) {
+  const { data: categories, isLoading, error } = useSWR("/api/categories");
+
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+  async function handleSubmit(event) {
     event.preventDefault();
-    const form = event.currentTarget;
-    const formData = new FormData(event.target);
+    const form = event.target;
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData);
     data.amount = Number(data.amount);
 
-    onSubmit(data);
+    setIsButtonDisabled(true);
+    await onSubmit(data);
+    setIsButtonDisabled(false);
 
     form.reset();
     form.querySelector("#name")?.focus();
   }
   const today = new Date().toISOString().slice(0, 10);
+  if (error) return <p>Failed to load categories</p>;
+  if (isLoading) return <p>Loading categories...</p>;
   return (
     <>
       <HeaderForm>Please fill out all fields</HeaderForm>
@@ -34,23 +44,15 @@ export default function Form({ onSubmit, submitting = false }) {
           placeholder="Please add amount"
           required
         />
-        <select id="category" name="category" required defaultValue="">
+        <select id="category" name="category" defaultValue="" required>
           <option value="" disabled>
-            --choose category--
+            Choose category
           </option>
-          <option>Education</option>
-          <option>Entertainment</option>
-          <option>Groceries</option>
-          <option>Health</option>
-          <option>Insurance</option>
-          <option>Investment</option>
-          <option>Miscellaneous</option>
-          <option>Rent</option>
-          <option>Restaurants</option>
-          <option>Salary</option>
-          <option>Savings</option>
-          <option>Transportation</option>
-          <option>Utilities</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
         </select>
         <Label htmlFor="option1">Income</Label>
         <Input id="option1" value="income" name="type" type="radio" required />
@@ -64,12 +66,10 @@ export default function Form({ onSubmit, submitting = false }) {
           required
           defaultValue={today}
         />
-        <AddButton type="submit" disabled={submitting}>
-          {submitting ? "Save" : "Add"}
+        <AddButton type="submit" disabled={isButtonDisabled}>
+          Add
         </AddButton>
-        <CancelButton type="reset" submitting={submitting}>
-          Cancel
-        </CancelButton>
+        <CancelButton type="reset" disabled={isButtonDisabled}>Cancel</CancelButton>
       </FormContainer>
     </>
   );

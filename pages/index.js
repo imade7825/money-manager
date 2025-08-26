@@ -3,9 +3,15 @@ import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/CreateTransaction";
-
+import { useState } from "react";
 
 export default function HomePage() {
+  const [isFormVisible, setIsFormVisible] = useState(false);
+
+  function handleToggle() {
+    setIsFormVisible(!isFormVisible);
+  }
+
   const {
     data: transactions,
     error,
@@ -30,19 +36,22 @@ export default function HomePage() {
 
     await response.json();
     await mutate();
-  } 
-
+  }
 
   return (
     <>
       <AccountBalance transactions={transactions} />
-
+      <ToggleButton onClick={handleToggle}>
+        {isFormVisible ? `Hide Form` : "Show Form"}
+      </ToggleButton>
+      {isFormVisible && (
+        <Form onSubmit={handleSubmit} transactions={transactions} />
+      )}
       <TransactionsList>
         {transactions.map((transaction) => (
           <TransactionItem transaction={transaction} key={transaction._id} />
         ))}
       </TransactionsList>
-      <Form onSubmit={handleSubmit}/>
     </>
   );
 }
@@ -54,4 +63,11 @@ const TransactionsList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+`;
+
+const ToggleButton = styled.button`
+  display: block;
+  margin-left: auto;
+  margin-right: 20px;
+  margin-bottom: 10px;
 `;
