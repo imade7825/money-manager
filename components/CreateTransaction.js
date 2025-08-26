@@ -19,7 +19,7 @@ export default function Form({ onSubmit }) {
     setIsButtonDisabled(false);
 
     form.reset();
-    form.querySelector("#name")?.focus();
+    form.elements.name.focus();
   }
   const today = new Date().toISOString().slice(0, 10);
   if (error) return <p>Failed to load categories</p>;
@@ -69,7 +69,9 @@ export default function Form({ onSubmit }) {
         <AddButton type="submit" disabled={isButtonDisabled}>
           Add
         </AddButton>
-        <CancelButton type="reset" disabled={isButtonDisabled}>Cancel</CancelButton>
+        <CancelButton type="reset" disabled={isButtonDisabled}>
+          Cancel
+        </CancelButton>
       </FormContainer>
     </>
   );
