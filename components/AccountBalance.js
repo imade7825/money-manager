@@ -9,7 +9,7 @@ export default function AccountBalance({ transactions }) {
 
   const expenseTotal = transactions
     .filter((transaction) => transaction.type === "expense")
-    .reduce((acc, transaction) => acc - transaction.amount, 0);
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
 
   const balanceTotal = incomeTotal - expenseTotal;
 
