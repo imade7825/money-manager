@@ -14,15 +14,20 @@ export default function HomePage() {
     if (isFormVisible) setEditingTransaction(null);
   }
 
+  function handleCancel() {
+    setEditingTransaction(null);
+    setIsFormVisible(false);
+  }
+
   const {
-    data: transactions,
+    data: transactions = [],
     error,
     isLoading,
     mutate,
   } = useSWR("/api/transactions");
 
   if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>is Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
 
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
@@ -93,10 +98,11 @@ export default function HomePage() {
           }
           defaultValues={editingTransaction}
           transactions={transactions}
+          onCancel={handleCancel}
         />
       )}
       <TransactionsList>
-        {transactions.map((transaction) => (
+        {(transactions ?? []).map((transaction) => (
           <TransactionItem
             onEdit={handleEdit}
             onDelete={handleDelete}
@@ -120,7 +126,11 @@ const TransactionsList = styled.ul`
 
 const ToggleButton = styled.button`
   display: block;
-  margin-left: auto;
-  margin-right: 20px;
-  margin-bottom: 10px;
+  margin: 15px 20px;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid #000;
+  background: #000;
+  color: #fff;
+  font-weight: bold;
 `;

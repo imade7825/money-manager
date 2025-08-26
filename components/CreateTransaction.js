@@ -2,7 +2,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
 
-export default function Form({ onSubmit,defaultValues }) {
+export default function Form({ onSubmit, defaultValues, onCancel }) {
   const { data: categories, isLoading, error } = useSWR("/api/categories");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -21,6 +21,11 @@ export default function Form({ onSubmit,defaultValues }) {
     form.reset();
     form.elements.name.focus();
   }
+
+  function handleReset() {
+    onCancel?.();
+  }
+
   const today = new Date().toISOString().slice(0, 10);
   if (error) return <p>Failed to load categories</p>;
   if (isLoading) return <p>Loading categories...</p>;
@@ -35,7 +40,7 @@ export default function Form({ onSubmit,defaultValues }) {
           type="text"
           placeholder="Please add your name"
           required
-          defaultValue={defaultValues?.name }
+          defaultValue={defaultValues?.name}
         />
         <Label htmlFor="amount">Amount</Label>
         <Input
@@ -44,9 +49,14 @@ export default function Form({ onSubmit,defaultValues }) {
           type="number"
           placeholder="Please add amount"
           required
-          defaultValue={defaultValues?.amount }
+          defaultValue={defaultValues?.amount}
         />
-        <select id="category" name="category" defaultValue={defaultValues?.category} required>
+        <select
+          id="category"
+          name="category"
+          defaultValue={defaultValues?.category}
+          required
+        >
           <option value="" disabled>
             Choose category
           </option>
@@ -66,12 +76,20 @@ export default function Form({ onSubmit,defaultValues }) {
           name="date"
           type="date"
           required
-          defaultValue={defaultValues?.date?.slice(0,10) || today}
+          defaultValue={
+            defaultValues?.date
+              ? new Date(defaultValues.date).toISOString().slice(0, 10)
+              : today
+          }
         />
         <AddButton type="submit" disabled={isButtonDisabled}>
           Add
         </AddButton>
-        <CancelButton type="reset" disabled={isButtonDisabled}>
+        <CancelButton
+          type="reset"
+          onClick={handleReset}
+          disabled={isButtonDisabled}
+        >
           Cancel
         </CancelButton>
       </FormContainer>
