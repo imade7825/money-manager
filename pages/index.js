@@ -4,6 +4,7 @@ import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/CreateTransaction";
 
+
 export default function HomePage() {
   const {
     data: transactions,
@@ -27,10 +28,11 @@ export default function HomePage() {
       return;
     }
 
-    const created = await response.json();
-
+    await response.json();
     await mutate();
-  }
+  } 
+
+
   return (
     <>
       <AccountBalance transactions={transactions} />
@@ -40,7 +42,7 @@ export default function HomePage() {
           <TransactionItem transaction={transaction} key={transaction._id} />
         ))}
       </TransactionsList>
-      <Form onSubmit={handleSubmit}></Form>
+      <Form onSubmit={handleSubmit}/>
     </>
   );
 }

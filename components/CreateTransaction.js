@@ -7,10 +7,10 @@ export default function Form({ onSubmit, submitting = false }) {
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData);
     data.amount = Number(data.amount);
-    onSubmit(data);
-    form.reset();
 
-    //  Fokus wieder auf Name
+    onSubmit(data);
+
+    form.reset();
     form.querySelector("#name")?.focus();
   }
   const today = new Date().toISOString().slice(0, 10);
@@ -25,7 +25,7 @@ export default function Form({ onSubmit, submitting = false }) {
           type="text"
           placeholder="Please add your name"
           required
-        ></Input>
+        />
         <Label htmlFor="amount">Amount</Label>
         <Input
           id="amount"
@@ -33,7 +33,7 @@ export default function Form({ onSubmit, submitting = false }) {
           type="number"
           placeholder="Please add amount"
           required
-        ></Input>
+        />
         <select id="category" name="category" required defaultValue="">
           <option value="" disabled>
             --choose category--
@@ -53,21 +53,9 @@ export default function Form({ onSubmit, submitting = false }) {
           <option>Utilities</option>
         </select>
         <Label htmlFor="option1">Income</Label>
-        <Input
-          id="option1"
-          value="income"
-          name="type"
-          type="radio"
-          required
-        ></Input>
+        <Input id="option1" value="income" name="type" type="radio" required />
         <Label htmlFor="option2">Expense</Label>
-        <Input
-          id="option2"
-          value="expense"
-          name="type"
-          type="radio"
-          required
-        ></Input>
+        <Input id="option2" value="expense" name="type" type="radio" required />
         <Label htmlFor="date">Date</Label>
         <Input
           id="date"
@@ -75,13 +63,13 @@ export default function Form({ onSubmit, submitting = false }) {
           type="date"
           required
           defaultValue={today}
-        ></Input>
-        <Button type="submit" disabled={submitting}>
+        />
+        <AddButton type="submit" disabled={submitting}>
           {submitting ? "Save" : "Add"}
-        </Button>
-        <Ghost type="reset" submitting={submitting}>
+        </AddButton>
+        <CancelButton type="reset" submitting={submitting}>
           Cancel
-        </Ghost>
+        </CancelButton>
       </FormContainer>
     </>
   );
@@ -106,14 +94,14 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-const Button = styled.button`
+const AddButton = styled.button`
   padding: 0.6rem 1rem;
   border-radius: 10px;
   border: 2px solid #000;
   background: #000;
   color: #fff;
 `;
-const Ghost = styled.button`
+const CancelButton = styled.button`
   padding: 0.6rem 1rem;
   border-radius: 10px;
   border: 2px solid #000;
