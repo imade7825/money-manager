@@ -7,9 +7,11 @@ import { useState } from "react";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
+    if (isFormVisible) setEditingTransaction(null);
   }
 
   const {
@@ -38,6 +40,44 @@ export default function HomePage() {
     await mutate();
   }
 
+  async function handleUpdate(id, formData) {
+    const response = await fetch(`/api/transactions/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+      console.error("Update Failed");
+      return;
+    }
+    await response.json();
+    setEditingTransaction(null);
+    setIsFormVisible(false);
+    await mutate();
+  }
+
+  function handleEdit(transaction) {
+    setEditingTransaction(transaction);
+    setIsFormVisible(true);
+  }
+
+  async function handleDelete(id) {
+    const confirm = window.confirm(
+      "Are you sure that you want to delete this transaction?"
+    );
+
+    if (!confirm) return;
+
+    const response = await fetch(`/api/transactions/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      console.error("Delete failed");
+      return;
+    }
+    await mutate();
+  }
+
   return (
     <>
       <AccountBalance transactions={transactions} />
@@ -45,11 +85,24 @@ export default function HomePage() {
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
       {isFormVisible && (
-        <Form onSubmit={handleSubmit} transactions={transactions} />
+        <Form
+          onSubmit={
+            editingTransaction
+              ? (data) => handleUpdate(editingTransaction._id, data)
+              : handleSubmit
+          }
+          defaultValues={editingTransaction}
+          transactions={transactions}
+        />
       )}
       <TransactionsList>
         {transactions.map((transaction) => (
-          <TransactionItem transaction={transaction} key={transaction._id} />
+          <TransactionItem
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            transaction={transaction}
+            key={transaction._id}
+          />
         ))}
       </TransactionsList>
     </>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export default function TransactionItem({ transaction }) {
+export default function TransactionItem({ transaction, onEdit, onDelete }) {
   return (
     <StyledTransactionItem key={transaction._id}>
       {new Intl.NumberFormat("de-DE", {
@@ -14,7 +14,8 @@ export default function TransactionItem({ transaction }) {
       <DateText>
         {new Date(transaction.date).toLocaleDateString("de-DE")}
       </DateText>
-      
+      <button onClick={() => onEdit(transaction)}>Edit</button>
+      <button onClick={() => onDelete(transaction._id)}>Delete</button>
     </StyledTransactionItem>
   );
 }
