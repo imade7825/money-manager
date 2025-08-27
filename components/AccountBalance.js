@@ -3,21 +3,19 @@ import styled from "styled-components";
 export default function AccountBalance({ transactions }) {
   if (!transactions) return null;
 
-  const incomeTotal = transactions
-    .filter((transaction) => transaction.type === "income")
-    .reduce((acc, transaction) => acc + transaction.amount, 0);
-
-  const expenseTotal = transactions
-    .filter((transaction) => transaction.type === "expense")
-    .reduce((acc, transaction) => acc + transaction.amount, 0);
-
-  const balanceTotal = incomeTotal - expenseTotal;
+  const balanceTotal = transactions.reduce((acc, transaction) => {
+    return acc + Number(transaction.amount);
+  }, 0);
 
   return (
     <StyledAccountBalance balance={balanceTotal}>
       <h2>Account balance</h2>
-      <h3>{new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(balanceTotal)}</h3>
-      
+      <h3>
+        {new Intl.NumberFormat("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        }).format(balanceTotal)}
+      </h3>
     </StyledAccountBalance>
   );
 }
@@ -32,4 +30,3 @@ const StyledAccountBalance = styled.div`
   max-width: 450px;
   margin-bottom: 1rem;
 `;
-

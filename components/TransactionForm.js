@@ -12,7 +12,12 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
     const form = event.target;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
-    data.amount = Number(data.amount);
+
+    let amount = Math.abs(Number(data.amount));
+    if (data.type === "expense") {
+      amount = -amount;
+    }
+    data.amount = amount;
 
     setIsButtonDisabled(true);
     await onSubmit(data);
