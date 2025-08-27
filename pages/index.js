@@ -2,7 +2,7 @@ import useSWR from "swr";
 import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
-import Form from "@/components/CreateTransaction";
+import Form from "@/components/TransactionForm";
 import { useState } from "react";
 
 export default function HomePage() {
@@ -86,7 +86,7 @@ export default function HomePage() {
   return (
     <>
       <AccountBalance transactions={transactions} />
-      <ToggleButton onClick={handleToggle}>
+      <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
       {isFormVisible && (
@@ -129,8 +129,11 @@ const ToggleButton = styled.button`
   margin: 15px 20px;
   padding: 0.6rem 1rem;
   border-radius: 8px;
-  border: 2px solid #000;
-  background: #000;
-  color: #fff;
+  border: 2px solid ${({ disabled }) => (disabled ? "#ccc" : "#000")};
+  background: ${({ disabled }) => (disabled ? "#f8f9fa" : "#000")};
+  color: ${({ disabled }) => (disabled ? "#6c757d" : "#fff")};
   font-weight: bold;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+  transition: all 0.2s ease;
 `;

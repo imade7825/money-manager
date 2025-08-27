@@ -46,6 +46,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
         <Input
           id="amount"
           name="amount"
+          min="1"
           type="number"
           placeholder="Please add amount"
           required
