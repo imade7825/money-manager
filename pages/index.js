@@ -50,11 +50,7 @@ export default function HomePage() {
 
   for (const transaction of filteredTransactions) {
     const amount = Number(transaction.amount) || 0;
-    if (transaction.type === "income") {
-      filterBalance = filterBalance + amount;
-    } else {
-      filterBalance = filterBalance - amount;
-    }
+    filterBalance += amount;
   }
   // -----------------
 
@@ -118,13 +114,14 @@ export default function HomePage() {
   return (
     <>
       <AccountBalance transactions={transactions} />
+      {filteredTransactions.length}{" "}
+      {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
       <BalanceAmount $isPositive={filterBalance >= 0}>
         {new Intl.NumberFormat("de-DE", {
           style: "currency",
           currency: "EUR",
         }).format(filterBalance)}
       </BalanceAmount>
-
       <FilterBar>
         <label htmlFor="filterCategory">Filter by category:</label>
         <select
