@@ -1,15 +1,91 @@
 import { createGlobalStyle } from "styled-components";
 
-export default createGlobalStyle`
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
+const GlobalStyle = createGlobalStyle`
+:root{
+  /* Light default */
+  --background: #ffffff;
+  --foreground: #111111;
+  --surface: #f5f5f5;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --primary: #0a84ff;
+  --positive: #16a34a;
+  --negative: #dc2626;
+}
+
+/* Systempräferenz: Dark als Startbpunkt*/
+@media (prefers-color-scheme: dark){
+  :root{
+    --background: #0b0f14;
+      --foreground: #e6e6e6;
+      --surface: #11161c;
+      --muted: #9aa0a6;
+      --border: #2a2f36;
+      --primary: #0a84ff;
+      --positive: #22c55e;
+      --negative: #f87171;
+
+
+  }
+}
+/* Explizit via Attribut gesetzt (überschreibt Systempräferenz) */
+  html[data-theme="light"] {
+    --background: #ffffff;
+    --foreground: #111111;
+    --surface: #f5f5f5;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #0a84ff;
+    --positive: #16a34a;
+    --negative: #dc2626;
   }
 
+ html[data-theme="dark"] {
+    --bg: #0b0f14;
+    --fg: #e6e6e6;
+    --surface: #11161c;
+    --muted: #9aa0a6;
+    --border: #2a2f36;
+    --primary: #0a84ff;
+    --positive: #22c55e;
+    --negative: #f87171;
+  }
+
+ /* Baseline */
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body, #__next { height: 100%; }
   body {
     margin: 0;
-    font-family: system-ui;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     padding: 10px;
   }
+
+  /* HTML ungestylete  Elemente */
+  button {
+    font: inherit;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--fg);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  input, select {
+    font: inherit;
+    color: var(--fg);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.6rem;
+  }
+ 
+
 `;
+
+export default GlobalStyle;
