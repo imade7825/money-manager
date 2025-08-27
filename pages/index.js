@@ -2,25 +2,32 @@ import useSWR from "swr";
 import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
-import Form from "@/components/CreateTransaction";
+import Form from "@/components/TransactionForm";
 import { useState } from "react";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState(null);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
+    if (isFormVisible) setEditingTransaction(null);
+  }
+
+  function handleCancel() {
+    setEditingTransaction(null);
+    setIsFormVisible(false);
   }
 
   const {
-    data: transactions,
+    data: transactions = [],
     error,
     isLoading,
     mutate,
   } = useSWR("/api/transactions");
 
   if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>is Loading...</p>;
+  if (isLoading) return <p>Loading...</p>;
 
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
@@ -34,22 +41,74 @@ export default function HomePage() {
       return;
     }
 
-    await response.json();
+    response.json();
+    await mutate();
+  }
+
+  async function handleUpdate(id, formData) {
+    const response = await fetch(`/api/transactions/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+      console.error("Update Failed");
+      return;
+    }
+    response.json();
+    setEditingTransaction(null);
+    setIsFormVisible(false);
+    await mutate();
+  }
+
+  function handleEdit(transaction) {
+    setEditingTransaction(transaction);
+    setIsFormVisible(true);
+  }
+
+  async function handleDelete(id) {
+    const confirm = window.confirm(
+      "Are you sure that you want to delete this transaction?"
+    );
+
+    if (!confirm) return;
+
+    const response = await fetch(`/api/transactions/${id}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      console.error("Delete failed");
+      return;
+    }
     await mutate();
   }
 
   return (
     <>
       <AccountBalance transactions={transactions} />
-      <ToggleButton onClick={handleToggle}>
+      <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
       {isFormVisible && (
-        <Form onSubmit={handleSubmit} transactions={transactions} />
+        <Form
+          onSubmit={
+            editingTransaction
+              ? (data) => handleUpdate(editingTransaction._id, data)
+              : handleSubmit
+          }
+          defaultValues={editingTransaction}
+          transactions={transactions}
+          onCancel={handleCancel}
+        />
       )}
       <TransactionsList>
-        {transactions.map((transaction) => (
-          <TransactionItem transaction={transaction} key={transaction._id} />
+        {(transactions ?? []).map((transaction) => (
+          <TransactionItem
+            onEdit={handleEdit}
+            onDelete={handleDelete}
+            transaction={transaction}
+            key={transaction._id}
+          />
         ))}
       </TransactionsList>
     </>
@@ -67,7 +126,14 @@ const TransactionsList = styled.ul`
 
 const ToggleButton = styled.button`
   display: block;
-  margin-left: auto;
-  margin-right: 20px;
-  margin-bottom: 10px;
+  margin: 15px 20px;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 2px solid ${({ disabled }) => (disabled ? "#ccc" : "#000")};
+  background: ${({ disabled }) => (disabled ? "#f8f9fa" : "#000")};
+  color: ${({ disabled }) => (disabled ? "#6c757d" : "#fff")};
+  font-weight: bold;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+  transition: all 0.2s ease;
 `;
