@@ -3,11 +3,12 @@ import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
+  const [filterCategory, setFilterCategory] = useState("");
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -25,6 +26,35 @@ export default function HomePage() {
     isLoading,
     mutate,
   } = useSWR("/api/transactions");
+
+  const { data: categories = [] } = useSWR("api/categories");
+
+  // filter Logik
+
+  function handleFilterCategoryChange(event) {
+    setFilterCategory(event.target.value); //<-- realtime active Filter
+  }
+
+  function handleClearFilter() {
+    setFilterCategory("");
+  }
+
+  const filteredTransactions = useMemo(() => {
+    if (!filterCategory) return transactions;
+    return transactions.filter(
+      (transaction) => transaction.category === filterCategory
+    );
+  }, [transactions, filterCategory]);
+
+  const filterBalance = filteredTransactions.reduce(
+    (acc, transaction) =>
+      acc +
+      (transaction.type === "income"
+        ? transaction.amount
+        : -transaction.amount),
+    0
+  );
+  // -----------------
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <p>Loading...</p>;
@@ -86,6 +116,42 @@ export default function HomePage() {
   return (
     <>
       <AccountBalance transactions={transactions} />
+      <h4>
+        {filteredTransactions.length} Results, Balance:{" "}
+        {new Intl.NumberFormat("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        }).format(filterBalance)}
+      </h4>
+
+      <FilterBar onSubmit={(event) => event.preventDefault()}>
+        <label htmlFor="filterCategory">Filter by category:</label>
+        <select
+          id="filterCategory"
+          name="filterCategory"
+          value={filterCategory}
+          onChange={handleFilterCategoryChange}
+        >
+          <option value="">Please select a category</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category.name}>
+              {category.name}
+            </option>
+          ))}
+        </select>
+        <ClearButton
+          type="button"
+          onClick={handleClearFilter}
+          disabled={!filterCategory}
+          aria-disabled={!filterCategory}
+        >
+          Clear Filter
+        </ClearButton>
+      </FilterBar>
+      <ActiveFilterRow>
+        <span>Active filter:</span>
+        <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
+      </ActiveFilterRow>
       <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
@@ -102,14 +168,26 @@ export default function HomePage() {
         />
       )}
       <TransactionsList>
-        {(transactions ?? []).map((transaction) => (
+        {(filteredTransactions ?? []).length === 0 ? (
+          <EmptyState>No Results available</EmptyState>
+        ) : (
+          (filteredTransactions ?? []).map((transaction) => (
+            <TransactionItem
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+              transaction={transaction}
+              key={transaction._id}
+            />
+          ))
+        )}
+        {/*  {(transactions ?? []).map((transaction) => (
           <TransactionItem
             onEdit={handleEdit}
             onDelete={handleDelete}
             transaction={transaction}
             key={transaction._id}
           />
-        ))}
+        ))} */}
       </TransactionsList>
     </>
   );
@@ -136,4 +214,38 @@ const ToggleButton = styled.button`
   cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
   opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
   transition: all 0.2s ease;
+`;
+
+const FilterBar = styled.form`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 20px 10px;
+`;
+
+const ClearButton = styled.button`
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  border: 2px solid #000;
+  background: transparent;
+`;
+
+const ActiveFilterRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 20px 10px;
+  font-size: 0.95rem;
+`;
+
+const ActiveBadge = styled.span`
+  padding: 0.1rem 0.5rem;
+  border: 2px solid #000;
+  border-radius: 999px;
+  background: #fff;
+`;
+
+const EmptyState = styled.p`
+  margin: 0.5rem 20px;
+  opacity: 0.8;
 `;
