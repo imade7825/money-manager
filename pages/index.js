@@ -46,14 +46,17 @@ export default function HomePage() {
     );
   }, [transactions, filterCategory]);
 
-  const filterBalance = filteredTransactions.reduce(
-    (acc, transaction) =>
-      acc +
-      (transaction.type === "income"
-        ? transaction.amount
-        : -transaction.amount),
-    0
-  );
+
+  let filterBalance = 0;
+
+  for (const transaction of filteredTransactions) {
+    const amount = Number(transaction.amount) || 0;
+    if (transaction.type === "income") {
+      filterBalance = filterBalance + amount;
+    } else {
+      filterBalance = filterBalance - amount;
+    }
+  }
   // -----------------
 
   if (error) return <div>failed to load</div>;
@@ -117,14 +120,15 @@ export default function HomePage() {
     <>
       <AccountBalance transactions={transactions} />
       <h4>
-        {filteredTransactions.length} Results, Balance:{" "}
+        {filteredTransactions.length}{" "}
+        {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
         {new Intl.NumberFormat("de-DE", {
           style: "currency",
           currency: "EUR",
         }).format(filterBalance)}
       </h4>
 
-      <FilterBar onSubmit={(event) => event.preventDefault()}>
+      <FilterBar>
         <label htmlFor="filterCategory">Filter by category:</label>
         <select
           id="filterCategory"
@@ -168,10 +172,10 @@ export default function HomePage() {
         />
       )}
       <TransactionsList>
-        {(filteredTransactions ?? []).length === 0 ? (
+        {filteredTransactions.length === 0 ? (
           <EmptyState>No Results available</EmptyState>
         ) : (
-          (filteredTransactions ?? []).map((transaction) => (
+          filteredTransactions.map((transaction) => (
             <TransactionItem
               onEdit={handleEdit}
               onDelete={handleDelete}
@@ -180,14 +184,6 @@ export default function HomePage() {
             />
           ))
         )}
-        {/*  {(transactions ?? []).map((transaction) => (
-          <TransactionItem
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            transaction={transaction}
-            key={transaction._id}
-          />
-        ))} */}
       </TransactionsList>
     </>
   );
