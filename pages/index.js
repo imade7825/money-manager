@@ -41,7 +41,7 @@ export default function HomePage() {
       return;
     }
 
-    await response.json();
+    response.json();
     await mutate();
   }
 
@@ -55,7 +55,7 @@ export default function HomePage() {
       console.error("Update Failed");
       return;
     }
-    await response.json();
+    response.json();
     setEditingTransaction(null);
     setIsFormVisible(false);
     await mutate();
