@@ -50,13 +50,8 @@ export default function HomePage() {
 
   for (const transaction of filteredTransactions) {
     const amount = Number(transaction.amount) || 0;
-    if (transaction.type === "income") {
-      filterBalance = filterBalance + amount;
-    } else {
-      filterBalance = filterBalance - amount;
-    }
+    filterBalance += amount; 
   }
-  // -----------------
 
   if (error) return <div>failed to load</div>;
   if (isLoading) return <p>Loading...</p>;
