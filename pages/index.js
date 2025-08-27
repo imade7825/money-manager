@@ -46,7 +46,6 @@ export default function HomePage() {
     );
   }, [transactions, filterCategory]);
 
-
   let filterBalance = 0;
 
   for (const transaction of filteredTransactions) {
@@ -119,14 +118,12 @@ export default function HomePage() {
   return (
     <>
       <AccountBalance transactions={transactions} />
-      <h4>
-        {filteredTransactions.length}{" "}
-        {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
+      <BalanceAmount $isPositive={filterBalance >= 0}>
         {new Intl.NumberFormat("de-DE", {
           style: "currency",
           currency: "EUR",
         }).format(filterBalance)}
-      </h4>
+      </BalanceAmount>
 
       <FilterBar>
         <label htmlFor="filterCategory">Filter by category:</label>
@@ -244,4 +241,9 @@ const ActiveBadge = styled.span`
 const EmptyState = styled.p`
   margin: 0.5rem 20px;
   opacity: 0.8;
+`;
+
+const BalanceAmount = styled.span`
+  color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
+  font-weight: bold;
 `;
