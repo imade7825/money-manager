@@ -33,12 +33,11 @@ After login, the user is redirected to the dashboard, after logout, to the login
 - [ ] Do in terminal npm i to install packages with `next-auth`, `@next-auth/mongodb-adapter`
 - [ ] Add to .env.local to MONGODB_URI - NEXTAuth,.... google `RESEARCH`
 - [ ] Create MongoDB client helper for MongoDB Adapter
-- [ ] Create a new component for singIn
-- [ ] Create a new component for singOut
+- [ ] Create a new component for singIn/singOut
 - [ ] Add loading states -spinner or/and disabled during login/logout
 - [ ] The Login button shows the state of logging login/logout
 - [ ] Connect with providers
-- [ ] Add user's normalization -avoid duplicates, set email, name
+- [ ] Add user's normalization -avoid duplicates, set to the provider - provide your mail and account-name
 - [ ] Create protected routes visible after logging in
 - [ ] If the logging in failed show a message `access denied/ error`
 - [ ] Update UI state dynamically based on session
