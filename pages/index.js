@@ -3,9 +3,11 @@ import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
+import ThemeToggle from "@/components/ThemeToggle";
 import { useMemo, useState } from "react";
 
 export default function HomePage() {
+  
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
@@ -112,6 +114,7 @@ export default function HomePage() {
 
   return (
     <>
+    <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
       {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
