@@ -16,4 +16,5 @@ const Toggle = styled.button`
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 5px;
 `;
