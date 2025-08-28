@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import styled from "styled-components";
+import { STATE } from "@/constants/state";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
@@ -10,7 +11,8 @@ export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
-  const test = "init";
+  const [filterType, setFilterType] = useState(STATE.ALL);
+
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
     if (isFormVisible) setEditingTransaction(null);
@@ -41,11 +43,20 @@ export default function HomePage() {
   }
 
   const filteredTransactions = useMemo(() => {
-    if (!filterCategory) return transactions;
-    return transactions.filter(
-      (transaction) => transaction.category === filterCategory
-    );
-  }, [transactions, filterCategory]);
+    let result = transactions;
+
+    //ctegory filter
+    if (filterCategory) {
+      result = result.filter(
+        (transaction) => transaction.category === filterCategory
+      );
+    }
+
+    if (filterType != STATE.ALL) {
+      result = result.filter((transaction) => transaction.type === filterType);
+    }
+    return result;
+  }, [transactions, filterCategory, filterType]);
 
   let filterBalance = 0;
 
@@ -150,11 +161,7 @@ export default function HomePage() {
         <span>Active filter:</span>
         <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
       </ActiveFilterRow>
-      <IncomeExpenseView
-        transactions={transactions}
-        onFilter={setFilterType}
-      ></IncomeExpenseView>
-
+      <IncomeExpenseView transactions={transactions} onFilter={setFilterType}></IncomeExpenseView>
       <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
@@ -180,6 +187,7 @@ export default function HomePage() {
               onDelete={handleDelete}
               transaction={transaction}
               key={transaction._id}
+              onFilter={setFilterType}
             />
           ))
         )}
