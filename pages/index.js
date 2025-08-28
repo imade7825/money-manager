@@ -3,6 +3,7 @@ import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
+import IncomeExpenseView from "@/components/IncomeExpenseView";
 import { useMemo, useState } from "react";
 
 export default function HomePage() {
@@ -149,6 +150,11 @@ export default function HomePage() {
         <span>Active filter:</span>
         <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
       </ActiveFilterRow>
+      <IncomeExpenseView
+        transactions={transactions}
+        onFilter={setFilterType}
+      ></IncomeExpenseView>
+
       <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
