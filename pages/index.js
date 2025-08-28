@@ -9,7 +9,7 @@ export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
-
+  const test = "init";
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
     if (isFormVisible) setEditingTransaction(null);
