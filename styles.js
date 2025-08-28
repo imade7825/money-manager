@@ -56,8 +56,8 @@ const GlobalStyle = createGlobalStyle`
   html, body, #__next { height: 100%; }
   body {
     margin: 0;
-    background: var(--bg);
-    color: var(--fg);
+    background: var(--background);
+    color: var(--foreground);
     font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -69,7 +69,7 @@ const GlobalStyle = createGlobalStyle`
     font: inherit;
     border: 1px solid var(--border);
     background: var(--surface);
-    color: var(--fg);
+    color: var(--foreground);
     border-radius: 6px;
     padding: 0.5rem 0.75rem;
     cursor: pointer;
