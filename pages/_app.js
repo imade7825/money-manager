@@ -1,8 +1,12 @@
-
 import GlobalStyle from "@/styles";
+import { SWRConfig } from "swr";
+import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
-import  { SWRConfig } from "swr";
-export default function App({ Component, pageProps }) {
+
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <SWRConfig
       value={{
@@ -15,10 +19,12 @@ export default function App({ Component, pageProps }) {
         },
       }}
     >
-    <ThemeProvider>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </ThemeProvider>
+      <SessionProvider session={session}>
+        <ThemeProvider>
+          <GlobalStyle />
+          <Component {...pageProps} />
+        </ThemeProvider>
+      </SessionProvider>
     </SWRConfig>
   );
 }
