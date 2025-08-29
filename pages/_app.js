@@ -1,5 +1,6 @@
 
-import GlobalStyle from "../styles";
+import GlobalStyle from "@/styles";
+import { ThemeProvider } from "@/context/ThemeContext";
 import  { SWRConfig } from "swr";
 export default function App({ Component, pageProps }) {
   return (
@@ -14,8 +15,10 @@ export default function App({ Component, pageProps }) {
         },
       }}
     >
+    <ThemeProvider>
       <GlobalStyle />
       <Component {...pageProps} />
+    </ThemeProvider>
     </SWRConfig>
   );
 }

@@ -1,10 +1,12 @@
-import useSWR from "swr";
 import styled from "styled-components";
 import { STATE } from "@/constants/state";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
+import ThemeToggle from "@/components/ThemeToggle";
+import CategoryPieChart from "@/components/CategoryPieChart";
+import useSWR from "swr";
 import { useMemo, useState } from "react";
 
 export default function HomePage() {
@@ -12,6 +14,8 @@ export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
   const [filterType, setFilterType] = useState(STATE.ALL);
+  const [isChartVisible, setIsChartVisible] = useState(false);
+
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -135,6 +139,7 @@ export default function HomePage() {
 
   return (
     <>
+      <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
       {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
@@ -209,6 +214,17 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
+      <section>
+        <ToggleButton
+          type="button"
+          onClick={() => setIsChartVisible(!isChartVisible)}
+        >
+          {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
+        </ToggleButton>
+        <CollapsedPieChart $open={isChartVisible}>
+          <CategoryPieChart transactions={transactions}></CategoryPieChart>
+        </CollapsedPieChart>
+      </section>
     </>
   );
 }
@@ -236,6 +252,10 @@ const ToggleButton = styled.button`
   transition: all 0.2s ease;
 `;
 
+const CollapsedPieChart = styled.div`
+  margin-top: 12px;
+  display: ${({ $open }) => ($open ? "block" : "none")};
+`;
 const FilterBar = styled.form`
   display: flex;
   align-items: center;
