@@ -15,13 +15,14 @@ After login, the user is redirected to the dashboard, after logout, to the login
 
 ## Acceptance Criteria
 
-- UI (unauthenticated): Public pages show a **Login** button.
+- UI (unauthenticated): Public view which shows a **Login** button.
 - UI (authenticated): Showing **Logout** button.
 - Clicking **Login** button opens a provider selection (Google/GitHub), successful login redirect to the HomePage.
 - Clicking **Logout** button ends the session and redirects to login `RESEARCH :modal/area`
 - **New User** First login creates a user entry in the database with own user's account.
 - Session is maintained across page reloads.
-- Login route protection - protected areas HomePage, Transactions
+- Give access to the page after logging in
+- Login route protection - protected areas whole application except by login modal
 - Buttons show a loading indicator (probably spinner and disabled) during login/logout process.
 - If login fails inform the user `access denied/ error`
 - The use can choose between providers RESEARCH (GitHub /Google)
@@ -33,11 +34,10 @@ After login, the user is redirected to the dashboard, after logout, to the login
 - [ ] Do in terminal npm i to install packages with `next-auth`, `@next-auth/mongodb-adapter`
 - [ ] Add to .env.local to MONGODB_URI - NEXTAuth,.... google `RESEARCH`
 - [ ] Create MongoDB client helper for MongoDB Adapter
-- [ ] Create a new component for singIn/singOut
+- [ ] Create a new component for singIn/singOut to login in protected page if not shows login modal
 - [ ] Add loading states -spinner or/and disabled during login/logout
 - [ ] The Login button shows the state of logging login/logout
 - [ ] Connect with providers
 - [ ] Add user's normalization -avoid duplicates, set to the provider - provide your mail and account-name
-- [ ] Create protected routes visible after logging in
 - [ ] If the logging in failed show a message `access denied/ error`
 - [ ] Update UI state dynamically based on session
