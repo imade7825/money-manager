@@ -1,6 +1,5 @@
 import { STATE } from "@/constants/state";
 import styled from "styled-components";
-import { useState } from "react";
 
 export default function IncomeExpenseView({
   filteredTransactions,
@@ -8,24 +7,22 @@ export default function IncomeExpenseView({
   sumExpense,
   sumTotal,
   onFilter,
+  filterType,
 }) {
-  const [filterType, setFilterType] = useState(STATE.ALL);
+  // const [filterType, setFilterType] = useState(STATE.ALL);
 
   //Change radio button
   const handleFilterType = (event) => {
     const filterValue = event.target.value;
-    setFilterType(filterValue);
-    if (onFilter) {
-      onFilter(filterValue);
-    }
+    onFilter(filterValue);
   };
 
   const totalLabel =
     filterType === STATE.INCOME
-      ? `Total Income: €$(sumIncome)`
+      ? `Total Income: €${sumIncome}`
       : filterType === STATE.EXPENSE
-      ? `Total Expense: €$(sumExpense)`
-      : `Total Balance: €$(sumTotal)`;
+      ? `Total Expense: €${sumExpense}`
+      : `Total Balance: €${sumTotal}`;
 
   const formatLabel = (key) => key.charAt(0) + key.slice(1).toLowerCase();
 
