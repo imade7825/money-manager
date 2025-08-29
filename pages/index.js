@@ -4,14 +4,18 @@ import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import ThemeToggle from "@/components/ThemeToggle";
 import CategoryPieChart from "@/components/CategoryPieChart";
+import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
 import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
   const [isChartVisible, setIsChartVisible] = useState(false);
+
+  const { data: session, status } = useSession();
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -113,8 +117,17 @@ export default function HomePage() {
     await mutate();
   }
 
+  if (status !== "authenticated") {
+    return (
+      <AuthBar>
+        <h2>Please log in to access this page</h2>
+        <AuthButtons />
+      </AuthBar>
+    );
+  }
   return (
     <>
+    <AuthButtons/>
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
@@ -261,4 +274,9 @@ const EmptyState = styled.p`
 const BalanceAmount = styled.span`
   color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
   font-weight: bold;
+`;
+
+const AuthBar = styled.div`
+  text-align: center;
+  margin-top: 2rem;
 `;
