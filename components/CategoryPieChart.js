@@ -69,14 +69,14 @@ export default function CategoryPieChart({ transactions = [] }) {
       <TopBar>
         <ModeButton
           type="button"
-          onClick={setMode("expense")}
+          onClick={() => setMode("expense")}
           $active={mode === "expense"}
         >
           Expense
         </ModeButton>
         <ModeButton
           type="button"
-          onClick={setMode("income")}
+          onClick={() => setMode("income")}
           $active={mode === "income"}
         >
           Income
@@ -109,7 +109,7 @@ export default function CategoryPieChart({ transactions = [] }) {
                 ))}
               </Pie>
               <Tooltip
-                formatter={((value) => [toCurrencyEUR(value)], "Sum")}
+                formatter={(value) => [toCurrencyEUR(value), "Sum"]}
                 separator=" "
               />
               <Legend />

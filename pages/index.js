@@ -1,16 +1,17 @@
-import useSWR from "swr";
 import styled from "styled-components";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import ThemeToggle from "@/components/ThemeToggle";
+import CategoryPieChart from "@/components/CategoryPieChart";
+import useSWR from "swr";
 import { useMemo, useState } from "react";
 
 export default function HomePage() {
-  
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
+  const [isChartVisible, setIsChartVisible] = useState(false);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -114,7 +115,7 @@ export default function HomePage() {
 
   return (
     <>
-    <ThemeToggle />
+      <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
       {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
@@ -181,6 +182,17 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
+      <section>
+        <ToggleButton
+          type="button"
+          onClick={() => setIsChartVisible(!isChartVisible)}
+        >
+          {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
+        </ToggleButton>
+        <CollapsedPieChart $open={isChartVisible}>
+          <CategoryPieChart transactions={transactions}></CategoryPieChart>
+        </CollapsedPieChart>
+      </section>
     </>
   );
 }
@@ -208,6 +220,10 @@ const ToggleButton = styled.button`
   transition: all 0.2s ease;
 `;
 
+const CollapsedPieChart = styled.div`
+  margin-top: 12px;
+  display: ${({ $open }) => ($open ? "block" : "none")};
+`;
 const FilterBar = styled.form`
   display: flex;
   align-items: center;
