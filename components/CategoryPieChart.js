@@ -42,7 +42,9 @@ function buildCategoryData(transactions = [], type) {
     return acc;
   }, {});
 
-  return Object.entries(sums).map(([name, value]) => ({ name, value }));
+  return Object.entries(sums)
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
 }
 
 export default function CategoryPieChart({ transactions = [] }) {
