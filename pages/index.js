@@ -1,7 +1,9 @@
 import styled from "styled-components";
+import { STATE } from "@/constants/state";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
+import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import CategoryPieChart from "@/components/CategoryPieChart";
 import useSWR from "swr";
@@ -11,7 +13,9 @@ export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [filterCategory, setFilterCategory] = useState("");
+  const [filterType, setFilterType] = useState(STATE.ALL);
   const [isChartVisible, setIsChartVisible] = useState(false);
+
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -43,11 +47,31 @@ export default function HomePage() {
   }
 
   const filteredTransactions = useMemo(() => {
-    if (!filterCategory) return transactions;
-    return transactions.filter(
-      (transaction) => transaction.category === filterCategory
-    );
-  }, [transactions, filterCategory]);
+    let result = transactions;
+
+    //ctegory filter
+    if (filterCategory) {
+      result = result.filter(
+        (transaction) => transaction.category === filterCategory
+      );
+    }
+
+    if (filterType != STATE.ALL) {
+      result = result.filter((transaction) => transaction.type === filterType);
+    }
+    return result;
+  }, [transactions, filterCategory, filterType]);
+
+  //calculations
+  const sumIncome = filteredTransactions
+    .filter((transaction) => transaction.type === STATE.INCOME)
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const sumExpense = filteredTransactions
+    .filter((transaction) => transaction.type === STATE.EXPENSE)
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const sumTotal = sumIncome - sumExpense;
 
   let filterBalance = 0;
 
@@ -153,6 +177,13 @@ export default function HomePage() {
         <span>Active filter:</span>
         <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
       </ActiveFilterRow>
+      <IncomeExpenseView
+        filteredTransactions={filteredTransactions}
+        sumIncome={sumIncome}
+        sumExpense={sumExpense}
+        sumTotal={sumTotal}
+        onFilter={setFilterType}
+      />
       <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
@@ -178,6 +209,7 @@ export default function HomePage() {
               onDelete={handleDelete}
               transaction={transaction}
               key={transaction._id}
+              onFilter={setFilterType}
             />
           ))
         )}
