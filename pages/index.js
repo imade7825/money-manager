@@ -58,6 +58,17 @@ export default function HomePage() {
     return result;
   }, [transactions, filterCategory, filterType]);
 
+  //calculations
+  const sumIncome = filteredTransactions
+    .filter((transaction) => transaction.type === STATE.INCOME)
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const sumExpense = filteredTransactions
+    .filter((transaction) => transaction.type === STATE.EXPENSE)
+    .reduce((total, transaction) => total + Number(transaction.amount), 0);
+
+  const sumTotal = sumIncome - sumExpense;
+
   let filterBalance = 0;
 
   for (const transaction of filteredTransactions) {
@@ -161,7 +172,13 @@ export default function HomePage() {
         <span>Active filter:</span>
         <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
       </ActiveFilterRow>
-      <IncomeExpenseView transactions={transactions} onFilter={setFilterType}></IncomeExpenseView>
+      <IncomeExpenseView
+        filteredTransactions={filteredTransactions}
+        sumIncome={sumIncome}
+        sumExpense={sumExpense}
+        sumTotal={sumTotal}
+        onFilter={setFilterType}
+      />
       <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
