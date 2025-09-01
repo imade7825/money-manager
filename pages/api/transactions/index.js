@@ -7,19 +7,17 @@ import { getToken } from "next-auth/jwt";
 export default async function handler(request, response) {
   const session = await getServerSession(request, response, authOptions);
   const token = await getToken({ req: request });
-  
+  const userEmail = token?.email;
 
- 
   await dbConnect();
 
   if (request.method === "GET") {
     if (session) {
-      const transactions = await Transaction.find({ owner: token.email });
+      const transactions = await Transaction.find({ owner: userEmail });
       response.status(200).json(transactions);
       return;
-    } 
     }
-  
+  }
 
   if (request.method === "POST") {
     try {
@@ -31,7 +29,7 @@ export default async function handler(request, response) {
           return response
             .status(400)
             .json({ message: "Bitte alle Felder ausfüllen." });
-        } 
+        }
 
         const created = await Transaction.create({
           name: String(name).trim(),
