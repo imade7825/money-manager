@@ -10,6 +10,7 @@ const transactionSchema = new Schema({
   category: { type: String, required: true },
   type: { type: String, enum: ["income", "expense"], required: true },
   date: { type: Date, required: true },
+  owner: {type: String, required: true}
 });
 
 const Transaction =
