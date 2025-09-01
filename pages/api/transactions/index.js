@@ -17,12 +17,9 @@ export default async function handler(request, response) {
       const transactions = await Transaction.find({ owner: token.email });
       response.status(200).json(transactions);
       return;
-    } else {
-      const transactions = await Transaction.find({ owner: "default" });
-      response.status(200).json(transactions);
-      return;
+    } 
     }
-  }
+  
 
   if (request.method === "POST") {
     try {
@@ -34,9 +31,7 @@ export default async function handler(request, response) {
           return response
             .status(400)
             .json({ message: "Bitte alle Felder ausfüllen." });
-        } else {
-          response.status(401).json({ status: "Not authorized" });
-        }
+        } 
 
         const created = await Transaction.create({
           name: String(name).trim(),

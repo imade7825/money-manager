@@ -117,14 +117,7 @@ export default function HomePage() {
     await mutate();
   }
 
-  if (status !== "authenticated") {
-    return (
-      <AuthBar>
-        <h2>Please log in to access this page</h2>
-        <AuthButtons />
-      </AuthBar>
-    );
-  }
+
   return (
     <>
     <AuthButtons/>
@@ -276,7 +269,3 @@ const BalanceAmount = styled.span`
   font-weight: bold;
 `;
 
-const AuthBar = styled.div`
-  text-align: center;
-  margin-top: 2rem;
-`;
