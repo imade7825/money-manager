@@ -1,8 +1,12 @@
-
 import GlobalStyle from "@/styles";
+import { SWRConfig } from "swr";
+import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
-import  { SWRConfig } from "swr";
-export default function App({ Component, pageProps }) {
+
+export default function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
   return (
     <SWRConfig
       value={{
@@ -15,10 +19,23 @@ export default function App({ Component, pageProps }) {
         },
       }}
     >
-    <ThemeProvider>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </ThemeProvider>
+      <SessionProvider session={session}>
+        <Auth>
+          <ThemeProvider>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </Auth>
+      </SessionProvider>
     </SWRConfig>
   );
+}
+
+function Auth({ children }) {
+  const { status } = useSession({ required: true });
+
+  if (status === "loading") {
+    return <div>Is loading</div>;
+  }
+  return children;
 }

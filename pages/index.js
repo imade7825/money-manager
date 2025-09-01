@@ -6,8 +6,10 @@ import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import CategoryPieChart from "@/components/CategoryPieChart";
+import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
 import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -15,6 +17,9 @@ export default function HomePage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterType, setFilterType] = useState(STATE.ALL);
   const [isChartVisible, setIsChartVisible] = useState(false);
+
+  const { data: session, status } = useSession();
+
 
 
   function handleToggle() {
@@ -137,8 +142,10 @@ export default function HomePage() {
     await mutate();
   }
 
+
   return (
     <>
+    <AuthButtons/>
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
@@ -294,3 +301,4 @@ const BalanceAmount = styled.span`
   color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
   font-weight: bold;
 `;
+

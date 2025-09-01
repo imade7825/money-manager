@@ -1,39 +1,51 @@
 import dbConnect from "@/db/connect";
 import Transaction from "@/db/models/Transaction";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
+import { getToken } from "next-auth/jwt";
 
 export default async function handler(request, response) {
+  const session = await getServerSession(request, response, authOptions);
+  const token = await getToken({ req: request });
+  const userEmail = token?.email;
+
   await dbConnect();
+
   if (request.method === "GET") {
-    try {
-      const transactions = await Transaction.find();
+    if (session) {
+      const transactions = await Transaction.find({ owner: userEmail });
       response.status(200).json(transactions);
-      return;
-    } catch (error) {
-      response.status(500).json({ message: "Error finding transactions" });
       return;
     }
   }
 
- if (request.method === "POST") {
+  if (request.method === "POST") {
     try {
-      const { name, amount, category, type, date } = request.body || {};
+      if (session) {
+        const { name, amount, category, type, date } = request.body || {};
 
-     // Validation 
-      if (!name || !amount || !category || !type || !date) {
-        return response.status(400).json({ message: "Bitte alle Felder ausfüllen." });
+        // Validation
+        if (!name || !amount || !category || !type || !date) {
+          return response
+            .status(400)
+            .json({ message: "Bitte alle Felder ausfüllen." });
+        }
+
+        const created = await Transaction.create({
+          name: String(name).trim(),
+          amount: Number(amount),
+          category: String(category).trim(),
+          type, // "income" | "expense"
+          date,
+          owner: token.email,
+        });
+
+        return response.status(201).json(created);
       }
-
-      const created = await Transaction.create({
-        name: String(name).trim(),
-        amount: Number(amount),
-        category: String(category).trim(),
-        type,             // "income" | "expense"
-        date,             
-      });
-
-      return response.status(201).json(created);
     } catch (error) {
-      return response.status(500).json({ message: "Error creating transaction" });
+      return response
+        .status(500)
+        .json({ message: "Error creating transaction" });
     }
   }
   return response.status(405).json({ message: "Method not allowed" });
