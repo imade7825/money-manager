@@ -13,10 +13,6 @@ export default async function handler(request, response) {
   await dbConnect();
 
   if (request.method === "GET") {
-    /* const transactions = await Transaction.find();
-    response.status(200).json(transactions);
-    return; */
-
     if (session) {
       const transactions = await Transaction.find({ owner: token.email });
       response.status(200).json(transactions);
