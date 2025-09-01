@@ -9,7 +9,7 @@ export default async function handler(request, response) {
   const token = await getToken({ req: request });
   
 
-  console.log(token);
+ 
   await dbConnect();
 
   if (request.method === "GET") {
