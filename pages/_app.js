@@ -1,6 +1,6 @@
 import GlobalStyle from "@/styles";
 import { SWRConfig } from "swr";
-import { SessionProvider } from "next-auth/react";
+import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
 
 export default function App({
@@ -20,10 +20,12 @@ export default function App({
       }}
     >
       <SessionProvider session={session}>
-        <ThemeProvider>
-          <GlobalStyle />
-          <Component {...pageProps} />
-        </ThemeProvider>
+        <Auth>
+          <ThemeProvider>
+            <GlobalStyle />
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </Auth>
       </SessionProvider>
     </SWRConfig>
   );
