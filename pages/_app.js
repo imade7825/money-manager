@@ -28,3 +28,12 @@ export default function App({
     </SWRConfig>
   );
 }
+
+function Auth({ children }) {
+  const { status } = useSession({ required: true });
+
+  if (status === "loading") {
+    return <div>Is loading</div>;
+  }
+  return children;
+}

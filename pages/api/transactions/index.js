@@ -9,6 +9,7 @@ export default async function handler(request, response) {
   const token = await getToken({ req: request });
   const userId = token?.sub;
 
+  console.log(token);
   await dbConnect();
 
   if (request.method === "GET") {
@@ -17,7 +18,7 @@ export default async function handler(request, response) {
     return; */
 
     if (session) {
-      const transactions = await Transaction.find({ owner: userId });
+      const transactions = await Transaction.find({ owner: token.email });
       response.status(200).json(transactions);
       return;
     } else {
@@ -47,7 +48,7 @@ export default async function handler(request, response) {
           category: String(category).trim(),
           type, // "income" | "expense"
           date,
-          owner: userId,
+          owner: token.email,
         });
 
         return response.status(201).json(created);
