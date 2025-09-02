@@ -9,7 +9,7 @@ import CategoryPieChart from "@/components/CategoryPieChart";
 import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
 import { useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
+
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -18,7 +18,7 @@ export default function HomePage() {
   const [filterType, setFilterType] = useState(STATE.ALL);
   const [isChartVisible, setIsChartVisible] = useState(false);
 
-  const { data: session, status } = useSession();
+
 
 
 
