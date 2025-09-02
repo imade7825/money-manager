@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { STATE } from "@/constants/state";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
@@ -19,9 +19,10 @@ export default function HomePage() {
   const [filterType, setFilterType] = useState(STATE.ALL);
   const [isChartVisible, setIsChartVisible] = useState(false);
   const { data: session, status } = useSession();
+
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+  const [pageSize, setPageSize] = useState(10);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -40,7 +41,7 @@ export default function HomePage() {
     mutate,
   } = useSWR("/api/transactions");
 
-  const { data: categories = [] } = useSWR("api/categories");
+  const { data: categories = [] } = useSWR("/api/categories");
 
   // filter Logik
 
@@ -68,11 +69,19 @@ export default function HomePage() {
     return result;
   }, [transactions, filterCategory, filterType]);
 
-  const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+  //pagination and values
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTransactions.length / pageSize)
+  );
   const paginatedTransactions = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     return filteredTransactions.slice(start, start + pageSize);
   }, [filteredTransactions, currentPage, pageSize]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages);
+  }, [currentPage, totalPages]);
 
   //calculations
   const sumIncome = filteredTransactions
@@ -151,105 +160,109 @@ export default function HomePage() {
 
   return (
     <>
-      <AuthButtons />
-      <ThemeToggle />
-      <AccountBalance transactions={transactions} />
-      {filteredTransactions.length}{" "}
-      {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
-      <BalanceAmount $isPositive={filterBalance >= 0}>
-        {new Intl.NumberFormat("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        }).format(filterBalance)}
-      </BalanceAmount>
-      <FilterBar>
-        <label htmlFor="filterCategory">Filter by category:</label>
-        <select
-          id="filterCategory"
-          name="filterCategory"
-          value={filterCategory}
-          onChange={handleFilterCategoryChange}
-        >
-          <option value="">Please select a category</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        <ClearButton
-          type="button"
-          onClick={handleClearFilter}
-          disabled={!filterCategory}
-          aria-disabled={!filterCategory}
-        >
-          Clear Filter
-        </ClearButton>
-      </FilterBar>
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
-      </ActiveFilterRow>
-      <IncomeExpenseView
-        filteredTransactions={filteredTransactions}
-        sumIncome={sumIncome}
-        sumExpense={sumExpense}
-        sumTotal={sumTotal}
-        onFilter={setFilterType}
-      />
-      <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
-        {isFormVisible ? `Hide Form` : "Show Form"}
-      </ToggleButton>
-      {isFormVisible && (
-        <Form
-          onSubmit={
-            editingTransaction
-              ? (data) => handleUpdate(editingTransaction._id, data)
-              : handleSubmit
-          }
-          defaultValues={editingTransaction}
-          transactions={transactions}
-          onCancel={handleCancel}
+      <ListBlock>
+        <AuthButtons />
+        <ThemeToggle />
+        <AccountBalance transactions={transactions} />
+        {filteredTransactions.length}{" "}
+        {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
+        <BalanceAmount $isPositive={filterBalance >= 0}>
+          {new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: "EUR",
+          }).format(filterBalance)}
+        </BalanceAmount>
+        <FilterBar>
+          <label htmlFor="filterCategory">Filter by category:</label>
+          <select
+            id="filterCategory"
+            name="filterCategory"
+            value={filterCategory}
+            onChange={handleFilterCategoryChange}
+          >
+            <option value="">Please select a category</option>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </select>
+          <ClearButton
+            type="button"
+            onClick={handleClearFilter}
+            disabled={!filterCategory}
+            aria-disabled={!filterCategory}
+          >
+            Clear Filter
+          </ClearButton>
+        </FilterBar>
+        <ActiveFilterRow>
+          <span>Active filter:</span>
+          <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+        <IncomeExpenseView
+          filteredTransactions={filteredTransactions}
+          sumIncome={sumIncome}
+          sumExpense={sumExpense}
+          sumTotal={sumTotal}
+          onFilter={setFilterType}
         />
-      )}
-      <TransactionsList>
-        {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results available</EmptyState>
-        ) : (
-          paginatedTransactions.map((transaction) => (
-            <TransactionItem
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              transaction={transaction}
-              key={transaction._id}
-              onFilter={setFilterType}
-            />
-          ))
-        )}
-      </TransactionsList>
-      {/* pagination control under transactions list */}
-      {filteredTransactions.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={(n) => {
-            setPageSize(n); //set current page on 1
-          }}
-        />
-      )}
-      <section>
-        <ToggleButton
-          type="button"
-          onClick={() => setIsChartVisible(!isChartVisible)}
-        >
-          {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
+        <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
+          {isFormVisible ? `Hide Form` : "Show Form"}
         </ToggleButton>
-        <CollapsedPieChart $open={isChartVisible}>
-          <CategoryPieChart transactions={transactions}></CategoryPieChart>
-        </CollapsedPieChart>
-      </section>
+        {isFormVisible && (
+          <Form
+            onSubmit={
+              editingTransaction
+                ? (data) => handleUpdate(editingTransaction._id, data)
+                : handleSubmit
+            }
+            defaultValues={editingTransaction}
+            transactions={transactions}
+            onCancel={handleCancel}
+          />
+        )}
+        <TransactionsList>
+          {filteredTransactions.length === 0 ? (
+            <EmptyState>No Results available</EmptyState>
+          ) : (
+            paginatedTransactions.map((transaction) => (
+              <TransactionItem
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                transaction={transaction}
+                key={transaction._id}
+                onFilter={setFilterType}
+              />
+            ))
+          )}
+        </TransactionsList>
+        {/* pagination control under transactions list */}
+        {filteredTransactions.length > 0 && (
+          <PaginationContainer>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={(n) => {
+                setPageSize(n); //set current page on 1
+              }}
+            />
+          </PaginationContainer>
+        )}
+        <section>
+          <ToggleButton
+            type="button"
+            onClick={() => setIsChartVisible(!isChartVisible)}
+          >
+            {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
+          </ToggleButton>
+          <CollapsedPieChart $open={isChartVisible}>
+            <CategoryPieChart transactions={transactions}></CategoryPieChart>
+          </CollapsedPieChart>
+        </section>
+      </ListBlock>
     </>
   );
 }
@@ -261,6 +274,7 @@ const TransactionsList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  align-items: center;
 `;
 
 const ToggleButton = styled.button`
@@ -318,4 +332,18 @@ const EmptyState = styled.p`
 const BalanceAmount = styled.span`
   color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
   font-weight: bold;
+`;
+
+const PaginationContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center; /* mittig */
+  align-items: center;
+  margin-top: 1rem;
+`;
+
+const ListBlock = styled.div`
+  width: 100%;
+  max-width: 450px; /* gleiche/ähnliche Breite wie deine Cards */
+  margin: 0 auto; /* zentriert den Block */
 `;

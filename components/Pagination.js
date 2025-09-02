@@ -7,7 +7,7 @@ export default function Pagination({
   onPageChange,
   onPageSizeChange,
 }) {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const pages = [...Array(totalPages).keys()].map((i) => i + 1);
   return (
     <PaginationWrapper>
       {/* previous button */}
@@ -20,7 +20,7 @@ export default function Pagination({
 
       {/* page info */}
       <PageInfo>
-        Page{currentPage} of {totalPages}
+        Page {currentPage} of {totalPages}
       </PageInfo>
 
       {/* next button */}
@@ -34,9 +34,15 @@ export default function Pagination({
       {/* items per page */}
       <Select
         value={pageSize}
-        onChange={(event) => onPageSizeChange(Number(event.target.value))}
+        onChange={(event) => {
+          const size = Number(event.target.value);
+          onPageSizeChange(size);
+          if (currentPage !== 1) {
+            onPageChange(1);
+          }
+        }}
       >
-        {[2, 4, 6].map((size) => (
+        {[1, 2, 3].map((size) => (
           <option key={size} value={size}>
             {size} per page
           </option>
@@ -48,10 +54,13 @@ export default function Pagination({
 
 const PaginationWrapper = styled.div`
   display: flex;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.5rem;
   align-items: center;
   justify-content: center;
   margin-top: 1rem;
+  flex-wrap: wrap;
+  width: 100%;
 `;
 
 const Button = styled.button`
