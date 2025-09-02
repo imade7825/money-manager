@@ -5,83 +5,78 @@ import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
-import CategoryPieChart from "@/components/CategoryPieChart";
 import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
 import { useMemo, useState } from "react";
+import FilterBar from "@/components/FilterBar";
+import TotalsBar from "@/components/TotalBar";
+import PieChartSection from "@/components/PieChartSection";
+import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import { toCurrencyEUR, toDateDE } from "@/lib/format";
 
 export default function HomePage() {
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterType, setFilterType] = useState(STATE.ALL);
-  const [isChartVisible, setIsChartVisible] = useState(false);
+  const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
+  const [isChartOpen, setIsChartOpen] = useState(false);
 
-  function handleToggle() {
-    setIsFormVisible(!isFormVisible);
-    if (isFormVisible) setEditingTransaction(null);
-  }
-
-  function handleCancel() {
-    setEditingTransaction(null);
-    setIsFormVisible(false);
-  }
-
+  //Data
   const {
     data: transactions = [],
     error,
     isLoading,
     mutate,
   } = useSWR("/api/transactions");
+  const { data: categories = [] } = useSWR("/api/categories");
 
-  const { data: categories = [] } = useSWR("api/categories");
+  //Early returns
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <p>Loading...</p>;
 
-  // filter Logik
+  // Helpers
 
-  function handleFilterCategoryChange(event) {
-    setFilterCategory(event.target.value); //<-- realtime active Filter
+  const filtered = getFilteredTransactions(transactions, filters);
+  const totals = getTotals(filtered);
+
+  // Handler
+  function handleToggleForm() {
+    setIsFormOpen(!isFormOpen);
+    if (isFormOpen) setEditingTransaction(null);
   }
 
-  function handleClearFilter() {
+  function handleCancelEdit() {
+    setEditingTransaction(null);
+    setIsFormOpen(false);
+  }
+
+  //Filter section
+
+  function handleFilterClear() {
     setFilterCategory("");
   }
 
-  const filteredTransactions = useMemo(() => {
-    let result = transactions;
-
-    //ctegory filter
-    if (filterCategory) {
-      result = result.filter(
-        (transaction) => transaction.category === filterCategory
-      );
-    }
-
-    if (filterType != STATE.ALL) {
-      result = result.filter((transaction) => transaction.type === filterType);
-    }
-    return result;
-  }, [transactions, filterCategory, filterType]);
-
-  //calculations
-  const sumIncome = filteredTransactions
-    .filter((transaction) => transaction.type === STATE.INCOME)
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-  const sumExpense = filteredTransactions
-    .filter((transaction) => transaction.type === STATE.EXPENSE)
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-  const sumTotal = sumIncome - sumExpense;
-
-  let filterBalance = 0;
-
-  for (const transaction of filteredTransactions) {
-    const amount = Number(transaction.amount) || 0;
-    filterBalance += amount;
+  function setFilterCategory(value) {
+    setFilters((filter) => ({ ...filter, category: value }));
   }
 
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>Loading...</p>;
+  function handleFilterCategoryChange(event) {
+    setFilters((filter) => ({ ...filter, category: event.target.value }));
+  }
+
+  function handleClearFilter() {
+    setFilters((filter) => ({ ...filter, category: "" }));
+  }
+
+  function setFilterType(value) {
+    setFilters((filter) => ({ ...filter, type: value }));
+  }
+
+  const filteredTransactions = getFilteredTransactions(transactions, {
+    category: filterCategory,
+    type: filterType,
+  });
+  const { sumIncome, sumExpense, sumTotal, filterBalance } =
+    getTotals(filteredTransactions);
 
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
@@ -144,36 +139,32 @@ export default function HomePage() {
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
       {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
-      <BalanceAmount $isPositive={filterBalance >= 0}>
-        {new Intl.NumberFormat("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        }).format(filterBalance)}
-      </BalanceAmount>
-      <FilterBar>
-        <label htmlFor="filterCategory">Filter by category:</label>
-        <select
-          id="filterCategory"
-          name="filterCategory"
-          value={filterCategory}
-          onChange={handleFilterCategoryChange}
+      <main>
+        <TotalsBar
+          count={filteredTransactions.length}
+          balance={filterBalance}
+        />
+        <FilterBar
+          value={filters.category}
+          options={categories}
+          onChange={setFilterCategory}
+          onClear={() => setFilterCategory}
         >
-          <option value="">Please select a category</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        <ClearButton
-          type="button"
-          onClick={handleClearFilter}
-          disabled={!filterCategory}
-          aria-disabled={!filterCategory}
-        >
-          Clear Filter
-        </ClearButton>
-      </FilterBar>
+          <button type="button" onClick={() => setIsChartOpen(!isChartOpen)}>
+            {isChartOpen ? "Hide chart" : "Show chart"}
+          </button>
+          <PieChartSection open={isChartOpen} data={data} />
+          <ul>
+            {filtered.map((transaction) => (
+              <li key={transaction._id}>
+                <strong>{transaction.name}</strong> -{" "}
+                {toCurrencyEUR(transaction.amount)} -{" "}
+                {toDateDE(transaction.date)}
+              </li>
+            ))}
+          </ul>
+        </FilterBar>
+      </main>
       <ActiveFilterRow>
         <span>Active filter:</span>
         <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
@@ -183,9 +174,12 @@ export default function HomePage() {
         sumIncome={sumIncome}
         sumExpense={sumExpense}
         sumTotal={sumTotal}
-        onFilter={setFilterType}
+        filterType={filters.type}
+        onFilter={(value) =>
+          setFilters((filter) => ({ ...filter, type: value }))
+        }
       />
-      <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
+      <ToggleButton onClick={handleToggleForm} disabled={editingTransaction}>
         {isFormVisible ? `Hide Form` : "Show Form"}
       </ToggleButton>
       {isFormVisible && (
@@ -222,9 +216,6 @@ export default function HomePage() {
         >
           {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
         </ToggleButton>
-        <CollapsedPieChart $open={isChartVisible}>
-          <CategoryPieChart transactions={transactions}></CategoryPieChart>
-        </CollapsedPieChart>
       </section>
     </>
   );
@@ -256,12 +247,6 @@ const ToggleButton = styled.button`
 const CollapsedPieChart = styled.div`
   margin-top: 12px;
   display: ${({ $open }) => ($open ? "block" : "none")};
-`;
-const FilterBar = styled.form`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0 20px 10px;
 `;
 
 const ClearButton = styled.button`
