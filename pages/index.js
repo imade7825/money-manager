@@ -62,15 +62,6 @@ export default function HomePage() {
     setFilters((filter) => ({ ...filter, type: value }));
   }
 
-
-
-  const filteredTransactions = getFilteredTransactions(transactions, {
-    category: filterCategory,
-    type: filterType,
-  });
-  const { sumIncome, sumExpense, sumTotal, filterBalance } =
-    getTotals(filteredTransactions);
-
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
       method: "POST",
@@ -99,13 +90,13 @@ export default function HomePage() {
     }
     response.json();
     setEditingTransaction(null);
-    setIsFormVisible(false);
+    setIsFormOpen(false);
     await mutate();
   }
 
   function handleEdit(transaction) {
     setEditingTransaction(transaction);
-    setIsFormVisible(true);
+    setIsFormOpen(true);
   }
 
   async function handleDelete(id) {
@@ -130,8 +121,6 @@ export default function HomePage() {
       <AuthButtons />
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
-      {filteredTransactions.length}{" "}
-      {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
       <main>
         <TotalsBar
           count={filteredTransactions.length}
