@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { STATE } from "@/constants/state";
+import { useMemo, useState } from "react";
+import { useSession } from "next-auth/react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
@@ -8,8 +10,7 @@ import ThemeToggle from "@/components/ThemeToggle";
 import CategoryPieChart from "@/components/CategoryPieChart";
 import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
-import { useMemo, useState } from "react";
-import { useSession } from "next-auth/react";
+import Pagination from "@/components/Pagination";
 
 export default function HomePage() {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -17,10 +18,10 @@ export default function HomePage() {
   const [filterCategory, setFilterCategory] = useState("");
   const [filterType, setFilterType] = useState(STATE.ALL);
   const [isChartVisible, setIsChartVisible] = useState(false);
-
   const { data: session, status } = useSession();
-
-
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -66,6 +67,12 @@ export default function HomePage() {
     }
     return result;
   }, [transactions, filterCategory, filterType]);
+
+  const totalPages = Math.ceil(filteredTransactions.length / pageSize);
+  const paginatedTransactions = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredTransactions.slice(start, start + pageSize);
+  }, [filteredTransactions, currentPage, pageSize]);
 
   //calculations
   const sumIncome = filteredTransactions
@@ -142,10 +149,9 @@ export default function HomePage() {
     await mutate();
   }
 
-
   return (
     <>
-    <AuthButtons/>
+      <AuthButtons />
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
       {filteredTransactions.length}{" "}
@@ -210,7 +216,7 @@ export default function HomePage() {
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results available</EmptyState>
         ) : (
-          filteredTransactions.map((transaction) => (
+          paginatedTransactions.map((transaction) => (
             <TransactionItem
               onEdit={handleEdit}
               onDelete={handleDelete}
@@ -221,6 +227,18 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
+      {/* pagination control under transactions list */}
+      {filteredTransactions.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={(n) => {
+            setPageSize(n); //set current page on 1
+          }}
+        />
+      )}
       <section>
         <ToggleButton
           type="button"
@@ -301,4 +319,3 @@ const BalanceAmount = styled.span`
   color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
   font-weight: bold;
 `;
-
