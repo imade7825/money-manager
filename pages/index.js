@@ -126,45 +126,47 @@ export default function HomePage() {
           count={filteredTransactions.length}
           balance={filterBalance}
         />
+
         <FilterBar
           value={filters.category}
           options={categories}
           onChange={setFilterCategory}
-          onClear={() => setFilterCategory}
-        >
-          <button type="button" onClick={() => setIsChartOpen(!isChartOpen)}>
-            {isChartOpen ? "Hide chart" : "Show chart"}
-          </button>
-          <PieChartSection open={isChartOpen} data={data} />
-          <ul>
-            {filtered.map((transaction) => (
-              <li key={transaction._id}>
-                <strong>{transaction.name}</strong> -{" "}
-                {toCurrencyEUR(transaction.amount)} -{" "}
-                {toDateDE(transaction.date)}
-              </li>
-            ))}
-          </ul>
-        </FilterBar>
+          onClearCategory={handleFilterClear}
+        />
+
+        <ActiveFilterRow>
+          <span>Active filter:</span>
+          <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+
+        <button type="button" onClick={() => setIsChartOpen(!isChartOpen)}>
+          {isChartOpen ? "Hide chart" : "Show chart"}
+        </button>
+        <PieChartSection
+          open={isChartOpen}
+          transactions={filteredTransactions}
+        />
+        <ul>
+          {filtered.map((transaction) => (
+            <li key={transaction._id}>
+              <strong>{transaction.name}</strong> -{" "}
+              {toCurrencyEUR(transaction.amount)} - {toDateDE(transaction.date)}
+            </li>
+          ))}
+        </ul>
       </main>
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
-      </ActiveFilterRow>
       <IncomeExpenseView
         filteredTransactions={filteredTransactions}
         sumIncome={sumIncome}
         sumExpense={sumExpense}
         sumTotal={sumTotal}
         filterType={filters.type}
-        onFilter={(value) =>
-          setFilters((filter) => ({ ...filter, type: value }))
-        }
+        onFilter={setFilterType}
       />
-      <ToggleButton onClick={handleToggleForm} disabled={editingTransaction}>
-        {isFormVisible ? `Hide Form` : "Show Form"}
+      <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
+        {isFormVisible ? "Hide Form" : "Show Form"}
       </ToggleButton>
-      {isFormVisible && (
+      {isFormOpen && (
         <Form
           onSubmit={
             editingTransaction
@@ -172,7 +174,7 @@ export default function HomePage() {
               : handleSubmit
           }
           defaultValues={editingTransaction}
-          transactions={transactions}
+        
           onCancel={handleCancel}
         />
       )}
