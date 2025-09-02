@@ -7,7 +7,7 @@ import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import FilterBar from "@/components/FilterBar";
 import TotalsBar from "@/components/TotalBar";
 import PieChartSection from "@/components/PieChartSection";
@@ -34,9 +34,9 @@ export default function HomePage() {
   if (isLoading) return <p>Loading...</p>;
 
   // Helpers
-
   const filtered = getFilteredTransactions(transactions, filters);
-  const totals = getTotals(filtered);
+  const { sumIncome, sumExpense, sumTotal, filterBalance } =
+    getTotals(filteredTransactions);
 
   // Handler
   function handleToggleForm() {
@@ -50,26 +50,19 @@ export default function HomePage() {
   }
 
   //Filter section
+  function setFilterCategory(value) {
+    setFilters((filter) => ({ ...filter, category: value }));
+  }
 
   function handleFilterClear() {
     setFilterCategory("");
   }
 
-  function setFilterCategory(value) {
-    setFilters((filter) => ({ ...filter, category: value }));
-  }
-
-  function handleFilterCategoryChange(event) {
-    setFilters((filter) => ({ ...filter, category: event.target.value }));
-  }
-
-  function handleClearFilter() {
-    setFilters((filter) => ({ ...filter, category: "" }));
-  }
-
   function setFilterType(value) {
     setFilters((filter) => ({ ...filter, type: value }));
   }
+
+
 
   const filteredTransactions = getFilteredTransactions(transactions, {
     category: filterCategory,
