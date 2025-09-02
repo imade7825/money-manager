@@ -9,7 +9,7 @@ import AuthButtons from "@/components/AuthButtons";
 import useSWR from "swr";
 import { useState } from "react";
 import FilterBar from "@/components/FilterBar";
-import TotalsBar from "@/components/TotalBar";
+import TotalsBar from "@/components/TotalsBar";
 import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import { toCurrencyEUR, toDateDE } from "@/lib/format";
@@ -34,7 +34,7 @@ export default function HomePage() {
   if (isLoading) return <p>Loading...</p>;
 
   // Helpers
-  const filtered = getFilteredTransactions(transactions, filters);
+  const filteredTransactions = getFilteredTransactions(transactions, filters);
   const { sumIncome, sumExpense, sumTotal, filterBalance } =
     getTotals(filteredTransactions);
 
@@ -129,14 +129,14 @@ export default function HomePage() {
 
         <FilterBar
           value={filters.category}
-          options={categories}
-          onChange={setFilterCategory}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
           onClearCategory={handleFilterClear}
         />
 
         <ActiveFilterRow>
           <span>Active filter:</span>
-          <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
+          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
         </ActiveFilterRow>
 
         <button type="button" onClick={() => setIsChartOpen(!isChartOpen)}>
@@ -147,7 +147,7 @@ export default function HomePage() {
           transactions={filteredTransactions}
         />
         <ul>
-          {filtered.map((transaction) => (
+          {filteredTransactions.map((transaction) => (
             <li key={transaction._id}>
               <strong>{transaction.name}</strong> -{" "}
               {toCurrencyEUR(transaction.amount)} - {toDateDE(transaction.date)}
@@ -164,7 +164,7 @@ export default function HomePage() {
         onFilter={setFilterType}
       />
       <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
-        {isFormVisible ? "Hide Form" : "Show Form"}
+        {isFormOpen ? "Hide Form" : "Show Form"}
       </ToggleButton>
       {isFormOpen && (
         <Form
@@ -174,8 +174,7 @@ export default function HomePage() {
               : handleSubmit
           }
           defaultValues={editingTransaction}
-        
-          onCancel={handleCancel}
+          onCancel={handleCancelEdit}
         />
       )}
       <TransactionsList>
@@ -196,9 +195,9 @@ export default function HomePage() {
       <section>
         <ToggleButton
           type="button"
-          onClick={() => setIsChartVisible(!isChartVisible)}
+          onClick={() => setIsChartOpen(!isChartOpen)}
         >
-          {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
+          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
         </ToggleButton>
       </section>
     </>
