@@ -227,17 +227,9 @@ const ToggleButton = styled.button`
   transition: all 0.2s ease;
 `;
 
-const CollapsedPieChart = styled.div`
-  margin-top: 12px;
-  display: ${({ $open }) => ($open ? "block" : "none")};
-`;
 
-const ClearButton = styled.button`
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  border: 2px solid #000;
-  background: transparent;
-`;
+
+
 
 const ActiveFilterRow = styled.div`
   display: flex;
@@ -259,7 +251,3 @@ const EmptyState = styled.p`
   opacity: 0.8;
 `;
 
-const BalanceAmount = styled.span`
-  color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
-  font-weight: bold;
-`;
