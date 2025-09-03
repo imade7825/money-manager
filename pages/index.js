@@ -1,87 +1,71 @@
 import styled from "styled-components";
+import { useState } from "react";
+import useSWR from "swr";
 import { STATE } from "@/constants/state";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
-import CategoryPieChart from "@/components/CategoryPieChart";
 import AuthButtons from "@/components/AuthButtons";
-import useSWR from "swr";
-import { useMemo, useState } from "react";
+import FilterBar from "@/components/FilterBar";
+import PieChartSection from "@/components/PieChartSection";
+import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 
 export default function HomePage() {
-  const [isFormVisible, setIsFormVisible] = useState(false);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-  const [filterCategory, setFilterCategory] = useState("");
-  const [filterType, setFilterType] = useState(STATE.ALL);
-  const [isChartVisible, setIsChartVisible] = useState(false);
+  const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
+  const [isChartOpen, setIsChartOpen] = useState(false);
 
-  function handleToggle() {
-    setIsFormVisible(!isFormVisible);
-    if (isFormVisible) setEditingTransaction(null);
-  }
-
-  function handleCancel() {
-    setEditingTransaction(null);
-    setIsFormVisible(false);
-  }
-
+  //Data
   const {
     data: transactions = [],
     error,
     isLoading,
     mutate,
   } = useSWR("/api/transactions");
+  const { data: categories = [] } = useSWR("/api/categories");
 
-  const { data: categories = [] } = useSWR("api/categories");
+  //Early returns
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <p>Loading...</p>;
 
-  // filter Logik
+  // Helpers
+  const filteredTransactions = getFilteredTransactions(transactions, filters);
+  const {
+    income: sumIncome,
+    expense: sumExpense,
+    balance: sumTotal,
+  } = getTotals(filteredTransactions);
 
-  function handleFilterCategoryChange(event) {
-    setFilterCategory(event.target.value); //<-- realtime active Filter
+  // Handler
+  function handleToggleForm() {
+    setIsFormOpen(!isFormOpen);
+    if (isFormOpen) setEditingTransaction(null);
   }
 
-  function handleClearFilter() {
+  function handleCancelEdit() {
+    setEditingTransaction(null);
+    setIsFormOpen(false);
+  }
+
+  function toggleChart() {
+    setIsChartOpen(!isChartOpen);
+  }
+
+  //Filter section
+  function setFilterCategory(value) {
+    setFilters((filter) => ({ ...filter, category: value }));
+  }
+
+  function handleFilterClear() {
     setFilterCategory("");
   }
 
-  const filteredTransactions = useMemo(() => {
-    let result = transactions;
-
-    //ctegory filter
-    if (filterCategory) {
-      result = result.filter(
-        (transaction) => transaction.category === filterCategory
-      );
-    }
-
-    if (filterType != STATE.ALL) {
-      result = result.filter((transaction) => transaction.type === filterType);
-    }
-    return result;
-  }, [transactions, filterCategory, filterType]);
-
-  //calculations
-  const sumIncome = filteredTransactions
-    .filter((transaction) => transaction.type === STATE.INCOME)
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-  const sumExpense = filteredTransactions
-    .filter((transaction) => transaction.type === STATE.EXPENSE)
-    .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-  const sumTotal = sumIncome - sumExpense;
-
-  let filterBalance = 0;
-
-  for (const transaction of filteredTransactions) {
-    const amount = Number(transaction.amount) || 0;
-    filterBalance += amount;
+  function setFilterType(value) {
+    setFilters((filter) => ({ ...filter, type: value }));
   }
-
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>Loading...</p>;
 
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
@@ -111,13 +95,13 @@ export default function HomePage() {
     }
     response.json();
     setEditingTransaction(null);
-    setIsFormVisible(false);
+    setIsFormOpen(false);
     await mutate();
   }
 
   function handleEdit(transaction) {
     setEditingTransaction(transaction);
-    setIsFormVisible(true);
+    setIsFormOpen(true);
   }
 
   async function handleDelete(id) {
@@ -142,53 +126,39 @@ export default function HomePage() {
       <AuthButtons />
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
-      {filteredTransactions.length}{" "}
-      {filteredTransactions.length === 1 ? "Result" : "Results"}, Balance:{" "}
-      <BalanceAmount $isPositive={filterBalance >= 0}>
-        {new Intl.NumberFormat("de-DE", {
-          style: "currency",
-          currency: "EUR",
-        }).format(filterBalance)}
-      </BalanceAmount>
-      <FilterBar>
-        <label htmlFor="filterCategory">Filter by category:</label>
-        <select
-          id="filterCategory"
-          name="filterCategory"
-          value={filterCategory}
-          onChange={handleFilterCategoryChange}
-        >
-          <option value="">Please select a category</option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
-            </option>
-          ))}
-        </select>
-        <ClearButton
-          type="button"
-          onClick={handleClearFilter}
-          disabled={!filterCategory}
-          aria-disabled={!filterCategory}
-        >
-          Clear Filter
-        </ClearButton>
-      </FilterBar>
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filterCategory || "None"}</ActiveBadge>
-      </ActiveFilterRow>
+      <main>
+        <FilterBar
+          value={filters.category}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
+          onClearCategory={handleFilterClear}
+        />
+
+        <ActiveFilterRow>
+          <span>Active filter:</span>
+          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+
+        <button type="button" onClick={toggleChart}>
+          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
+        </button>
+        <PieChartSection
+          open={isChartOpen}
+          transactions={filteredTransactions}
+        />
+      </main>
       <IncomeExpenseView
         filteredTransactions={filteredTransactions}
         sumIncome={sumIncome}
         sumExpense={sumExpense}
         sumTotal={sumTotal}
+        filterType={filters.type}
         onFilter={setFilterType}
       />
-      <ToggleButton onClick={handleToggle} disabled={editingTransaction}>
-        {isFormVisible ? `Hide Form` : "Show Form"}
+      <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
+        {isFormOpen ? "Hide Form" : "Add new Transaction"}
       </ToggleButton>
-      {isFormVisible && (
+      {isFormOpen && (
         <Form
           onSubmit={
             editingTransaction
@@ -196,8 +166,7 @@ export default function HomePage() {
               : handleSubmit
           }
           defaultValues={editingTransaction}
-          transactions={transactions}
-          onCancel={handleCancel}
+          onCancel={handleCancelEdit}
         />
       )}
       <TransactionsList>
@@ -215,17 +184,6 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
-      <section>
-        <ToggleButton
-          type="button"
-          onClick={() => setIsChartVisible(!isChartVisible)}
-        >
-          {isChartVisible ? "Hide Pie Chart" : "Show Pie Chart"}
-        </ToggleButton>
-        <CollapsedPieChart $open={isChartVisible}>
-          <CategoryPieChart transactions={transactions}></CategoryPieChart>
-        </CollapsedPieChart>
-      </section>
     </>
   );
 }
@@ -253,24 +211,6 @@ const ToggleButton = styled.button`
   transition: all 0.2s ease;
 `;
 
-const CollapsedPieChart = styled.div`
-  margin-top: 12px;
-  display: ${({ $open }) => ($open ? "block" : "none")};
-`;
-const FilterBar = styled.form`
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0 20px 10px;
-`;
-
-const ClearButton = styled.button`
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  border: 2px solid #000;
-  background: transparent;
-`;
-
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
@@ -283,15 +223,11 @@ const ActiveBadge = styled.span`
   padding: 0.1rem 0.5rem;
   border: 2px solid #000;
   border-radius: 999px;
-  background: #fff;
+  background: var(--background);
+  color: var(--foreground);
 `;
 
 const EmptyState = styled.p`
   margin: 0.5rem 20px;
   opacity: 0.8;
-`;
-
-const BalanceAmount = styled.span`
-  color: ${({ $isPositive }) => ($isPositive ? "#22c55e" : "#ef4444")};
-  font-weight: bold;
 `;
