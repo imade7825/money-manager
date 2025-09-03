@@ -4,8 +4,9 @@ name: Refactoring -DeveloperStory
 
 ## Value proposition
 
-As a <Developer>
-I want to <The HomePage> code to be easier to read, and maintain
+As a <Developer/User>
+I want to <The HomePage> code to be easier to read, and maintain,
+I want as user <The HomePage> will be easier to navigate and to use the implemented features 
 So that <future changes are safer and fester> without altering behavior or design
 
 ## Description
