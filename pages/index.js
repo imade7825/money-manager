@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { useState } from "react";
+import useSWR from "swr";
 import { STATE } from "@/constants/state";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
@@ -6,8 +8,6 @@ import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import AuthButtons from "@/components/AuthButtons";
-import useSWR from "swr";
-import { useState } from "react";
 import FilterBar from "@/components/FilterBar";
 import TotalsBar from "@/components/TotalsBar";
 import PieChartSection from "@/components/PieChartSection";
