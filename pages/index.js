@@ -34,10 +34,7 @@ export default function HomePage() {
   if (isLoading) return <p>Loading...</p>;
 
   // Helpers
-  const filteredTransactions = getFilteredTransactions(
-    transactions,
-    filters
-  );
+  const filteredTransactions = getFilteredTransactions(transactions, filters);
   const { sumIncome, sumExpense, sumTotal, filterBalance } =
     getTotals(filteredTransactions);
 
@@ -50,6 +47,10 @@ export default function HomePage() {
   function handleCancelEdit() {
     setEditingTransaction(null);
     setIsFormOpen(false);
+  }
+
+  function toggleChart() {
+    setIsChartOpen(!isChartOpen);
   }
 
   //Filter section
@@ -142,8 +143,8 @@ export default function HomePage() {
           <ActiveBadge>{filters.category || "None"}</ActiveBadge>
         </ActiveFilterRow>
 
-        <button type="button" onClick={() => setIsChartOpen(!isChartOpen)}>
-          {isChartOpen ? "Hide chart" : "Show chart"}
+        <button type="button" onClick={toggleChart}>
+          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
         </button>
         <PieChartSection
           open={isChartOpen}
@@ -195,14 +196,7 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
-      <section>
-        <ToggleButton
-          type="button"
-          onClick={() => setIsChartOpen(!isChartOpen)}
-        >
-          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
-        </ToggleButton>
-      </section>
+   
     </>
   );
 }

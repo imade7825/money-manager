@@ -1,6 +1,6 @@
 import CategoryPieChart from "./CategoryPieChart";
 
-export default function PieChartSection({ data, open }) {
+export default function PieChartSection({ transactions, open }) {
   if (!open) return null;
-  return <div>{<CategoryPieChart data={data} />}</div>;
+  return <div>{<CategoryPieChart transactions={transactions} />}</div>;
 }
