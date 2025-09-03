@@ -34,7 +34,10 @@ export default function HomePage() {
   if (isLoading) return <p>Loading...</p>;
 
   // Helpers
-  const filteredTransactions = getFilteredTransactions(transactions, filters);
+  const filteredTransactions = getFilteredTransactions(
+    transactions,
+    filters
+  );
   const { sumIncome, sumExpense, sumTotal, filterBalance } =
     getTotals(filteredTransactions);
 
@@ -227,10 +230,6 @@ const ToggleButton = styled.button`
   transition: all 0.2s ease;
 `;
 
-
-
-
-
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
@@ -250,4 +249,3 @@ const EmptyState = styled.p`
   margin: 0.5rem 20px;
   opacity: 0.8;
 `;
-
