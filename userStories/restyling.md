@@ -6,6 +6,8 @@ about: Mobile-first Multipage Restyle
 
 As a <developer>
 I want to <refactor> the existing single page application into a mobile-first multipage application
+As a <user>
+I want to <see> easier accessibility to implemented features, the page will be more readable with clear navigation on the bottom 
 
 ## Description
 
@@ -19,7 +21,7 @@ I want to <refactor> the existing single page application into a mobile-first mu
 
 - [ ] Home: Account Balance updates correctly when filters change
 - [ ] Home: Both filters (Category & Type) work in **AND** combination (both filters)
-- [ ] Charts: PieChart responsive also for small screen sizes - under 360px
+- [ ] Charts: PieChart responsive also for small screen sizes
 - [ ] Charts: Legend readable, (color+ contrast)
 - [ ] New Form: Validation prevents empty or invalid entries
 - [ ] New Form: On success -> redirecting to Home + SWR revalidate
@@ -29,9 +31,9 @@ I want to <refactor> the existing single page application into a mobile-first mu
 ## Tasks
 
 - [ ] Add Persian-Blue CSS tokens to `GlobalStyle`
-- [ ] Create Mobile Layout Component to wrap elements
-- [ ] Create `/charts` page with `<CategoryPieChart.js>`component
-- [ ] Create `/transactions/new` page with `<TransacionsForm.js.js>`component
+- [ ] Create wrapper element to add navigation on every page
+- [ ] Create `/pages/charts` page with `<CategoryPieChart.js>`component
+- [ ] Create `/pages/transactions/new` page with `<TransacionsForm.js.js>`component
 - [ ] Implement FilterBar with 2 filters (Category + Type)
 - [ ] Make sure that edge cases with empty/loading/errors are covered
 - [ ] Add a11y roles/labels for Bottom-Nav, filters, and chart
