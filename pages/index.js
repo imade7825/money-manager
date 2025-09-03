@@ -22,7 +22,7 @@ export default function HomePage() {
 
   //pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(1);
 
   function handleToggle() {
     setIsFormVisible(!isFormVisible);
@@ -79,9 +79,7 @@ export default function HomePage() {
     return filteredTransactions.slice(start, start + pageSize);
   }, [filteredTransactions, currentPage, pageSize]);
 
-  useEffect(() => {
-    if (currentPage > totalPages) setCurrentPage(totalPages);
-  }, [currentPage, totalPages]);
+ 
 
   //calculations
   const sumIncome = filteredTransactions
@@ -245,9 +243,7 @@ export default function HomePage() {
               totalPages={totalPages}
               pageSize={pageSize}
               onPageChange={setCurrentPage}
-              onPageSizeChange={(n) => {
-                setPageSize(n); //set current page on 1
-              }}
+              onPageSizeChange={setPageSize}
             />
           </PaginationContainer>
         )}

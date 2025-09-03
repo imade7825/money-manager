@@ -7,7 +7,6 @@ export default function Pagination({
   onPageChange,
   onPageSizeChange,
 }) {
-  const pages = [...Array(totalPages).keys()].map((i) => i + 1);
   return (
     <PaginationWrapper>
       {/* previous button */}
