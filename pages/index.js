@@ -156,7 +156,7 @@ export default function HomePage() {
         onFilter={setFilterType}
       />
       <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
-        {isFormOpen ? "Hide Form" : "Show Form"}
+        {isFormOpen ? "Hide Form" : "Add new Transaction"}
       </ToggleButton>
       {isFormOpen && (
         <Form
