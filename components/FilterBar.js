@@ -1,15 +1,27 @@
-export default function FilterBar({ value, options = [], onChange, onClear }) {
+export default function FilterBar({
+  value,
+  categories = [],
+  onChangeCategory,
+  onClearCategory,
+}) {
   return (
     <div>
-      <select value={value} onChange={(event) => event.target.value}>
+      <select
+        value={value}
+        onChange={(event) => onChangeCategory(event.target.value)}
+      >
         <option value="">All Categories </option>
-        {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+        {categories.map((category) => (
+          <option key={category._id} value={category.name}>
+            {category.name}
           </option>
         ))}
       </select>
-      {value && <button type="button" onClick={onClear}>Clear Filter</button>}
+      {value && (
+        <button type="button" onClick={onClearCategory}>
+          Clear Filter
+        </button>
+      )}
     </div>
   );
 }
