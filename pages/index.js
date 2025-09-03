@@ -33,8 +33,11 @@ export default function HomePage() {
 
   // Helpers
   const filteredTransactions = getFilteredTransactions(transactions, filters);
-  const { sumIncome, sumExpense, sumTotal, filterBalance } =
-    getTotals(filteredTransactions);
+  const {
+    income: sumIncome,
+    expense: sumExpense,
+    balance: sumTotal,
+  } = getTotals(filteredTransactions);
 
   // Handler
   function handleToggleForm() {
@@ -124,7 +127,6 @@ export default function HomePage() {
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
       <main>
-
         <FilterBar
           value={filters.category}
           categories={categories}
