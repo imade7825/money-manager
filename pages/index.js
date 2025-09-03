@@ -150,14 +150,6 @@ export default function HomePage() {
           open={isChartOpen}
           transactions={filteredTransactions}
         />
-        <ul>
-          {filteredTransactions.map((transaction) => (
-            <li key={transaction._id}>
-              <strong>{transaction.name}</strong> -{" "}
-              {toCurrencyEUR(transaction.amount)} - {toDateDE(transaction.date)}
-            </li>
-          ))}
-        </ul>
       </main>
       <IncomeExpenseView
         filteredTransactions={filteredTransactions}
@@ -196,7 +188,6 @@ export default function HomePage() {
           ))
         )}
       </TransactionsList>
-   
     </>
   );
 }
