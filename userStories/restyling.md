@@ -1,13 +1,10 @@
----
-about: Mobile-first Multipage Restyle
----
+# User Story Mobile-first Multipage Restyle
 
 ## Value proposition
 
-As a <developer>
-I want to <refactor> the existing single page application into a mobile-first multipage application
-As a <user>
-I want to <see> easier accessibility to implemented features, the page will be more readable with clear navigation on the bottom 
+As a **user**  
+I <want to> navigate the finance app via a clear bottom navigation with access to Home, Charts, and New Transaction
+In <order to> quickly access my account balance, analyze my spending, and add new transactions on mobile devices with better readability and accessibility
 
 ## Description
 
@@ -31,7 +28,7 @@ I want to <see> easier accessibility to implemented features, the page will be m
 ## Tasks
 
 - [ ] Add Persian-Blue CSS tokens to `GlobalStyle`
-- [ ] Create wrapper element to add navigation on every page
+- [ ] Create Layout component to add navigation on every page
 - [ ] Create `/pages/charts` page with `<CategoryPieChart.js>`component
 - [ ] Create `/pages/transactions/new` page with `<TransacionsForm.js.js>`component
 - [ ] Implement FilterBar with 2 filters (Category + Type)
