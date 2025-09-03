@@ -9,10 +9,8 @@ import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import AuthButtons from "@/components/AuthButtons";
 import FilterBar from "@/components/FilterBar";
-import TotalsBar from "@/components/TotalsBar";
 import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
-import { toCurrencyEUR, toDateDE } from "@/lib/format";
 
 export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -126,10 +124,6 @@ export default function HomePage() {
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
       <main>
-        <TotalsBar
-          count={filteredTransactions.length}
-          balance={filterBalance}
-        />
 
         <FilterBar
           value={filters.category}
@@ -227,7 +221,8 @@ const ActiveBadge = styled.span`
   padding: 0.1rem 0.5rem;
   border: 2px solid #000;
   border-radius: 999px;
-  background: #fff;
+  background: var(--background);
+  color: var(--foreground);
 `;
 
 const EmptyState = styled.p`
