@@ -64,12 +64,12 @@ const PaginationWrapper = styled.div`
 
 const Button = styled.button`
   padding: 0.5rem 1rem;
-  background-color: white;
+
   border: none;
   border-radius: 5px;
   cursor: pointer;
   &:disabled {
-    background-color: #ccc;
+    background-color: var(--background, #333);
     cursor: not-allowed;
   }
 `;
