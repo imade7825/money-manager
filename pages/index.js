@@ -1,13 +1,14 @@
 import styled from "styled-components";
-import { useState } from "react";
 import useSWR from "swr";
 import { STATE } from "@/constants/state";
+import { useMemo, useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import AuthButtons from "@/components/AuthButtons";
+import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
@@ -15,6 +16,11 @@ import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
+
+  //pagination States
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
   const [isChartOpen, setIsChartOpen] = useState(false);
 
@@ -27,10 +33,6 @@ export default function HomePage() {
   } = useSWR("/api/transactions");
   const { data: categories = [] } = useSWR("/api/categories");
 
-  //Early returns
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>Loading...</p>;
-
   // Helpers
   const filteredTransactions = getFilteredTransactions(transactions, filters);
   const {
@@ -38,6 +40,16 @@ export default function HomePage() {
     expense: sumExpense,
     balance: sumTotal,
   } = getTotals(filteredTransactions);
+
+  const start = (currentPage - 1) * pageSize;
+  const paginatedTransactions = filteredTransactions.slice(
+    start,
+    start + pageSize
+  );
+
+  //Early returns
+  if (error) return <div>failed to load</div>;
+  if (isLoading) return <p>Loading...</p>;
 
   // Handler
   function handleToggleForm() {
@@ -59,13 +71,18 @@ export default function HomePage() {
     setFilters((filter) => ({ ...filter, category: value }));
   }
 
+  function setFilterType(value) {
+    setFilters((filter) => ({ ...filter, type: value }));
+  }
   function handleFilterClear() {
     setFilterCategory("");
   }
 
-  function setFilterType(value) {
-    setFilters((filter) => ({ ...filter, type: value }));
-  }
+  //pagination and values
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTransactions.length / pageSize)
+  );
 
   async function handleSubmit(formData) {
     const response = await fetch("/api/transactions", {
@@ -123,6 +140,8 @@ export default function HomePage() {
 
   return (
     <>
+      <ListBlock></ListBlock>
+
       <AuthButtons />
       <ThemeToggle />
       <AccountBalance transactions={transactions} />
@@ -173,7 +192,7 @@ export default function HomePage() {
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results available</EmptyState>
         ) : (
-          filteredTransactions.map((transaction) => (
+          paginatedTransactions.map((transaction) => (
             <TransactionItem
               onEdit={handleEdit}
               onDelete={handleDelete}
@@ -183,6 +202,16 @@ export default function HomePage() {
             />
           ))
         )}
+
+        {
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
+        }
       </TransactionsList>
     </>
   );
@@ -195,6 +224,7 @@ const TransactionsList = styled.ul`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  align-items: center;
 `;
 
 const ToggleButton = styled.button`
@@ -230,4 +260,10 @@ const ActiveBadge = styled.span`
 const EmptyState = styled.p`
   margin: 0.5rem 20px;
   opacity: 0.8;
+`;
+
+const ListBlock = styled.div`
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
 `;
