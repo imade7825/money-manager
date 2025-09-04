@@ -12,6 +12,7 @@ import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import BottomNav from "@/components/BottomNav";
 
 export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -140,79 +141,60 @@ export default function HomePage() {
 
   return (
     <>
-      <ListBlock></ListBlock>
-
-      <AuthButtons />
-      <ThemeToggle />
-      <AccountBalance transactions={transactions} />
-      <main>
-        <FilterBar
-          value={filters.category}
-          categories={categories}
-          onChangeCategory={setFilterCategory}
-          onClearCategory={handleFilterClear}
-        />
-
-        <ActiveFilterRow>
-          <span>Active filter:</span>
-          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
-        </ActiveFilterRow>
-
-        <button type="button" onClick={toggleChart}>
-          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
-        </button>
-        <PieChartSection
-          open={isChartOpen}
-          transactions={filteredTransactions}
-        />
-      </main>
-      <IncomeExpenseView
-        filteredTransactions={filteredTransactions}
-        sumIncome={sumIncome}
-        sumExpense={sumExpense}
-        sumTotal={sumTotal}
-        filterType={filters.type}
-        onFilter={setFilterType}
-      />
-      <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
-        {isFormOpen ? "Hide Form" : "Add new Transaction"}
-      </ToggleButton>
-      {isFormOpen && (
-        <Form
-          onSubmit={
-            editingTransaction
-              ? (data) => handleUpdate(editingTransaction._id, data)
-              : handleSubmit
-          }
-          defaultValues={editingTransaction}
-          onCancel={handleCancelEdit}
-        />
-      )}
-      <TransactionsList>
-        {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results available</EmptyState>
-        ) : (
-          paginatedTransactions.map((transaction) => (
-            <TransactionItem
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              transaction={transaction}
-              key={transaction._id}
-              onFilter={setFilterType}
-            />
-          ))
-        )}
-
-        {
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
+      <ListBlock>
+        <AuthButtons />
+        <ThemeToggle />
+        <AccountBalance transactions={transactions} />
+        <main>
+          <FilterBar
+            value={filters.category}
+            categories={categories}
+            onChangeCategory={setFilterCategory}
+            onClearCategory={handleFilterClear}
           />
-        }
-      </TransactionsList>
+
+          <ActiveFilterRow>
+            <span>Active filter:</span>
+            <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+          </ActiveFilterRow>
+        </main>
+        <IncomeExpenseView
+          filteredTransactions={filteredTransactions}
+          sumIncome={sumIncome}
+          sumExpense={sumExpense}
+          sumTotal={sumTotal}
+          filterType={filters.type}
+          onFilter={setFilterType}
+        />
+
+        <TransactionsList>
+          {filteredTransactions.length === 0 ? (
+            <EmptyState>No Results available</EmptyState>
+          ) : (
+            paginatedTransactions.map((transaction) => (
+              <TransactionItem
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                transaction={transaction}
+                key={transaction._id}
+                onFilter={setFilterType}
+              />
+            ))
+          )}
+
+          {
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              pageSize={pageSize}
+              onPageChange={setCurrentPage}
+              onPageSizeChange={setPageSize}
+            />
+          }
+        </TransactionsList>
+        <PagePadding />
+        <BottomNav />
+      </ListBlock>
     </>
   );
 }
@@ -266,4 +248,8 @@ const ListBlock = styled.div`
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
+`;
+
+const PagePadding = styled.div`
+  height: 72px;
 `;
