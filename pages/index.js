@@ -1,17 +1,14 @@
 import styled from "styled-components";
 import useSWR from "swr";
 import { STATE } from "@/constants/state";
-import { useMemo, useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useMemo, useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import ThemeToggle from "@/components/ThemeToggle";
 import AuthButtons from "@/components/AuthButtons";
-
 import Pagination from "@/components/Pagination";
-
 import FilterBar from "@/components/FilterBar";
 import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
@@ -20,14 +17,13 @@ export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
 
-  //pagination
+  //pagination States
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
   const [isChartOpen, setIsChartOpen] = useState(false);
 
-  
   //Data
   const {
     data: transactions = [],
@@ -37,7 +33,6 @@ export default function HomePage() {
   } = useSWR("/api/transactions");
   const { data: categories = [] } = useSWR("/api/categories");
 
-  
   // Helpers
   const filteredTransactions = getFilteredTransactions(transactions, filters);
   const {
@@ -45,18 +40,15 @@ export default function HomePage() {
     expense: sumExpense,
     balance: sumTotal,
   } = getTotals(filteredTransactions);
-  
-  const paginatedTransactions = useMemo(() => {
-      const start = (currentPage - 1) * pageSize;
-      return filteredTransactions.slice(start, start + pageSize);
-    }, [filteredTransactions, currentPage, pageSize]);
 
-  
+  const paginatedTransactions = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredTransactions.slice(start, start + pageSize);
+  }, [filteredTransactions, currentPage, pageSize]);
+
   //Early returns
   if (error) return <div>failed to load</div>;
   if (isLoading) return <p>Loading...</p>;
-  
-
 
   // Handler
   function handleToggleForm() {
@@ -210,7 +202,7 @@ export default function HomePage() {
           ))
         )}
 
-        {/* pagination control under transactions list */}
+        
         {filteredTransactions.length > 0 && (
           <PaginationContainer>
             <Pagination
@@ -222,7 +214,6 @@ export default function HomePage() {
             />
           </PaginationContainer>
         )}
-    
       </TransactionsList>
     </>
   );
@@ -272,7 +263,6 @@ const EmptyState = styled.p`
   margin: 0.5rem 20px;
   opacity: 0.8;
 `;
-
 
 const PaginationContainer = styled.div`
   width: 100%;

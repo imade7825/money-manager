@@ -41,7 +41,7 @@ export default function Pagination({
           }
         }}
       >
-        {[1, 2, 3].map((size) => (
+        {[10, 15, 20].map((size) => (
           <option key={size} value={size}>
             {size} per page
           </option>
