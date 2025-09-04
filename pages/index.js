@@ -97,7 +97,7 @@ export default function HomePage() {
       return;
     }
 
-    response.json();
+    await response.json();
     await mutate();
   }
 
@@ -192,7 +192,6 @@ export default function HomePage() {
             />
           }
         </TransactionsList>
-        <PagePadding />
         <BottomNav />
       </ListBlock>
     </>
@@ -248,8 +247,4 @@ const ListBlock = styled.div`
   width: 100%;
   max-width: 450px;
   margin: 0 auto;
-`;
-
-const PagePadding = styled.div`
-  height: 72px;
 `;

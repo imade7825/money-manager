@@ -9,30 +9,43 @@ export default function PieChart() {
     error,
     isLoading,
   } = useSWR("/api/transactions");
-  if (error) return <Msg>Failed to load transactions</Msg>;
-  if (isLoading) return <Msg>Loading transactions...</Msg>;
+  if (error) return <StatusMessage>Failed to load transactions</StatusMessage>;
+  if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
   return (
     <>
-      <Pad />
-      <header>Transactions by Category</header>
-      <Section>
+      <PagePadding />
+      <ChartWrapper>
+        <ChartTitle>Transactions by Category</ChartTitle>
         <CategoryPieChart transactions={transactions} />
-      </Section>
+      </ChartWrapper>
       <BottomNav />
     </>
   );
 }
 
-const Pad = styled.div`
+const PagePadding = styled.div`
   height: 72px;
 `;
-const Header = styled.h2`
-  margin: 16px 20px;
+
+const ChartWrapper = styled.section`
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 12px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e5e7eb);
+  border-radius: 16px;
 `;
-const Section = styled.section`
-  padding: 0 12px 24px;
+
+const ChartTitle = styled.h2`
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: left;
 `;
-const Msg = styled.p`
+
+const StatusMessage = styled.p`
   margin: 16px 20px;
+  font-size: 0.95rem;
+  color: var(--muted-foreground, #6b7280);
 `;

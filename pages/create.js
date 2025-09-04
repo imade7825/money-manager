@@ -23,7 +23,7 @@ export default function CreatePage() {
 
   return (
     <>
-      <Pad />
+      <PagePadding />
       <Header>Create Transaction</Header>
       <Form onSubmit={handleSubmit} onCancel={() => router.back()} />
       <BottomNav />
@@ -31,9 +31,9 @@ export default function CreatePage() {
   );
 }
 
-const Pad = styled.div`
-  height: 72px;
+const PagePadding = styled.div`
+  height: 10px;
 `;
 const Header = styled.h2`
-  margin: 16px 20 px;
+  margin: 25px 0;
 `;
