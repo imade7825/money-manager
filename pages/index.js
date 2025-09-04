@@ -41,10 +41,11 @@ export default function HomePage() {
     balance: sumTotal,
   } = getTotals(filteredTransactions);
 
-  const paginatedTransactions = useMemo(() => {
-    const start = (currentPage - 1) * pageSize;
-    return filteredTransactions.slice(start, start + pageSize);
-  }, [filteredTransactions, currentPage, pageSize]);
+  const start = (currentPage - 1) * pageSize;
+  const paginatedTransactions = filteredTransactions.slice(
+    start,
+    start + pageSize
+  );
 
   //Early returns
   if (error) return <div>failed to load</div>;
@@ -202,18 +203,15 @@ export default function HomePage() {
           ))
         )}
 
-        
-        {filteredTransactions.length > 0 && (
-          <PaginationContainer>
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              pageSize={pageSize}
-              onPageChange={setCurrentPage}
-              onPageSizeChange={setPageSize}
-            />
-          </PaginationContainer>
-        )}
+        {
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
+        }
       </TransactionsList>
     </>
   );
@@ -264,16 +262,8 @@ const EmptyState = styled.p`
   opacity: 0.8;
 `;
 
-const PaginationContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center; /* mittig */
-  align-items: center;
-  margin-top: 1rem;
-`;
-
 const ListBlock = styled.div`
   width: 100%;
-  max-width: 450px; /* gleiche/ähnliche Breite wie deine Cards */
-  margin: 0 auto; /* zentriert den Block */
+  max-width: 450px;
+  margin: 0 auto;
 `;
