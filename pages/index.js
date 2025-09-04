@@ -18,7 +18,7 @@ export default function HomePage() {
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
   const [isChartOpen, setIsChartOpen] = useState(false);
 
-  //Data
+  
   const {
     data: transactions = [],
     error,
