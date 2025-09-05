@@ -1,16 +1,13 @@
 import styled from "styled-components";
 import useSWR from "swr";
 import { STATE } from "@/constants/state";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
 import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
-import ThemeToggle from "@/components/ThemeToggle";
-import AuthButtons from "@/components/AuthButtons";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
-import PieChartSection from "@/components/PieChartSection";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 
 export default function HomePage() {
@@ -22,7 +19,6 @@ export default function HomePage() {
   const [pageSize, setPageSize] = useState(10);
 
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
-  const [isChartOpen, setIsChartOpen] = useState(false);
 
   //Data
   const {
@@ -52,18 +48,9 @@ export default function HomePage() {
   if (isLoading) return <p>Loading...</p>;
 
   // Handler
-  function handleToggleForm() {
-    setIsFormOpen(!isFormOpen);
-    if (isFormOpen) setEditingTransaction(null);
-  }
-
   function handleCancelEdit() {
     setEditingTransaction(null);
     setIsFormOpen(false);
-  }
-
-  function toggleChart() {
-    setIsChartOpen(!isChartOpen);
   }
 
   //Filter section
@@ -84,22 +71,6 @@ export default function HomePage() {
     Math.ceil(filteredTransactions.length / pageSize)
   );
 
-  async function handleSubmit(formData) {
-    const response = await fetch("/api/transactions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
-
-    if (!response.ok) {
-      console.error("POST failed");
-      return;
-    }
-
-    response.json();
-    await mutate();
-  }
-
   async function handleUpdate(id, formData) {
     const response = await fetch(`/api/transactions/${id}`, {
       method: "PUT",
@@ -110,7 +81,7 @@ export default function HomePage() {
       console.error("Update Failed");
       return;
     }
-    response.json();
+    await response.json();
     setEditingTransaction(null);
     setIsFormOpen(false);
     await mutate();
@@ -140,32 +111,19 @@ export default function HomePage() {
 
   return (
     <>
-      <ListBlock></ListBlock>
-
-      <AuthButtons />
-      <ThemeToggle />
       <AccountBalance transactions={transactions} />
-      <main>
-        <FilterBar
-          value={filters.category}
-          categories={categories}
-          onChangeCategory={setFilterCategory}
-          onClearCategory={handleFilterClear}
-        />
+      <FilterBar
+        value={filters.category}
+        categories={categories}
+        onChangeCategory={setFilterCategory}
+        onClearCategory={handleFilterClear}
+      />
 
-        <ActiveFilterRow>
-          <span>Active filter:</span>
-          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
-        </ActiveFilterRow>
+      <ActiveFilterRow>
+        <span>Active filter:</span>
+        <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+      </ActiveFilterRow>
 
-        <button type="button" onClick={toggleChart}>
-          {isChartOpen ? "Hide Pie Chart" : "Show Pie Chart"}
-        </button>
-        <PieChartSection
-          open={isChartOpen}
-          transactions={filteredTransactions}
-        />
-      </main>
       <IncomeExpenseView
         filteredTransactions={filteredTransactions}
         sumIncome={sumIncome}
@@ -174,20 +132,14 @@ export default function HomePage() {
         filterType={filters.type}
         onFilter={setFilterType}
       />
-      <ToggleButton onClick={handleToggleForm} disabled={!!editingTransaction}>
-        {isFormOpen ? "Hide Form" : "Add new Transaction"}
-      </ToggleButton>
       {isFormOpen && (
         <Form
-          onSubmit={
-            editingTransaction
-              ? (data) => handleUpdate(editingTransaction._id, data)
-              : handleSubmit
-          }
+          onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
           defaultValues={editingTransaction}
           onCancel={handleCancelEdit}
         />
       )}
+
       <TransactionsList>
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results available</EmptyState>
@@ -225,20 +177,6 @@ const TransactionsList = styled.ul`
   flex-direction: column;
   gap: 0.5rem;
   align-items: center;
-`;
-
-const ToggleButton = styled.button`
-  display: block;
-  margin: 15px 20px;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  border: 2px solid ${({ disabled }) => (disabled ? "#ccc" : "#000")};
-  background: ${({ disabled }) => (disabled ? "#f8f9fa" : "#000")};
-  color: ${({ disabled }) => (disabled ? "#6c757d" : "#fff")};
-  font-weight: bold;
-  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
-  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-  transition: all 0.2s ease;
 `;
 
 const ActiveFilterRow = styled.div`

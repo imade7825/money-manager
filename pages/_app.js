@@ -2,6 +2,7 @@ import GlobalStyle from "@/styles";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
+import Layout from "@/components/Layout";
 
 export default function App({
   Component,
@@ -23,7 +24,9 @@ export default function App({
         <Auth>
           <ThemeProvider>
             <GlobalStyle />
-            <Component {...pageProps} />
+            <Layout>
+              <Component {...pageProps} />
+            </Layout>
           </ThemeProvider>
         </Auth>
       </SessionProvider>
@@ -35,7 +38,7 @@ function Auth({ children }) {
   const { status } = useSession({ required: true });
 
   if (status === "loading") {
-    return <div>Is loading</div>;
+    return <div>Loading...</div>;
   }
   return children;
 }
