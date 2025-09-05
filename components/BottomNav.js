@@ -38,7 +38,10 @@ const NavItem = styled(Link)`
   gap: 2px;
   text-decoration: none;
   font-size: 1.2rem;
-  color: ${({ $active }) =>
-    $active ? "var(--primary)" : "var(--foreground))"};
+  color: ${({ $active }) => ($active ? "var(--primary)" : "var(--foreground)")};
+font-weight: ${({ $active }) => ($active ? 700 : 500)};
+border-top: 3px solid ${({ $active }) => ($active ? "var(--primary)" : "transparent")};
+transition: color .15s ease, border-color .15s ease;
+
 `;
 

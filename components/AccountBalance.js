@@ -20,14 +20,12 @@ export default function AccountBalance({ transactions }) {
 }
 
 const BalanceContainer = styled.div`
-  background: var(--pb-50);
-  border: 2px solid var(--pb-200);
+  background: linear-gradient(135deg, var(--pb-700), var(--pb-500));
+  color: #fff;
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 16px 18px;
   text-align: center;
-  max-width: 480px;
-  margin: 0 auto 12px;
 `;
 
 const BalanceValue = styled.h2`
@@ -35,6 +33,6 @@ const BalanceValue = styled.h2`
   font-size: 1.6rem;
   color: ${({ isNegative }) =>
     isNegative
-      ? "var(--pb-700)"
-      : "var(--pb-500)"}; // optional (isNegative ? "var(--negative)" : "var(--positive)")}; green /red
+      ? "var(--pb-50)"
+      : "var(--pb-950)"}; // optional (isNegative ? "var(--negative)" : "var(--positive)")}; green /red
 `;

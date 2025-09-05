@@ -40,7 +40,6 @@ export default function IncomeExpenseView({
           {formatLabel(key)}
         </RadioLabel>
       ))}
-      <p>{totalLabel}</p>
     </form>
   );
 }

@@ -9,6 +9,7 @@ import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import { Card } from "@/components/ui/Primitives";
 
 export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -111,34 +112,32 @@ export default function HomePage() {
 
   return (
     <>
-      <AccountBalance transactions={transactions} />
-      <FilterBar
-        value={filters.category}
-        categories={categories}
-        onChangeCategory={setFilterCategory}
-        onClearCategory={handleFilterClear}
-      />
-
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filters.category || "None"}</ActiveBadge>
-      </ActiveFilterRow>
-
-      <IncomeExpenseView
-        filteredTransactions={filteredTransactions}
-        sumIncome={sumIncome}
-        sumExpense={sumExpense}
-        sumTotal={sumTotal}
-        filterType={filters.type}
-        onFilter={setFilterType}
-      />
-      {isFormOpen && (
-        <Form
-          onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
-          defaultValues={editingTransaction}
-          onCancel={handleCancelEdit}
+      <Card>
+        <AccountBalance transactions={transactions} />
+      </Card>
+      <Card>
+        <FilterBar
+          value={filters.category}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
+          onClearCategory={handleFilterClear}
         />
-      )}
+
+        <ActiveFilterRow>
+          <span>Active filter:</span>
+          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+
+        <IncomeExpenseView
+          filteredTransactions={filteredTransactions}
+          sumIncome={sumIncome}
+          sumExpense={sumExpense}
+          sumTotal={sumTotal}
+          filterType={filters.type}
+          onFilter={setFilterType}
+        />
+      </Card>
+    
 
       <TransactionsList>
         {filteredTransactions.length === 0 ? (

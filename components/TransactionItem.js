@@ -21,33 +21,36 @@ export default function TransactionItem({ transaction, onEdit, onDelete }) {
 }
 
 const StyledTransactionItem = styled.li`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 2px solid black;
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
-  text-align: center;
-  border-radius: 15px;
-  max-width: 450px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 6px 10px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 12px;
 `;
 
 const Amount = styled.span`
-  font-weight: bold;
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+  align-self: start;
+  font-weight: 700;
   color: ${({ $type }) =>
-    $type?.toLowerCase() === "income" ? "green" : "red"};
+    $type?.toLowerCase() === "income" ? "var(--positive)" : "var(--negative)"};
 `;
 
 const DateText = styled.span`
-  font-size: 0.9rem;
+  grid-column: 1/2;
+  grid-row: 2/3;
+  font-size: 0.85rem;
+  color: var(--muted-foreground);
 `;
 
 const CategoryBadge = styled.span`
-  margin-left: 0.5rem;
-  padding: 0.1rem 0.5rem;
-  border: 1.5px solid currentColor; 
-  border-radius: 10px;
-  background: var(--badge-bg, #f0f0f0); 
-  color: var(--badge-text, #333); 
-  font-size: 0.85rem;
+  grid-column: 1/2;
+  grid-row: 1/2;
+  justify-self: start;
+  padding: 2px 8px;
 `;

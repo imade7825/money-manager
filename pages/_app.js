@@ -3,7 +3,9 @@ import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { useEffect } from "react";
+import { Screen } from "@/components/ui/Primitives";
 import Layout from "@/components/Layout";
+import BottomNav from "@/components/BottomNav";
 
 export default function App({
   Component,
@@ -36,9 +38,10 @@ export default function App({
         <Auth>
           <ThemeProvider>
             <GlobalStyle />
-            <Layout>
+            <Screen>
               <Component {...pageProps} />
-            </Layout>
+            </Screen>
+            <BottomNav/>
           </ThemeProvider>
         </Auth>
       </SessionProvider>
