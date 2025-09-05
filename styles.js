@@ -2,13 +2,12 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 :root{
-  /* Persian blue scale*/
-
+  /* Persian blue scale */
   --pb-50:#e8f6ff; --pb-100:#d4eeff; --pb-200:#b3dcff; --pb-300:#85c3ff;
   --pb-400:#559aff; --pb-500:#2e70ff; --pb-600:#0b43ff; --pb-700:#0239ff;
   --pb-800:#0532c7; --pb-900:#0f34a0; --pb-950:#091d5d;
 
-/* Base (light) */
+  /* Base (light) */
   --background:#ffffff;
   --foreground:#111111;
   --surface:#f7f9fc;
@@ -21,16 +20,18 @@ const GlobalStyle = createGlobalStyle`
 
   --positive:#16a34a;
   --negative:#dc2626;
+
+  /* Design tokens */
+  --radius: 16px;
+  --radius-sm: 10px;
+  --shadow: 0 6px 18px rgba(0,0,0,0.08);
+  --focus-ring: 2px solid var(--pb-500);
+
+  /* hilft nativen Controls */
+  color-scheme: light;
 }
 
-/* Design tokens */
-
---radius: 16px;
---radius-sm:10px;
---shadow:0 6px 18px rgba(0,0,0,0.08);
---focus-ring: 2px solid var(--pb-500)
-
-/* Systempräferenz: Dark (fallback)*/
+/* Systempräferenz: Dark (fallback) */
 @media (prefers-color-scheme: dark){
   :root{
     --background:#0b0f14;
@@ -45,19 +46,34 @@ const GlobalStyle = createGlobalStyle`
     --positive:#22c55e;
     --negative:#f87171;
 
-
+    color-scheme: dark;
   }
 }
-/* Explicit theme override */
+
+/* Explicit theme override wins immer über Medienabfrage */
 html[data-theme="light"]{
-  --background:#ffffff; --foreground:#111111; --surface:#f7f9fc; --surface-elevated:#ffffff;
-  --muted:#6b7280; --muted-foreground:#6b7280; --border:#e5e7eb;
-  --primary:var(--pb-600); --primary-contrast:#fff;
+  --background:#ffffff; 
+  --foreground:#111111; 
+  --surface:#f7f9fc; 
+  --surface-elevated:#ffffff;
+  --muted:#6b7280; 
+  --muted-foreground:#6b7280; 
+  --border:#e5e7eb;
+  --primary:var(--pb-600); 
+  --primary-contrast:#fff;
+  color-scheme: light;
 }
 html[data-theme="dark"]{
-  --background:#0b0f14; --foreground:#e6e6e6; --surface:#0f141a; --surface-elevated:#11161c;
-  --muted:#9aa0a6; --muted-foreground:#9aa0a6; --border:#2a2f36;
-  --primary:var(--pb-500); --primary-contrast:#fff;
+  --background:#0b0f14; 
+  --foreground:#e6e6e6; 
+  --surface:#0f141a; 
+  --surface-elevated:#11161c;
+  --muted:#9aa0a6; 
+  --muted-foreground:#9aa0a6; 
+  --border:#2a2f36;
+  --primary:var(--pb-500); 
+  --primary-contrast:#fff;
+  color-scheme: dark;
 }
 
 /* Baseline */
@@ -68,7 +84,6 @@ body{
   background:var(--background);
   color:var(--foreground);
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
 
 /* Elements */
@@ -78,7 +93,8 @@ button{
   background:var(--surface-elevated);
   color:var(--foreground);
   border-radius: var(--radius-sm);
-  padding:.55rem .8rem; cursor:pointer;
+  padding:.55rem .8rem;
+  cursor:pointer;
 }
 button:disabled{ opacity:.6; cursor:not-allowed; }
 

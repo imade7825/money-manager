@@ -19,7 +19,7 @@ export default function Layout({ children }) {
 }
 
 const AppHeader = styled.header`
-  background: var(--background, #fff);
+  background: var(--surface-elevated);
   border-bottom: 1px solid var(--border, #e5e7eb);
 `;
 
@@ -28,15 +28,15 @@ const AppHeaderContentRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: 450px;
+  max-width: 480px;
   margin: 0 auto;
   padding: 0 12px;
 `;
 
 const MainContent = styled.main`
   width: 100%;
-  max-width: 450px;
+  max-width: 480px;
   margin: 0 auto;
   padding: 12px;
-  padding-bottom: calc(var(--bottom-nav-height, 72px));
+  padding-bottom: calc(var(--bottom-nav-height, 72px) +16px);
 `;
