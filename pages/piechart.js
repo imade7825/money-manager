@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import styled from "styled-components";
-import BottomNav from "@/components/BottomNav";
 import CategoryPieChart from "@/components/CategoryPieChart";
 
 export default function PieChart() {
@@ -13,20 +12,12 @@ export default function PieChart() {
   if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
   return (
-    <>
-      <PagePadding />
-      <ChartWrapper>
-        <ChartTitle>Transactions by Category</ChartTitle>
-        <CategoryPieChart transactions={transactions} />
-      </ChartWrapper>
-      <BottomNav />
-    </>
+    <ChartWrapper>
+      <ChartTitle>Transactions by Category</ChartTitle>
+      <CategoryPieChart transactions={transactions} />
+    </ChartWrapper>
   );
 }
-
-const PagePadding = styled.div`
-  height: 72px;
-`;
 
 const ChartWrapper = styled.section`
   max-width: 560px;

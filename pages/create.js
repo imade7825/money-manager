@@ -1,6 +1,4 @@
 import { useRouter } from "next/router";
-import styled from "styled-components";
-import BottomNav from "@/components/BottomNav";
 import Form from "@/components/TransactionForm";
 
 export default function CreatePage() {
@@ -23,18 +21,12 @@ export default function CreatePage() {
 
   return (
     <>
-      <PagePadding />
-      <Header>Create Transaction</Header>
+     
+      <h2 style={{margin:"24px 0"}}>Create Transaction</h2>
       <Form onSubmit={handleSubmit} onCancel={() => router.back()} />
-      <BottomNav />
+      
     </>
   );
 }
 
-const PagePadding = styled.div`
-  height: 10px;
-`;
-const Header = styled.h2`
-  margin: 25px 0;
-  
-`;
+

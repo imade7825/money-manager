@@ -6,38 +6,32 @@ export default function BottomNav() {
   const { pathname } = useRouter();
 
   return (
-    <BottomNavWrapper>
-      <BottomNavContainer role="navigation" aria-label="Main navigation">
-        <NavLink href="/" $active={pathname === "/"}>
-          Home
-        </NavLink>
-        <NavLink href="/create" $active={pathname === "/create"}>
-          Create
-        </NavLink>
-        <NavLink href="/piechart" $active={pathname === "/piechart"}>
-          Pie Chart
-        </NavLink>
-      </BottomNavContainer>
-    </BottomNavWrapper>
+    <BottomNavContainer role="navigation" aria-label="Main navigation">
+      <NavLink href="/" $active={pathname === "/"}>
+        Home
+      </NavLink>
+      <NavLink href="/create" $active={pathname === "/create"}>
+        Create
+      </NavLink>
+      <NavLink href="/piechart" $active={pathname === "/piechart"}>
+        Pie Chart
+      </NavLink>
+    </BottomNavContainer>
   );
 }
 
-const BottomNavWrapper = styled.div`
+const BottomNavContainer = styled.nav`
   position: fixed;
-  bottom: 0;
   left: 0;
   right: 0;
-  display: flex;
-  justify-content: center;
-  z-index: 1000;
-`;
-
-const BottomNavContainer = styled.nav`
+  bottom: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   width: 100%;
   max-width: 450px;
+  margin: 0 auto;
+  height: var(--bottom-nav-height, 72px);
   border-top: 1px solid #e5e7eb;
   background: var(--background, #fff);
   border-radius: 8px 8px 0 0;
