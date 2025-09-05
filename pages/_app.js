@@ -2,12 +2,24 @@ import GlobalStyle from "@/styles";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
+import { useEffect } from "react";
 import Layout from "@/components/Layout";
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
+    document.documentElement.setAttribute(
+      "data-theme",
+      prefersDark ? "dark" : "light"
+    );
+  }, []);
+
   return (
     <SWRConfig
       value={{

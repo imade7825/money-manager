@@ -23,9 +23,10 @@ const ChartWrapper = styled.section`
   max-width: 560px;
   margin: 0 auto;
   padding: 12px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: 16px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 `;
 
 const ChartTitle = styled.h2`
