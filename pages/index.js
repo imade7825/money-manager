@@ -119,7 +119,7 @@ export default function HomePage() {
       <Card>
         <AccountBalance transactions={transactions} />
       </Card>
-      <Card>
+      <CardFilter>
         <FilterBar
           value={filters.category}
           categories={categories}
@@ -140,7 +140,7 @@ export default function HomePage() {
           filterType={filters.type}
           onFilter={setFilterType}
         />
-      </Card>
+      </CardFilter>
 
       <TransactionsList>
         {filteredTransactions.length === 0 ? (
@@ -186,7 +186,7 @@ const TransactionsList = styled.ul`
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1.5rem;
   margin: 0 12px 8px;
   font-size: 0.95rem;
 `;
@@ -208,4 +208,18 @@ const EmptyState = styled.p`
 
 const CardControls = styled.div`
   display: flex;
+  justify-content: space-between;
+`;
+
+const CardFilter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 10px;
 `;
