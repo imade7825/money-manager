@@ -125,8 +125,16 @@ const Label = styled.label`
 `;
 
 const AddButton = styled.button`
-  grid-column: 1/1;
+  grid-column: 1/-1;
   padding: 12px 16px;
-  border-radius: var(--border);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--primary);
 `;
-const CancelButton = styled.button``;
+const CancelButton = styled.button`
+  grid-column: 1/-1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+`;
