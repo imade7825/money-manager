@@ -175,33 +175,31 @@ const TransactionsList = styled.ul`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.6rem;
+  align-items: stretch;
+  max-width: 480px;
+  margin-inline: auto;
 `;
 
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin: 0 20px 10px;
+  margin: 0 12px 8px;
   font-size: 0.95rem;
 `;
 
 const ActiveBadge = styled.span`
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.6rem;
   border: 2px solid #000;
   border-radius: 999px;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--pb-100);
+  color: var(--pb-700);
+  border: 1px solid var(--pb-200);
 `;
 
 const EmptyState = styled.p`
-  margin: 0.5rem 20px;
+  margin: 0.5rem 12px;
   opacity: 0.8;
-`;
-
-const ListBlock = styled.div`
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
+  text-align: center;
 `;
