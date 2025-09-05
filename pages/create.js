@@ -36,4 +36,5 @@ const PagePadding = styled.div`
 `;
 const Header = styled.h2`
   margin: 25px 0;
+  
 `;
