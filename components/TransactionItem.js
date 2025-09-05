@@ -3,19 +3,21 @@ import styled from "styled-components";
 export default function TransactionItem({ transaction, onEdit, onDelete }) {
   return (
     <StyledTransactionItem key={transaction._id}>
-      {new Intl.NumberFormat("de-DE", {
-        style: "currency",
-        currency: "EUR",
-      }).format(Number(transaction.amount) || 0)}
-      <Amount $type={transaction.type}>
-        {transaction.type && `${transaction.type}`}
-      </Amount>
       <CategoryBadge>{transaction.category ?? "Uncategorisiert"}</CategoryBadge>
+      <Amount $type={transaction.type}>
+        {new Intl.NumberFormat("de-DE", {
+          style: "currency",
+          currency: "EUR",
+        }).format(Number(transaction.amount) || 0)}
+      </Amount>
+
       <DateText>
         {new Date(transaction.date).toLocaleDateString("de-DE")}
       </DateText>
-      <button onClick={() => onEdit(transaction)}>Edit</button>
-      <button onClick={() => onDelete(transaction._id)}>Delete</button>
+      <Actions>
+        <button onClick={() => onEdit(transaction)}>Edit</button>
+        <button onClick={() => onDelete(transaction._id)}>Delete</button>
+      </Actions>
     </StyledTransactionItem>
   );
 }
@@ -49,8 +51,27 @@ const DateText = styled.span`
 `;
 
 const CategoryBadge = styled.span`
-  grid-column: 1/2;
-  grid-row: 1/2;
+  grid-column: 1 / 2;
+  grid-row: 1 / 2;
   justify-self: start;
   padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--pb-100);
+  color: var(--pb-800);
+  font-size: 0.8rem;
+  font-weight: 600;
+`;
+
+const Actions = styled.div`
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+  display: flex;
+  gap: 8px;
+  justify-self: end;
+  & > button {
+    padding: 4px 8px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
 `;
