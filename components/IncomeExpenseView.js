@@ -2,7 +2,7 @@ import { STATE } from "@/constants/state";
 import styled from "styled-components";
 
 export default function IncomeExpenseView({
-  filteredTransactions,
+
   sumIncome,
   sumExpense,
   sumTotal,

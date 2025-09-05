@@ -38,6 +38,7 @@ const Amount = styled.span`
   grid-column: 2 / 3;
   grid-row: 1 / 2;
   align-self: start;
+  font-size: 1.1rem;
   font-weight: 700;
   color: ${({ $type }) =>
     $type?.toLowerCase() === "income" ? "var(--positive)" : "var(--negative)"};

@@ -108,30 +108,25 @@ const HeaderForm = styled.h3`
 `;
 
 const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
 `;
 const Input = styled.input`
-  padding: 0.5rem;
-  font-size: inherit;
-  border: 2px solid black;
-  border-radius: 10px;
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
 `;
 
 const Label = styled.label`
+  grid-column: 1/1;
   font-weight: 600;
 `;
 
 const AddButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: #000;
-  color: #fff;
+  grid-column: 1/1;
+  padding: 12px 16px;
+  border-radius: var(--border);
 `;
-const CancelButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: transparent;
-`;
+const CancelButton = styled.button``;

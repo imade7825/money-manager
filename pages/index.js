@@ -4,17 +4,17 @@ import { STATE } from "@/constants/state";
 import { useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
-import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import { Card } from "@/components/ui/Primitives";
+import AuthButtons from "@/components/AuthButtons";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function HomePage() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingTransaction, setEditingTransaction] = useState(null);
-
+  const [editingTransaction, setEditingTransaction] = useState("");
+  const [isFormOpen, setIsFormOpen] = useState("");
   //pagination States
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -112,6 +112,10 @@ export default function HomePage() {
 
   return (
     <>
+      <CardControls>
+        <AuthButtons />
+        <ThemeToggle></ThemeToggle>
+      </CardControls>
       <Card>
         <AccountBalance transactions={transactions} />
       </Card>
@@ -137,7 +141,6 @@ export default function HomePage() {
           onFilter={setFilterType}
         />
       </Card>
-    
 
       <TransactionsList>
         {filteredTransactions.length === 0 ? (
@@ -201,4 +204,8 @@ const EmptyState = styled.p`
   margin: 0.5rem 12px;
   opacity: 0.8;
   text-align: center;
+`;
+
+const CardControls = styled.div`
+  display: flex;
 `;

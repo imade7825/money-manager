@@ -35,15 +35,15 @@ export default function App({
       }}
     >
       <SessionProvider session={session}>
-        <Auth>
-          <ThemeProvider>
-            <GlobalStyle />
+        <ThemeProvider>
+          <GlobalStyle />
+          <Auth>
             <Screen>
               <Component {...pageProps} />
             </Screen>
-            <BottomNav/>
-          </ThemeProvider>
-        </Auth>
+            <BottomNav />
+          </Auth>
+        </ThemeProvider>
       </SessionProvider>
     </SWRConfig>
   );
