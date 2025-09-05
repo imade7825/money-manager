@@ -75,10 +75,17 @@ html[data-theme="dark"]{
 
 /* Baseline */
 *,*::before,*::after{ box-sizing:border-box; }
-html, body, #__next{ height:100%; }
+html, body, #__next{ min-height:100%; }
 body{
   margin:0; 
-  background:var(--background); 
+  background:
+     radial-gradient(1200px 800px at 20% 0%,
+       var(--pb-800) 0%,
+       transparent 60%)
+     ,radial-gradient(1000px 700px at 100% 100%,
+       var(--pb-700) 0%,
+       transparent 55%)
+     ,var(--background);
   color:var(--foreground);
   font-family: system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
 }

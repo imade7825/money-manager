@@ -1,20 +1,27 @@
-import { useSession, signIn, signOut } from "next-auth/react"
- 
+import styled from "styled-components";
+import { useSession, signIn, signOut } from "next-auth/react";
+
 export default function AuthButtons() {
   const { data: session } = useSession();
- 
+
   if (session) {
     return (
       <>
-        Signed in as {session.user.email} <br />
-        <button onClick={() => signOut()}>Sign out</button>
+        {/*  {session.user.email} <br /> */}
+        <ButtonAuth onClick={() => signOut()}>Sign out</ButtonAuth>
       </>
-    )
+    );
   }
   return (
     <>
       Not signed in <br />
       <button onClick={() => signIn()}>Sign in</button>
     </>
-  )
+  );
 }
+
+const ButtonAuth = styled.button`
+  color: var(--foreground);
+  margin-bottom: 5px;
+  padding: 12px 11px ;
+`;

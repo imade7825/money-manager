@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import CategoryPieChart from "@/components/CategoryPieChart";
-
+import { Card } from "@/components/ui/Primitives";
 export default function PieChart() {
   const {
     data: transactions = [],
@@ -12,9 +12,12 @@ export default function PieChart() {
   if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
   return (
+
     <ChartWrapper>
       <ChartTitle>Transactions by Category</ChartTitle>
+      <Card>
       <CategoryPieChart transactions={transactions} />
+      </Card>
     </ChartWrapper>
   );
 }
