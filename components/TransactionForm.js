@@ -36,87 +36,103 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   if (isLoading) return <p>Loading categories...</p>;
   return (
     <>
-      <HeaderForm>Please fill out all fields</HeaderForm>
-      <FormContainer onSubmit={handleSubmit}>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Please add your name"
-          required
-          defaultValue={defaultValues?.name}
-        />
-        <Label htmlFor="amount">Amount</Label>
-        <Input
-          id="amount"
-          name="amount"
-          min="1"
-          type="number"
-          placeholder="Please add amount"
-          required
-          defaultValue={defaultValues?.amount}
-        />
-        <select
-          id="category"
-          name="category"
-          defaultValue={defaultValues?.category}
-          required
-        >
-          <option value="" disabled>
-            Choose category
-          </option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
+      <FormWrapper>
+        <HeaderForm>Please fill out all fields</HeaderForm>
+        <FormContainer onSubmit={handleSubmit}>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Please add your name"
+            required
+            defaultValue={defaultValues?.name}
+          />
+          <Label htmlFor="amount">Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            min="1"
+            type="number"
+            placeholder="Please add amount"
+            required
+            defaultValue={defaultValues?.amount}
+          />
+          <Select
+            id="category"
+            name="category"
+            defaultValue={defaultValues?.category}
+            required
+          >
+            <option value="" disabled>
+              Choose category
             </option>
-          ))}
-        </select>
-        <Label htmlFor="option1">Income</Label>
-        <Input id="option1" value="income" name="type" type="radio" required />
-        <Label htmlFor="option2">Expense</Label>
-        <Input id="option2" value="expense" name="type" type="radio" required />
-        <Label htmlFor="date">Date</Label>
-        <Input
-          id="date"
-          name="date"
-          type="date"
-          required
-          defaultValue={
-            defaultValues?.date
-              ? new Date(defaultValues.date).toISOString().slice(0, 10)
-              : today
-          }
-        />
-        <AddButton type="submit" disabled={isButtonDisabled}>
-          Add
-        </AddButton>
-        <CancelButton
-          type="reset"
-          onClick={handleReset}
-          disabled={isButtonDisabled}
-        >
-          Cancel
-        </CancelButton>
-      </FormContainer>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+          <Label htmlFor="option1">Income</Label>
+          <Input
+            id="option1"
+            value="income"
+            name="type"
+            type="radio"
+            required
+          />
+          <Label htmlFor="option2">Expense</Label>
+          <Input
+            id="option2"
+            value="expense"
+            name="type"
+            type="radio"
+            required
+          />
+          <Label htmlFor="date">Date</Label>
+          <Input
+            id="date"
+            name="date"
+            type="date"
+            required
+            defaultValue={
+              defaultValues?.date
+                ? new Date(defaultValues.date).toISOString().slice(0, 10)
+                : today
+            }
+          />
+          <AddButton type="submit" disabled={isButtonDisabled}>
+            Add
+          </AddButton>
+          <CancelButton
+            type="reset"
+            onClick={handleReset}
+            disabled={isButtonDisabled}
+          >
+            Cancel
+          </CancelButton>
+        </FormContainer>
+      </FormWrapper>
     </>
   );
 }
 
 const HeaderForm = styled.h3`
-  margin: 0 0 0.25rem;
+  margin: 0 0 20px;
 `;
 
 const FormContainer = styled.form`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
+  width: 100%;
 `;
 const Input = styled.input`
   background: var(--surface-elevated);
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  width: 100%;
 `;
 
 const Label = styled.label`
@@ -138,3 +154,19 @@ const CancelButton = styled.button`
   border: 1px solid var(--primary);
   color: var(--primary);
 `;
+
+const FormWrapper = styled.div`
+  padding: 24px;
+  max-width: 650px;
+  margin: 45px auto 0;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+`;
+const Select = styled.select`
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  grid-column: 1 / -1; /* Über beide Spalten */
+  width: 100%;`

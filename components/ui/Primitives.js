@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
-export const Screen = styled.main`
-  padding: 12px 12px 92px;
+export const Layout = styled.main`
+  
   max-width: 480px;
   margin: 0 auto;
 `;

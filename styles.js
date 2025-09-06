@@ -79,9 +79,9 @@ html, body, #__next{ min-height:100%; }
 body{
   margin:0; 
   background:
-     radial-gradient(1200px 800px at 20% 0%,
-       var(--pb-800) 0%,
-       transparent 60%)
+     radial-gradient(1200px 800px at 5% 1%,
+       var(--pb-800) 10%,
+       transparent 10%)
      ,radial-gradient(1000px 700px at 100% 100%,
        var(--pb-700) 0%,
        transparent 55%)
