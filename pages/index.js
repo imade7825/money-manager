@@ -118,7 +118,7 @@ export default function HomePage() {
         <ThemeToggle></ThemeToggle>
       </CardControls>
       <Card>
-        <AccountBalance transactions={transactions} />
+        <AccountBalance transactions={filteredTransactions} />
       </Card>
       <CardFilter>
         {isFormOpen && editingTransaction && (
