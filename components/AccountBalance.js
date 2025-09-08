@@ -31,8 +31,8 @@ const BalanceContainer = styled.div`
 const BalanceValue = styled.h2`
   margin: 6px 0 0;
   font-size: 1.6rem;
-  color: ${({ isNegative }) =>
-    isNegative
+  color: ${({ $isNegative }) =>
+    $isNegative
       ? "var(--pb-50)"
-      : "var(--pb-950)"}; // optional (isNegative ? "var(--negative)" : "var(--positive)")}; green /red
+      : "var(--pb-950)"}; 
 `;

@@ -125,7 +125,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
 }
 
 const FormWrapper = styled.div`
-  padding: 24px;
+  padding: 0 24px ;
   max-width: 650px;
   margin: 45px auto 0;
   background: var(--surface);
@@ -184,6 +184,6 @@ const Select = styled.select`
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  grid-column: 1 / -1; /* Über beide Spalten */
+  grid-column: 1 / -1; 
   width: 100%;
 `;

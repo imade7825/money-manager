@@ -39,6 +39,8 @@ export default function HomePage() {
     balance: sumTotal,
   } = getTotals(filteredTransactions);
 
+  const isFiltered = Boolean(filters.category) || filters.type !== STATE.ALL;
+
   const start = (currentPage - 1) * pageSize;
   const paginatedTransactions = filteredTransactions.slice(
     start,
@@ -58,13 +60,21 @@ export default function HomePage() {
   //Filter section
   function setFilterCategory(value) {
     setFilters((filter) => ({ ...filter, category: value }));
+    setCurrentPage(1);
   }
 
   function setFilterType(value) {
     setFilters((filter) => ({ ...filter, type: value }));
+    setCurrentPage(1);
   }
+
   function handleFilterClear() {
     setFilterCategory("");
+  }
+
+  function handleFilterReset() {
+    setFilters({ category: "", type: STATE.ALL });
+    setCurrentPage(1);
   }
 
   //pagination and values
@@ -115,10 +125,10 @@ export default function HomePage() {
     <>
       <CardControls>
         <AuthButtons />
-        <ThemeToggle></ThemeToggle>
+        <ThemeToggle />
       </CardControls>
       <Card>
-        <AccountBalance transactions={filteredTransactions} />
+        <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
         {isFormOpen && editingTransaction && (
@@ -129,6 +139,7 @@ export default function HomePage() {
             onCancel={handleCancelEdit}
           />
         )}
+
         <FilterBar
           value={filters.category}
           categories={categories}
@@ -141,6 +152,13 @@ export default function HomePage() {
           <ActiveBadge>{filters.category || "None"}</ActiveBadge>
         </ActiveFilterRow>
 
+        {isFiltered && (
+          <FilteredBalanceRow>
+            <FilteredBalance $neg={sumTotal < 0} title="Filtered Balance:">
+              Filtered Balance: {sumTotal.toFixed(2)} €
+            </FilteredBalance>
+          </FilteredBalanceRow>
+        )}
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
           sumIncome={sumIncome}
@@ -149,6 +167,11 @@ export default function HomePage() {
           filterType={filters.type}
           onFilter={setFilterType}
         />
+        {(filters.category || filters.type !== STATE.ALL) && (
+          <ClearFilterButton onClick={handleFilterReset}>
+            Reset
+          </ClearFilterButton>
+        )}
       </CardFilter>
 
       <TransactionsList>
@@ -195,8 +218,10 @@ const TransactionsList = styled.ul`
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.6rem;
   margin: 0 12px 8px;
+  min-width: 0;
   font-size: 0.95rem;
 `;
 
@@ -224,11 +249,40 @@ const CardFilter = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-
   background: var(--surface-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 12px;
   margin-bottom: 10px;
+`;
+
+const ClearFilterButton = styled.button`
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--pb-300);
+  background: var(--surface);
+  color: var(--pb-700);
+  cursor: pointer;
+`;
+
+const FilteredBalance = styled.span`
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--pb-200);
+  background: var(--surface);
+  font-weight: 700;
+  white-space: nowrap;
+  color: ${({ $neg }) => ($neg ? "#b91c1c" : "#166534")};
+  min-width: 100%;
+  overflow: hidden;
+`;
+
+const FilteredBalanceRow = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 12px 8px;
+  min-width: 0;
 `;

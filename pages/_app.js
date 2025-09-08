@@ -10,16 +10,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    document.documentElement.setAttribute(
-      "data-theme",
-      prefersDark ? "dark" : "light"
-    );
-  }, []);
+  
 
   return (
     <SWRConfig

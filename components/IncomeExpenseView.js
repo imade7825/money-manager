@@ -9,7 +9,7 @@ export default function IncomeExpenseView({
   onFilter,
   filterType,
 }) {
-  // const [filterType, setFilterType] = useState(STATE.ALL);
+
 
   //Change radio button
   const handleFilterType = (event) => {

@@ -3,7 +3,7 @@ import { useTheme } from "@/context/ThemeContext";
 
 export default function ThemeToggle() {
   const { theme, toggle } = useTheme();
-  const label = theme === "dark" ? "" : "";
+  const label = theme === "dark" ? "Light" : "Dark";
   const icon = theme === "dark" ? "☀️" : "🌙";
   return (
     <Toggle onClick={toggle} aria-label={`Switch to ${label} mode`}>
