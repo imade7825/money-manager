@@ -9,6 +9,7 @@ import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import ImportExportDataInCsv from "@/components/ImportExportDataInCsv";
 
 export default function HomePage() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -112,11 +113,13 @@ export default function HomePage() {
   return (
     <>
       <AccountBalance transactions={transactions} />
+
       <FilterBar
         value={filters.category}
         categories={categories}
         onChangeCategory={setFilterCategory}
         onClearCategory={handleFilterClear}
+        style={{ flex: 1, minWidth: "200px" }}
       />
 
       <ActiveFilterRow>
@@ -132,6 +135,7 @@ export default function HomePage() {
         filterType={filters.type}
         onFilter={setFilterType}
       />
+      <ImportExportDataInCsv onImported={() => mutate()} />
       {isFormOpen && (
         <Form
           onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
@@ -200,8 +204,3 @@ const EmptyState = styled.p`
   opacity: 0.8;
 `;
 
-const ListBlock = styled.div`
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-`;
