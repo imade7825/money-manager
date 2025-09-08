@@ -125,7 +125,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
 }
 
 const FormWrapper = styled.div`
-  padding: 0 24px ;
+  padding: 0 24px;
   max-width: 650px;
   margin: 45px auto 0;
   background: var(--surface);
@@ -143,6 +143,9 @@ const FormContainer = styled.form`
   grid-template-columns: 1fr 1fr;
   gap: 10px;
   width: 100%;
+  padding-bottom: calc(
+    var(--bottom-nav-h, 64px) + env(safe-area-inset-bottom, 0px) + 24px
+  );
 `;
 
 const Input = styled.input`
@@ -184,6 +187,6 @@ const Select = styled.select`
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  grid-column: 1 / -1; 
+  grid-column: 1 / -1;
   width: 100%;
 `;

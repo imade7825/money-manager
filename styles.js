@@ -32,6 +32,7 @@ const GlobalStyle = createGlobalStyle`
   --radius-sm:10px;
   --shadow:0 6px 18px rgba(0,0,0,.08);
   --focus-ring:2px solid var(--pb-500);
+
 }
 
 @media (prefers-color-scheme: dark){
