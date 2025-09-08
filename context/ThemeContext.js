@@ -10,7 +10,7 @@ export function ThemeProvider({ children }) {
     const media = window.matchMedia("(prefers-color-scheme: dark)");
     setTheme(media.matches ? "dark" : "light");
 
-    const handler = (e) => setTheme(e.matches ? "dark" : "light");
+    const handler = (event) => setTheme(event.matches ? "dark" : "light");
     media.addEventListener("change", handler);
     return () => media.removeEventListener("change", handler);
   }, []);
