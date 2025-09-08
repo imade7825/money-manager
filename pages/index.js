@@ -102,6 +102,7 @@ export default function HomePage() {
   function handleEdit(transaction) {
     setEditingTransaction(transaction);
     setIsFormOpen(true);
+    
   }
 
   async function handleDelete(id) {
@@ -131,15 +132,6 @@ export default function HomePage() {
         <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
-        {isFormOpen && editingTransaction && (
-          <TransactionForm
-            key={editingTransaction._id}
-            defaultValues={editingTransaction}
-            onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
-            onCancel={handleCancelEdit}
-          />
-        )}
-
         <FilterBar
           value={filters.category}
           categories={categories}
@@ -176,16 +168,27 @@ export default function HomePage() {
 
       <TransactionsList>
         {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results available</EmptyState>
+          <EmptyState>No Results Available</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
-            <TransactionItem
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              transaction={transaction}
-              key={transaction._id}
-              onFilter={setFilterType}
-            />
+            <div key={transaction._id}>
+              <TransactionItem
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                transaction={transaction}
+                onFilter={setFilterType}
+              />
+              {isFormOpen && editingTransaction?._id === transaction._id && (
+                <InlineEdit>
+                  <TransactionForm
+                    key={`edit-${transaction._id}`}
+                    defaultValues={editingTransaction}
+                    onSubmit={(data) => handleUpdate(transaction._id, data)}
+                    onCancel={handleCancelEdit}
+                  />
+                </InlineEdit>
+              )}
+            </div>
           ))
         )}
 
@@ -285,4 +288,11 @@ const FilteredBalanceRow = styled.div`
   justify-content: flex-end;
   margin: 0 12px 8px;
   min-width: 0;
+`;
+const InlineEdit = styled.div`
+  margin: 6px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 8px 0;
 `;
