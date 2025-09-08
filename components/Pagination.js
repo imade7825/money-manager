@@ -57,19 +57,22 @@ const PaginationWrapper = styled.div`
   gap: 0.5rem;
   align-items: center;
   justify-content: center;
-  margin-top: 1rem;
+  margin: 20px 0 80px;
   flex-wrap: wrap;
   width: 100%;
 `;
 
 const Button = styled.button`
   padding: 0.5rem 1rem;
-
-  border: none;
-  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  &:hover {
+    filter: brightness(1.02);
+  }
   &:disabled {
-    background-color: var(--background, #333);
+    opacity: 0.6;
     cursor: not-allowed;
   }
 `;
@@ -80,7 +83,9 @@ const PageInfo = styled.span`
 `;
 
 const Select = styled.select`
-  padding: 0.4rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-elevated);
+  color: var(--foreground);
 `;

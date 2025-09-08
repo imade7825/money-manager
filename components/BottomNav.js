@@ -6,44 +6,42 @@ export default function BottomNav() {
   const { pathname } = useRouter();
 
   return (
-    <BottomNavContainer role="navigation" aria-label="Main navigation">
-      <NavLink href="/" $active={pathname === "/"}>
+    <Bar role="navigation" aria-label="Main navigation">
+      <NavItem href="/" $active={pathname === "/"}>
         Home
-      </NavLink>
-      <NavLink href="/create" $active={pathname === "/create"}>
+      </NavItem>
+      <NavItem href="/create" $active={pathname === "/create"}>
         Create
-      </NavLink>
-      <NavLink href="/piechart" $active={pathname === "/piechart"}>
+      </NavItem>
+      <NavItem href="/piechart" $active={pathname === "/piechart"}>
         Pie Chart
-      </NavLink>
-    </BottomNavContainer>
+      </NavItem>
+    </Bar>
   );
 }
 
-const BottomNavContainer = styled.nav`
+const Bar = styled.nav`
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
-  height: var(--bottom-nav-height, 72px);
-  border-top: 1px solid #e5e7eb;
-  background: var(--background, #fff);
-  border-radius: 8px 8px 0 0;
+  inset: auto 0 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  height: 68px;
+  padding: 6px, 8px;
+  z-index: 1;
 `;
 
-const NavLink = styled(Link)`
-  flex: 1;
-  text-align: center;
-  padding: 12px 0;
+const NavItem = styled(Link)`
+  display: grid;
+  place-items: center;
+  gap: 4px;
   text-decoration: none;
-  font-weight: 600;
-  color: ${({ $active }) => ($active ? "#000" : "#6b7280")};
-  border-bottom: 3px solid
-    ${({ $active }) => ($active ? "#000" : "transparent")};
+  font-size: 1.2rem;
+  color: ${({ $active }) => ($active ? "var(--primary)" : "var(--foreground)")};
+  font-weight: ${({ $active }) => ($active ? 700 : 500)};
+  border-top: 3px solid
+    ${({ $active }) => ($active ? "var(--primary)" : "transparent")};
+  transition: color 0.15s ease, border-color 0.15s ease;
 `;

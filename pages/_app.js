@@ -2,12 +2,16 @@ import GlobalStyle from "@/styles";
 import { SWRConfig } from "swr";
 import { SessionProvider, useSession } from "next-auth/react";
 import { ThemeProvider } from "@/context/ThemeContext";
-import Layout from "@/components/Layout";
+import { useEffect } from "react";
+import { Layout } from "@/components/ui/Primitives";
+import BottomNav from "@/components/BottomNav";
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  
+
   return (
     <SWRConfig
       value={{
@@ -21,14 +25,15 @@ export default function App({
       }}
     >
       <SessionProvider session={session}>
-        <Auth>
-          <ThemeProvider>
-            <GlobalStyle />
+        <ThemeProvider>
+          <GlobalStyle />
+          <Auth>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </ThemeProvider>
-        </Auth>
+            <BottomNav />
+          </Auth>
+        </ThemeProvider>
       </SessionProvider>
     </SWRConfig>
   );

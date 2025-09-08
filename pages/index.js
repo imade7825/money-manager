@@ -4,16 +4,17 @@ import { STATE } from "@/constants/state";
 import { useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
-import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import { Card } from "@/components/ui/Primitives";
+import AuthButtons from "@/components/AuthButtons";
+import TransactionForm from "@/components/TransactionForm.js";
 
 export default function HomePage() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-
+  const [isFormOpen, setIsFormOpen] = useState(false);
   //pagination States
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -37,6 +38,8 @@ export default function HomePage() {
     balance: sumTotal,
   } = getTotals(filteredTransactions);
 
+  const isFiltered = Boolean(filters.category) || filters.type !== STATE.ALL;
+
   const start = (currentPage - 1) * pageSize;
   const paginatedTransactions = filteredTransactions.slice(
     start,
@@ -56,13 +59,21 @@ export default function HomePage() {
   //Filter section
   function setFilterCategory(value) {
     setFilters((filter) => ({ ...filter, category: value }));
+    setCurrentPage(1);
   }
 
   function setFilterType(value) {
     setFilters((filter) => ({ ...filter, type: value }));
+    setCurrentPage(1);
   }
+
   function handleFilterClear() {
     setFilterCategory("");
+  }
+
+  function handleFilterReset() {
+    setFilters({ category: "", type: STATE.ALL });
+    setCurrentPage(1);
   }
 
   //pagination and values
@@ -111,47 +122,70 @@ export default function HomePage() {
 
   return (
     <>
-      <AccountBalance transactions={transactions} />
-      <FilterBar
-        value={filters.category}
-        categories={categories}
-        onChangeCategory={setFilterCategory}
-        onClearCategory={handleFilterClear}
-      />
-
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filters.category || "None"}</ActiveBadge>
-      </ActiveFilterRow>
-
-      <IncomeExpenseView
-        filteredTransactions={filteredTransactions}
-        sumIncome={sumIncome}
-        sumExpense={sumExpense}
-        sumTotal={sumTotal}
-        filterType={filters.type}
-        onFilter={setFilterType}
-      />
-      {isFormOpen && (
-        <Form
-          onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
-          defaultValues={editingTransaction}
-          onCancel={handleCancelEdit}
+      <CardControls>
+        <AuthButtons />
+      </CardControls>
+      <Card>
+        <AccountBalance transactions={transactions} />
+      </Card>
+      <CardFilter>
+        <FilterBar
+          value={filters.category}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
+          onClearCategory={handleFilterClear}
         />
-      )}
+
+        <ActiveFilterRow>
+          <span>Active filter:</span>
+          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+
+        {isFiltered && (
+          <FilteredBalanceRow>
+            <FilteredBalance $neg={sumTotal < 0} title="Filtered Balance:">
+              Filtered Balance: {sumTotal.toFixed(2)} €
+            </FilteredBalance>
+          </FilteredBalanceRow>
+        )}
+        <IncomeExpenseView
+          filteredTransactions={filteredTransactions}
+          sumIncome={sumIncome}
+          sumExpense={sumExpense}
+          sumTotal={sumTotal}
+          filterType={filters.type}
+          onFilter={setFilterType}
+        />
+        {(filters.category || filters.type !== STATE.ALL) && (
+          <ClearFilterButton onClick={handleFilterReset}>
+            Reset
+          </ClearFilterButton>
+        )}
+      </CardFilter>
 
       <TransactionsList>
         {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results available</EmptyState>
+          <EmptyState>No Results Available</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
-            <TransactionItem
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              transaction={transaction}
-              key={transaction._id}
-              onFilter={setFilterType}
-            />
+            <div key={transaction._id}>
+              <TransactionItem
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                transaction={transaction}
+                onFilter={setFilterType}
+              />
+              {isFormOpen && editingTransaction?._id === transaction._id && (
+                <InlineEdit>
+                  <TransactionForm
+                    key={`edit-${transaction._id}`}
+                    defaultValues={editingTransaction}
+                    onSubmit={(data) => handleUpdate(transaction._id, data)}
+                    onCancel={handleCancelEdit}
+                  />
+                </InlineEdit>
+              )}
+            </div>
           ))
         )}
 
@@ -175,33 +209,87 @@ const TransactionsList = styled.ul`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.6rem;
+  align-items: stretch;
+  max-width: 480px;
+  margin-inline: auto;
 `;
 
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 20px 10px;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 12px 8px;
+  min-width: 0;
   font-size: 0.95rem;
 `;
 
 const ActiveBadge = styled.span`
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.6rem;
   border: 2px solid #000;
   border-radius: 999px;
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--pb-100);
+  color: var(--pb-700);
+  border: 1px solid var(--pb-200);
 `;
 
 const EmptyState = styled.p`
-  margin: 0.5rem 20px;
+  margin: 0.5rem 12px;
   opacity: 0.8;
+  text-align: center;
 `;
 
-const ListBlock = styled.div`
-  width: 100%;
-  max-width: 450px;
-  margin: 0 auto;
+const CardControls = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CardFilter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 10px;
+`;
+
+const ClearFilterButton = styled.button`
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--pb-300);
+  background: var(--surface);
+  color: var(--pb-700);
+  cursor: pointer;
+`;
+
+const FilteredBalance = styled.span`
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--pb-200);
+  background: var(--surface);
+  font-weight: 700;
+  white-space: nowrap;
+  color: ${({ $neg }) => ($neg ? "#b91c1c" : "#166534")};
+  min-width: 100%;
+  overflow: hidden;
+`;
+
+const FilteredBalanceRow = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 12px 8px;
+  min-width: 0;
+`;
+const InlineEdit = styled.div`
+  margin: 6px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 8px 0;
 `;

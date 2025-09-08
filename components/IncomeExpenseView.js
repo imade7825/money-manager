@@ -2,14 +2,14 @@ import { STATE } from "@/constants/state";
 import styled from "styled-components";
 
 export default function IncomeExpenseView({
-  filteredTransactions,
+
   sumIncome,
   sumExpense,
   sumTotal,
   onFilter,
   filterType,
 }) {
-  // const [filterType, setFilterType] = useState(STATE.ALL);
+
 
   //Change radio button
   const handleFilterType = (event) => {
@@ -40,7 +40,6 @@ export default function IncomeExpenseView({
           {formatLabel(key)}
         </RadioLabel>
       ))}
-      <p>{totalLabel}</p>
     </form>
   );
 }

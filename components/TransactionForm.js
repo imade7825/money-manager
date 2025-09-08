@@ -36,102 +36,157 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   if (isLoading) return <p>Loading categories...</p>;
   return (
     <>
-      <HeaderForm>Please fill out all fields</HeaderForm>
-      <FormContainer onSubmit={handleSubmit}>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Please add your name"
-          required
-          defaultValue={defaultValues?.name}
-        />
-        <Label htmlFor="amount">Amount</Label>
-        <Input
-          id="amount"
-          name="amount"
-          min="1"
-          type="number"
-          placeholder="Please add amount"
-          required
-          defaultValue={defaultValues?.amount}
-        />
-        <select
-          id="category"
-          name="category"
-          defaultValue={defaultValues?.category}
-          required
-        >
-          <option value="" disabled>
-            Choose category
-          </option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
+      <FormWrapper>
+        <HeaderForm>Please fill out all fields</HeaderForm>
+        <FormContainer onSubmit={handleSubmit}>
+          <Label htmlFor="name">Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Please add your name"
+            required
+            defaultValue={defaultValues?.name}
+          />
+          <Label htmlFor="amount">Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            min="1"
+            type="number"
+            placeholder="Please add amount"
+            required
+            defaultValue={
+              typeof defaultValues?.amount === "number"
+                ? Math.abs(defaultValues.amount)
+                : defaultValues?.amount
+            }
+          />
+          <Select
+            id="category"
+            name="category"
+            defaultValue={defaultValues?.category}
+            required
+          >
+            <option value="" disabled>
+              Choose category
             </option>
-          ))}
-        </select>
-        <Label htmlFor="option1">Income</Label>
-        <Input id="option1" value="income" name="type" type="radio" required />
-        <Label htmlFor="option2">Expense</Label>
-        <Input id="option2" value="expense" name="type" type="radio" required />
-        <Label htmlFor="date">Date</Label>
-        <Input
-          id="date"
-          name="date"
-          type="date"
-          required
-          defaultValue={
-            defaultValues?.date
-              ? new Date(defaultValues.date).toISOString().slice(0, 10)
-              : today
-          }
-        />
-        <AddButton type="submit" disabled={isButtonDisabled}>
-          Add
-        </AddButton>
-        <CancelButton
-          type="reset"
-          onClick={handleReset}
-          disabled={isButtonDisabled}
-        >
-          Cancel
-        </CancelButton>
-      </FormContainer>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+          <Label htmlFor="option1">Income</Label>
+          <Input
+            id="option1"
+            value="income"
+            name="type"
+            type="radio"
+            required
+            defaultChecked={defaultValues?.type === "income"}
+          />
+          <Label htmlFor="option2">Expense</Label>
+          <Input
+            id="option2"
+            value="expense"
+            name="type"
+            type="radio"
+            required
+            defaultChecked={defaultValues?.type === "expense"}
+          />
+          <Label htmlFor="date">Date</Label>
+          <Input
+            id="date"
+            name="date"
+            type="date"
+            required
+            defaultValue={
+              defaultValues?.date
+                ? new Date(defaultValues.date).toISOString().slice(0, 10)
+                : today
+            }
+          />
+
+          <AddButton type="submit" disabled={isButtonDisabled}>
+            {defaultValues ? "Save" : "Add"}
+          </AddButton>
+          <CancelButton
+            type="reset"
+            onClick={handleReset}
+            disabled={isButtonDisabled}
+          >
+            Cancel
+          </CancelButton>
+        </FormContainer>
+      </FormWrapper>
     </>
   );
 }
 
+const FormWrapper = styled.div`
+  padding: 0 24px;
+  max-width: 650px;
+  margin: 45px auto 0;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  grid-column: 1 / -1;
+`;
+
 const HeaderForm = styled.h3`
-  margin: 0 0 0.25rem;
+  margin: 0 0 20px;
 `;
 
 const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+  padding-bottom: calc(
+    var(--bottom-nav-h, 64px) + env(safe-area-inset-bottom, 0px) + 24px
+  );
 `;
+
 const Input = styled.input`
-  padding: 0.5rem;
-  font-size: inherit;
-  border: 2px solid black;
-  border-radius: 10px;
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 100%;
+  &[type="radio"] {
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 `;
 
 const Label = styled.label`
+  grid-column: 1/-1;
   font-weight: 600;
 `;
 
 const AddButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: #000;
-  color: #fff;
+  grid-column: 1/-1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--primary);
 `;
 const CancelButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: transparent;
+  grid-column: 1/-1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+`;
+
+const Select = styled.select`
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  grid-column: 1 / -1;
+  width: 100%;
 `;
