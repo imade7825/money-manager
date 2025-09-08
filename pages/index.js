@@ -10,7 +10,6 @@ import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import { Card } from "@/components/ui/Primitives";
 import AuthButtons from "@/components/AuthButtons";
-import ThemeToggle from "@/components/ThemeToggle";
 import TransactionForm from "@/components/TransactionForm.js";
 
 export default function HomePage() {
@@ -102,7 +101,6 @@ export default function HomePage() {
   function handleEdit(transaction) {
     setEditingTransaction(transaction);
     setIsFormOpen(true);
-    
   }
 
   async function handleDelete(id) {
@@ -126,7 +124,6 @@ export default function HomePage() {
     <>
       <CardControls>
         <AuthButtons />
-        <ThemeToggle />
       </CardControls>
       <Card>
         <AccountBalance transactions={transactions} />
