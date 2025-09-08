@@ -56,7 +56,11 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             type="number"
             placeholder="Please add amount"
             required
-            defaultValue={defaultValues?.amount}
+            defaultValue={
+              typeof defaultValues?.amount === "number"
+                ? Math.abs(defaultValues.amount)
+                : defaultValues?.amount
+            }
           />
           <Select
             id="category"
@@ -80,6 +84,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             name="type"
             type="radio"
             required
+            defaultChecked={defaultValues?.type === "income"}
           />
           <Label htmlFor="option2">Expense</Label>
           <Input
@@ -88,6 +93,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             name="type"
             type="radio"
             required
+            defaultChecked={defaultValues?.type === "expense"}
           />
           <Label htmlFor="date">Date</Label>
           <Input
@@ -101,8 +107,9 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
                 : today
             }
           />
+
           <AddButton type="submit" disabled={isButtonDisabled}>
-            Add
+            {defaultValues ? "Save" : "Add"}
           </AddButton>
           <CancelButton
             type="reset"
@@ -117,6 +124,16 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   );
 }
 
+const FormWrapper = styled.div`
+  padding: 24px;
+  max-width: 650px;
+  margin: 45px auto 0;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  grid-column: 1 / -1;
+`;
+
 const HeaderForm = styled.h3`
   margin: 0 0 20px;
 `;
@@ -127,16 +144,23 @@ const FormContainer = styled.form`
   gap: 10px;
   width: 100%;
 `;
+
 const Input = styled.input`
   background: var(--surface-elevated);
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   width: 100%;
+  &[type="radio"] {
+    width: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
 `;
 
 const Label = styled.label`
-  grid-column: 1/1;
+  grid-column: 1/-1;
   font-weight: 600;
 `;
 
@@ -155,18 +179,11 @@ const CancelButton = styled.button`
   color: var(--primary);
 `;
 
-const FormWrapper = styled.div`
-  padding: 24px;
-  max-width: 650px;
-  margin: 45px auto 0;
-  background: var(--surface);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-`;
 const Select = styled.select`
   background: var(--surface-elevated);
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   grid-column: 1 / -1; /* Über beide Spalten */
-  width: 100%;`
+  width: 100%;
+`;

@@ -11,10 +11,11 @@ import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import { Card } from "@/components/ui/Primitives";
 import AuthButtons from "@/components/AuthButtons";
 import ThemeToggle from "@/components/ThemeToggle";
+import TransactionForm from "@/components/TransactionForm.js";
 
 export default function HomePage() {
-  const [editingTransaction, setEditingTransaction] = useState("");
-  const [isFormOpen, setIsFormOpen] = useState("");
+  const [editingTransaction, setEditingTransaction] = useState(null);
+  const [isFormOpen, setIsFormOpen] = useState(false);
   //pagination States
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -120,6 +121,14 @@ export default function HomePage() {
         <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
+        {isFormOpen && editingTransaction && (
+          <TransactionForm
+            key={editingTransaction._id}
+            defaultValues={editingTransaction}
+            onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
+            onCancel={handleCancelEdit}
+          />
+        )}
         <FilterBar
           value={filters.category}
           categories={categories}
@@ -215,7 +224,7 @@ const CardFilter = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  
+
   background: var(--surface-elevated);
   border: 1px solid var(--border);
   border-radius: var(--radius);
