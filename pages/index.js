@@ -131,7 +131,7 @@ export default function HomePage() {
   }
 
   return (
-    <Main id="main" role="main" aria-label="Finance dashboard">
+    <Main aria-label="Finance dashboard">
       <CardControls>
         <AuthButtons />
       </CardControls>
@@ -174,7 +174,7 @@ export default function HomePage() {
         {(filters.category || filters.type !== STATE.ALL) && (
           <ClearFilterButton
             onClick={handleFilterReset}
-            aria-label="Reset akk filters"
+            aria-label="Reset all filters"
           >
             Reset
           </ClearFilterButton>
