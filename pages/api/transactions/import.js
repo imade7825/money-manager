@@ -1,10 +1,10 @@
 import dbConnect from "@/db/connect";
 import Transaction from "@/db/models/Transaction";
-import { PageNotFoundError } from "next/dist/shared/lib/utils";
-import { DefaultTooltipContent } from "recharts";
+import { getToken } from "next-auth/jwt";
 
 const Required_Columns = ["name", "category", "date", "amount", "type"];
 
+//csv parser, handles commas, and escape quotes
 function parseCsvText(csvText) {
   const rows = [];
   let i = 0;
@@ -62,15 +62,15 @@ function parseCsvText(csvText) {
 
   return rows;
 }
-
+//map header names to their column indices
 function mapHeaderToIndex(headerRow) {
   const indexMap = {};
-  headerRow.forEach(cell, (index) => {
+  headerRow.forEach((cell, index) => {
     indexMap[cell.trim().toLowerCase()] = index;
   });
   return indexMap;
 }
-
+//read raw request as utf-8
 function readRawBody(request) {
   return new Promise((resolve, reject) => {
     let data = "";
@@ -80,12 +80,19 @@ function readRawBody(request) {
     request.on("error", reject);
   });
 }
-
+//api route: POST
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({ message: "Method Not Allowed" });
   }
   try {
+    //read token. requires valid NEXTAUTH_SECRET.
+    const token = await getToken({ req: request });
+    if (!token?.email) {
+      return response.status(401).json({ message: "Unauthorized" });
+    }
+    const ownerEmail = token.email;
+    //read csv as raw
     const csvText =
       typeof request.body === "string"
         ? request.body
@@ -99,7 +106,7 @@ export default async function handler(request, response) {
         message: "CSV must include a header row and at least one data row",
       });
     }
-
+    //header validation ensure required set exists
     const headerRow = allRows[0].map((header) => header.trim().toLowerCase());
     for (const coloumn of Required_Columns) {
       if (!headerRow.includes(coloumn)) {
@@ -108,9 +115,9 @@ export default async function handler(request, response) {
           .json({ message: `Missing required column:${coloumn}` });
       }
     }
-
+    //build column index map for fast lookups
     const columnIndexMap = mapHeaderToIndex(allRows[0]);
-
+    //build data to insert
     const transactionsToInsert = [];
     for (let row = 1; row < allRows.length; row++) {
       const values = allRows[row];
@@ -121,32 +128,34 @@ export default async function handler(request, response) {
       const dateISO = (values[columnIndexMap.date] || "").trim();
       const type = (values[columnIndexMap.type] || "").trim().toLowerCase();
       const amountValue = Number(
-        values[columnIndexMap.amount] || "".replace(",", ".")
+        String(values[columnIndexMap.amount] || "").replace(",", ".")
       );
 
       if (
-        !nem ||
+        !name ||
         !category ||
         !dateISO ||
         !type ||
         !Number.isFinite(amountValue)
       )
         continue;
-
+      //convert dateIso to date
+      const parsedDate = new Date(`${dateISO}T00:00:00.000Z`);
       if (type !== "income" && type !== "expense") continue;
-
+      //push data with owner
       transactionsToInsert.push({
         name,
         category,
         date: parsedDate,
-        amount,
+        amount: amountValue,
         type,
+        owner: ownerEmail,
       });
     }
     if (transactionsToInsert.length === 0) {
       return response
         .status(400)
-        .json({ message: "No valid rows forund in CSV" });
+        .json({ message: "No valid rows found in CSV" });
     }
     await dbConnect();
     await Transaction.insertMany(transactionsToInsert);
