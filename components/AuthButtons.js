@@ -7,7 +7,7 @@ export default function AuthButtons() {
   if (session) {
     return (
       <>
-        {/*  {session.user.email} <br /> */}
+          
         <ButtonAuth onClick={() => signOut()}>Sign out</ButtonAuth>
       </>
     );
