@@ -12,7 +12,11 @@ export default function AccountBalance({ transactions }) {
   return (
     <BalanceContainer>
       <h2>Account Balance</h2>
-      <BalanceValue isNegative={balance < 0}>
+      <BalanceValue
+        isNegative={balance < 0}
+        aria-live="polite"
+        aria-label={`Account is ${toCurrencyEUR(balance)}`}
+      >
         {toCurrencyEUR(balance)}
       </BalanceValue>
     </BalanceContainer>
