@@ -1,36 +1,34 @@
-# Accessibility Improvements
+# Account Balance Time Line Graph -Rechats
 
 ## Value Proposition
 
-**As a user** with diverse accessibility needs
+**As a user**
 
-**I want to** follow accessibility best practices(WCAG, ARIA)
+**I want to** see how my account balance changes over time.
 
-**so that** I can navigate, read, and interact with all features without barriers
+**so that** I can recognize trends, peaks, and drops in my finances.
 
 ## Description
 
-- Check all tags and make sure to use them with semantic meaning ( ex. headings, labels, buttons)
-- Add ARIA attributes where needed
-- Provide focus states for interactive elements (keyboard navigation)
-- Improve color contrasts in light/dark mode
-- Provide accessible names for icons ex. - ThemeToggle in DarkMode
-- Provide PieChart with alt="" text input
+A line chart shows the account balance as a running total per day.
+The chart is filterable by time ranges (e.g last week, month, 3 months, year or custom range)
+Tapping/Clicking shows the exact balance on graph
+If no data exists, page shows a prompt - "no transactions available"
 
 ## Acceptance Criteria
 
-- All form `inputs` have associated `<label>` elements or `aria-label`
-- Buttons and toggles have meaningful `aria-label` text
-- Keyboard users can tab through interactive elements
-- Contrast ratio meets contrast AA from WCAG in both modes (light/dark)
-- Non-text elements (DarkMode Toggle) have text alternatives or description
+- Time range presets are available: last week, month, 3 months, year or custom range
+- The line shows your daily balance (incomes add, expenses subtract)
+- Empty state "no transactions available"
+- Chart is wrapped with a figure and accessible title and caption
+- The negative balance is displayed correctly. A zero reference line is visible.
 
 ## Tasks
 
-- [ ] Review all components (AuthButtons, FilterBar, TransactionForm, TransactionItem, ThemeToggle, Pagination, CategoryPieChart) for missing accessibility attributes
-- [ ] Add `aria-label` to buttons like Sing in / Sing- out, ThemeToggle, Edit/Delete
-- [ ] Create a component for the balance
-- [ ] Check `<label htmlFor` is used for all form inputs
-- [ ] Add keyboard focus styles in styled-components
-- [ ] Verify color contrast with tools (Chrome - Lighthouse )
-- [ ] Provide summary text for PieChart - pageReader does't read .SVG charts ex. `<p role="note" aria-label="Pie chart summary">`
+- [ ] Create a new branch `feature/analytics-time-graph`.
+- [ ] Add a new component `AccountBalanceTimeLine.js`.
+- [ ] Write a helper function to build a daily balance series from transactions.
+- [ ] Render the chart witch Recharts(LineChart) inside a styled card.
+- [ ] Add loading, error and empty states with ARIA-roles.
+- [ ] Integrate into Analytics page, either as new tab next to the PieChart or a separate page **(RESEARCH)**
+- [ ] Add time range presets (last week, month, 3 months, year or custom range)
