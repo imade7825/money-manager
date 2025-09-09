@@ -247,7 +247,7 @@ const ActiveFilterRow = styled.div`
 const ActiveBadge = styled.span`
   padding: 0.2rem 0.6rem;
   border: 2px solid #000;
-  border-radius: 999px;
+  border-radius: 25px;
   background: var(--pb-100);
   color: var(--pb-700);
   border: 1px solid var(--pb-200);
@@ -288,7 +288,7 @@ const ClearFilterButton = styled.button`
 
 const FilteredBalance = styled.span`
   padding: 4px 10px;
-  border-radius: 999px;
+  border-radius: 25px;
   border: 1px solid var(--pb-200);
   background: var(--surface);
   font-weight: 700;
