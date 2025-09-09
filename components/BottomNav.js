@@ -14,7 +14,7 @@ export default function BottomNav() {
         Create
       </NavItem>
       <NavItem href="/piechart" $active={pathname === "/piechart"}>
-        Pie Chart
+        Analytics
       </NavItem>
     </Bar>
   );
