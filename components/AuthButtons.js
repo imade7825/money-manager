@@ -7,7 +7,6 @@ export default function AuthButtons() {
   if (session) {
     return (
       <>
-        {/*  {session.user.email} <br /> */}
         <ButtonAuth onClick={() => signOut()}>Sign out</ButtonAuth>
       </>
     );
@@ -22,6 +21,6 @@ export default function AuthButtons() {
 
 const ButtonAuth = styled.button`
   color: var(--foreground);
-  margin-bottom: 5px;
-  padding: 12px 11px ;
+  margin: 5px;
+  padding: 12px 11px;
 `;

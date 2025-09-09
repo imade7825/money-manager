@@ -32,8 +32,8 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  if (error) return <p>Failed to load categories</p>;
-  if (isLoading) return <p>Loading categories...</p>;
+  if (error) return <p role="alert">Failed to load categories</p>;
+  if (isLoading) return <p role="status">Loading categories...</p>;
   return (
     <>
       <FormWrapper>
@@ -45,6 +45,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             name="name"
             type="text"
             placeholder="Please add your name"
+            autoComplete="off"
             required
             defaultValue={defaultValues?.name}
           />
@@ -55,6 +56,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             min="1"
             type="number"
             placeholder="Please add amount"
+            inputMode="decimal"
             required
             defaultValue={
               typeof defaultValues?.amount === "number"
@@ -77,24 +79,26 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
               </option>
             ))}
           </Select>
-          <Label htmlFor="option1">Income</Label>
-          <Input
-            id="option1"
-            value="income"
-            name="type"
-            type="radio"
-            required
-            defaultChecked={defaultValues?.type === "income"}
-          />
-          <Label htmlFor="option2">Expense</Label>
-          <Input
-            id="option2"
-            value="expense"
-            name="type"
-            type="radio"
-            required
-            defaultChecked={defaultValues?.type === "expense"}
-          />
+          <TypeRow aria-label="Type">
+            <HiddenRadio
+              id="type-income"
+              value="income"
+              name="type"
+              type="radio"
+              required
+              defaultChecked={defaultValues?.type === "income"}
+            />
+            <Label htmlFor="type-income">Income</Label>
+            <HiddenRadio
+              id="type-expense"
+              value="expense"
+              name="type"
+              type="radio"
+              required
+              defaultChecked={defaultValues?.type === "expense"}
+            />
+            <Label htmlFor="type-expense">Expense</Label>
+          </TypeRow>
           <Label htmlFor="date">Date</Label>
           <Input
             id="date"
@@ -115,6 +119,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             type="reset"
             onClick={handleReset}
             disabled={isButtonDisabled}
+            aria-label="Cancel and close the form"
           >
             Cancel
           </CancelButton>
@@ -160,6 +165,34 @@ const Input = styled.input`
     border: 0;
     background: transparent;
   }
+`;
+
+const TypeRow = styled.div`
+  grid-column: 1 / -1;
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  Label {
+    grid-column: auto;
+    padding: 6px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  input[type="radio"]:checked + Label {
+    background: var(--pb-100, #d4eeff);
+    color: var(--pb-900, #0f34a0);
+    box-shadow: inset 0 0 0 1px var(--pb-400, #559aff);
+  }
+`;
+
+const HiddenRadio = styled.input`
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
 `;
 
 const Label = styled.label`

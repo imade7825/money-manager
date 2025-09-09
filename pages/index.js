@@ -47,8 +47,18 @@ export default function HomePage() {
   );
 
   //Early returns
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <Status role="status" aria-live="polite">
+        failed to load
+      </Status>
+    );
+  if (isLoading)
+    return (
+      <Status role="status" aria-live="polite">
+        Loading...
+      </Status>
+    );
 
   // Handler
   function handleCancelEdit() {
@@ -121,7 +131,7 @@ export default function HomePage() {
   }
 
   return (
-    <>
+    <Main aria-label="Finance dashboard">
       <CardControls>
         <AuthButtons />
       </CardControls>
@@ -129,6 +139,18 @@ export default function HomePage() {
         <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
+        {isFiltered && (
+          <FilteredBalanceRow>
+            <FilteredBalance
+              $neg={sumTotal < 0}
+              title="Filtered Balance:"
+              aria-live="polite"
+              aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
+            >
+              Filtered Balance: {sumTotal.toFixed(2)} €
+            </FilteredBalance>
+          </FilteredBalanceRow>
+        )}
         <FilterBar
           value={filters.category}
           categories={categories}
@@ -137,17 +159,10 @@ export default function HomePage() {
         />
 
         <ActiveFilterRow>
-          <span>Active filter:</span>
-          <ActiveBadge>{filters.category || "None"}</ActiveBadge>
+          <span role="label">Active filter:</span>
+          <ActiveBadge role="label">{filters.category || "None"}</ActiveBadge>
         </ActiveFilterRow>
 
-        {isFiltered && (
-          <FilteredBalanceRow>
-            <FilteredBalance $neg={sumTotal < 0} title="Filtered Balance:">
-              Filtered Balance: {sumTotal.toFixed(2)} €
-            </FilteredBalance>
-          </FilteredBalanceRow>
-        )}
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
           sumIncome={sumIncome}
@@ -157,18 +172,22 @@ export default function HomePage() {
           onFilter={setFilterType}
         />
         {(filters.category || filters.type !== STATE.ALL) && (
-          <ClearFilterButton onClick={handleFilterReset}>
+          <ClearFilterButton
+            onClick={handleFilterReset}
+            aria-label="Reset all filters"
+          >
             Reset
           </ClearFilterButton>
         )}
       </CardFilter>
 
-      <TransactionsList>
+      <TransactionsList aria-labelledby="transactions-title">
+        <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results Available</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
-            <div key={transaction._id}>
+            <TransactionsListItem key={transaction._id}>
               <TransactionItem
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -185,7 +204,7 @@ export default function HomePage() {
                   />
                 </InlineEdit>
               )}
-            </div>
+            </TransactionsListItem>
           ))
         )}
 
@@ -199,7 +218,7 @@ export default function HomePage() {
           />
         }
       </TransactionsList>
-    </>
+    </Main>
   );
 }
 
@@ -292,4 +311,30 @@ const InlineEdit = styled.div`
   border-radius: var(--radius);
   background: var(--surface);
   padding: 8px 0;
+`;
+
+/* a11y */
+
+const Main = styled.main`
+  display: block;
+`;
+
+const Status = styled.p`
+  margin: 16px 20px;
+`;
+
+const TransactionsListItem = styled.li`
+  list-style: none;
+`;
+
+const ScreenReaderH2 = styled.h2`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 1px, 1px);
+  white-space: nowrap;
+  border: 0;
 `;

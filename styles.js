@@ -50,6 +50,13 @@ const GlobalStyle = createGlobalStyle`
     --negative:#f87171;
   }
 }
+/* a11y */
+*:focus-visible{
+  outline: 3px solid var(--focus-ring, #0b43ff);
+  outline-offset: 2px;
+   
+}
+
 
 html[data-theme="light"]{
   --background:#ffffff; 

@@ -20,9 +20,9 @@ export default function CreatePage() {
   }
 
   return (
-    <>
+    <main role="main">
       <h2 style={{ margin: "16px 12px" }}>Create Transaction</h2>
       <Form onSubmit={handleSubmit} onCancel={() => router.back()} />
-    </>
+    </main>
   );
 }

@@ -12,7 +12,11 @@ export default function AccountBalance({ transactions }) {
   return (
     <BalanceContainer>
       <h2>Account Balance</h2>
-      <BalanceValue isNegative={balance < 0}>
+      <BalanceValue
+        isNegative={balance < 0}
+        aria-live="polite"
+        aria-label={`Account is ${toCurrencyEUR(balance)}`}
+      >
         {toCurrencyEUR(balance)}
       </BalanceValue>
     </BalanceContainer>
@@ -32,7 +36,5 @@ const BalanceValue = styled.h2`
   margin: 6px 0 0;
   font-size: 1.6rem;
   color: ${({ $isNegative }) =>
-    $isNegative
-      ? "var(--pb-50)"
-      : "var(--pb-950)"}; 
+    $isNegative ? "var(--pb-50)" : "var(--pb-950)"};
 `;
