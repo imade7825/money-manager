@@ -27,7 +27,9 @@ export default function IncomeExpenseView({
   const formatLabel = (key) => key.charAt(0) + key.slice(1).toLowerCase();
 
   return (
-    <form>
+    <form aria-labelledby="trx-type-legend">
+      
+      
       {Object.entries(STATE).map(([key, value]) => (
         <RadioLabel key={key}>
           <input
@@ -40,6 +42,7 @@ export default function IncomeExpenseView({
           {formatLabel(key)}
         </RadioLabel>
       ))}
+    
     </form>
   );
 }

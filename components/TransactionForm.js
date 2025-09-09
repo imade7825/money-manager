@@ -32,8 +32,8 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  if (error) return <p>Failed to load categories</p>;
-  if (isLoading) return <p>Loading categories...</p>;
+  if (error) return <p role="alert">Failed to load categories</p>;
+  if (isLoading) return <p role="status">Loading categories...</p>;
   return (
     <>
       <FormWrapper>
@@ -45,6 +45,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             name="name"
             type="text"
             placeholder="Please add your name"
+            autoComplete="off"
             required
             defaultValue={defaultValues?.name}
           />
@@ -55,6 +56,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             min="1"
             type="number"
             placeholder="Please add amount"
+            inputMode="decimal"
             required
             defaultValue={
               typeof defaultValues?.amount === "number"
@@ -115,6 +117,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             type="reset"
             onClick={handleReset}
             disabled={isButtonDisabled}
+            aria-label="Cancel and close the form"
           >
             Cancel
           </CancelButton>
