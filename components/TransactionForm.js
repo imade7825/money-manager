@@ -184,12 +184,6 @@ const TypeRow = styled.div`
     color: var(--pb-900, #0f34a0);
     box-shadow: inset 0 0 0 1px var(--pb-400, #559aff);
   }
-
-  /* sichtbarer Tastatur-Fokus */
-  input[type="radio"]:focus-visible + Label {
-    outline: 2px solid var(--focus-ring, #0b43ff);
-    outline-offset: 2px;
-  }
 `;
 
 const HiddenRadio = styled.input`

@@ -139,18 +139,6 @@ export default function HomePage() {
         <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
-        <FilterBar
-          value={filters.category}
-          categories={categories}
-          onChangeCategory={setFilterCategory}
-          onClearCategory={handleFilterClear}
-        />
-
-        <ActiveFilterRow>
-          <span role="label">Active filter:</span>
-          <ActiveBadge role="label">{filters.category || "None"}</ActiveBadge>
-        </ActiveFilterRow>
-
         {isFiltered && (
           <FilteredBalanceRow>
             <FilteredBalance
@@ -163,6 +151,18 @@ export default function HomePage() {
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
+        <FilterBar
+          value={filters.category}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
+          onClearCategory={handleFilterClear}
+        />
+
+        <ActiveFilterRow>
+          <span role="label">Active filter:</span>
+          <ActiveBadge role="label">{filters.category || "None"}</ActiveBadge>
+        </ActiveFilterRow>
+
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
           sumIncome={sumIncome}
