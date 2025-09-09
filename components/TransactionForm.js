@@ -79,24 +79,26 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
               </option>
             ))}
           </Select>
-          <Label htmlFor="option1">Income</Label>
-          <Input
-            id="option1"
-            value="income"
-            name="type"
-            type="radio"
-            required
-            defaultChecked={defaultValues?.type === "income"}
-          />
-          <Label htmlFor="option2">Expense</Label>
-          <Input
-            id="option2"
-            value="expense"
-            name="type"
-            type="radio"
-            required
-            defaultChecked={defaultValues?.type === "expense"}
-          />
+          <TypeRow aria-label="Type">
+            <HiddenRadio
+              id="type-income"
+              value="income"
+              name="type"
+              type="radio"
+              required
+              defaultChecked={defaultValues?.type === "income"}
+            />
+            <Label htmlFor="type-income">Income</Label>
+            <HiddenRadio
+              id="type-expense"
+              value="expense"
+              name="type"
+              type="radio"
+              required
+              defaultChecked={defaultValues?.type === "expense"}
+            />
+            <Label htmlFor="type-expense">Expense</Label>
+          </TypeRow>
           <Label htmlFor="date">Date</Label>
           <Input
             id="date"
@@ -163,6 +165,40 @@ const Input = styled.input`
     border: 0;
     background: transparent;
   }
+`;
+
+const TypeRow = styled.div`
+  grid-column: 1 / -1;
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  Label {
+    grid-column: auto;
+    padding: 6px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  input[type="radio"]:checked + Label {
+    background: var(--pb-100, #d4eeff);
+    color: var(--pb-900, #0f34a0);
+    box-shadow: inset 0 0 0 1px var(--pb-400, #559aff);
+  }
+
+  /* sichtbarer Tastatur-Fokus */
+  input[type="radio"]:focus-visible + Label {
+    outline: 2px solid var(--focus-ring, #0b43ff);
+    outline-offset: 2px;
+  }
+`;
+
+const HiddenRadio = styled.input`
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
 `;
 
 const Label = styled.label`
