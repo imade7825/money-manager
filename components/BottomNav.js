@@ -7,13 +7,25 @@ export default function BottomNav() {
 
   return (
     <Bar role="navigation" aria-label="Main navigation">
-      <NavItem href="/" $active={pathname === "/"}>
+      <NavItem
+        href="/"
+        $active={pathname === "/"}
+        aria-current={pathname === "/" ? "page" : undefined}
+      >
         Home
       </NavItem>
-      <NavItem href="/create" $active={pathname === "/create"}>
+      <NavItem
+        href="/create"
+        $active={pathname === "/create"}
+        aria-current={pathname === "/" ? "page" : undefined}
+      >
         Create
       </NavItem>
-      <NavItem href="/piechart" $active={pathname === "/piechart"}>
+      <NavItem
+        href="/analytics"
+        $active={pathname === "/analytics"}
+        aria-current={pathname === "/" ? "page" : undefined}
+      >
         Analytics
       </NavItem>
     </Bar>
