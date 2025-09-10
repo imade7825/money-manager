@@ -5,6 +5,9 @@ import { parse } from "csv-parse/sync";
 
 const Required_Columns = ["name", "category", "date", "amount", "type"];
 
+function normalizeHeader(header) {
+  return String(header).trim().toLowerCase();
+}
 //read raw request as utf-8
 function readRawBody(request) {
   return new Promise((resolve, reject) => {
@@ -38,7 +41,7 @@ export default async function handler(request, response) {
 
     //parse csv into array of objects
     const allRows = parse(csvText, {
-      columns: true,
+      columns: (header) => header.map(normalizeHeader),
       skip_empty_lines: true,
       bom: true,
       trim: true,
@@ -50,10 +53,9 @@ export default async function handler(request, response) {
         message: "CSV must include a header row and at least one data row",
       });
     }
+
     //header validation ensure required set exists
-    const headerRow = Object.keys(allRows[0]).map((header) =>
-      header.toLowerCase()
-    );
+    const headerRow = Object.keys(allRows[0]);
     for (const coloumn of Required_Columns) {
       if (!headerRow.includes(coloumn)) {
         return response

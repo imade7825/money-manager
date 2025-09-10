@@ -107,6 +107,7 @@ const Row = styled.div`
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+  align-items: center;
 `;
 
 const Button = styled.button`
