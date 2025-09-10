@@ -24,6 +24,7 @@ export default function HomePage() {
     type: STATE.ALL,
     dateFrom: "",
     dateTo: "",
+    timePreset: "all",
   });
 
   //Data
@@ -86,20 +87,12 @@ export default function HomePage() {
     setCurrentPage(1);
   }
 
-  function handleFilterClear() {
-    setFilterCategory("");
-  }
-
-  function handleFilterReset() {
-    setFilters({ category: "", type: STATE.ALL, dateFrom: "", dateTo: "" });
-    setCurrentPage(1);
-  }
-
   function setFilterDates({ dateFrom, dateTo }) {
     setFilters((filter) => ({
       ...filter,
       dateFrom: dateFrom ?? filter.dateFrom,
       dateTo: dateTo ?? filter.dateTo,
+      timePreset: "custom",
     }));
     setCurrentPage(1);
   }
@@ -118,17 +111,29 @@ export default function HomePage() {
       const date = new Date(today);
       date.setDate(date.getDate() - 6);
       from = date.toISOString().slice(0, 10);
-    } else if ((preset = "30")) {
+    } else if (preset === "30") {
       const date = new Date(today);
       date.setDate(date.getDate() - 29);
-      from = date.toDateString().slice(0, 10);
+      from = date.toISOString().slice(0, 10);
     } else if (preset === "month") {
-      form = firstDayOfThisMonthISO;
+      from = firstDayOfThisMonthISO();
     } else if (preset === "all") {
-      setFilterDates({ dateFrom: "", dateTo: "" });
+      setFilters((filter) => ({
+        ...filter,
+        dateFrom: "",
+        dateTo: "",
+        timePreset: "all",
+      }));
+      setCurrentPage(1);
       return;
     }
-    setFilterDates({ dateFrom: from, dateTo: to });
+    setFilters((filter) => ({
+      ...filter,
+      dateFrom: from,
+      dateTo: to,
+      timePreset: preset,
+    }));
+    setCurrentPage(1);
   }
 
   //pagination and values
@@ -196,28 +201,26 @@ export default function HomePage() {
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
+
         <FilterBar
           value={filters.category}
           categories={categories}
           onChangeCategory={setFilterCategory}
-          onClearCategory={handleFilterClear}
           dateFrom={filters.dateFrom}
           dateTo={filters.dateTo}
+          preset={filters.timePreset}
           onChangeDates={setFilterDates}
           onPreset={handleDatePreset}
         />
+        {(filters.dateFrom || filters.dateTo) && (
+          <ActiveFilterRow>
+            <span role="label">Time span:</span>
+            <ActiveBadge role="label">
+              {filters.dateFrom || " ... "}- {filters.dateTo || "..."}
+            </ActiveBadge>
+          </ActiveFilterRow>
+        )}
 
-        <ActiveFilterRow>
-          <span role="label">Active filter:</span>
-          <ActiveBadge role="label">{filters.category || "None"}</ActiveBadge>
-        </ActiveFilterRow>
-
-  {(filters.dateFrom || filters.dateTo)&&(
-        <ActiveFilterRow>
-          <span role="label">Date:</span>
-          <ActiveBadge role="label">{filters.dateFrom || " ... "}- {filters.dateTo || "..."}</ActiveBadge>
-        </ActiveFilterRow>
-)}
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
           sumIncome={sumIncome}
@@ -226,14 +229,6 @@ export default function HomePage() {
           filterType={filters.type}
           onFilter={setFilterType}
         />
-        {(filters.category || filters.type !== STATE.ALL) && (
-          <ClearFilterButton
-            onClick={handleFilterReset}
-            aria-label="Reset all filters"
-          >
-            Reset
-          </ClearFilterButton>
-        )}
       </CardFilter>
 
       <TransactionsList aria-labelledby="transactions-title">
@@ -301,7 +296,6 @@ const ActiveFilterRow = styled.div`
 
 const ActiveBadge = styled.span`
   padding: 0.2rem 0.6rem;
-  border: 2px solid #000;
   border-radius: 25px;
   background: var(--pb-100);
   color: var(--pb-700);
@@ -321,7 +315,7 @@ const CardControls = styled.div`
 
 const CardFilter = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 1rem;
   background: var(--surface-elevated);
   border: 1px solid var(--border);
@@ -329,16 +323,6 @@ const CardFilter = styled.div`
   box-shadow: var(--shadow);
   padding: 12px;
   margin-bottom: 10px;
-`;
-
-const ClearFilterButton = styled.button`
-  margin-left: auto;
-  padding: 6px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--pb-300);
-  background: var(--surface);
-  color: var(--pb-700);
-  cursor: pointer;
 `;
 
 const FilteredBalance = styled.span`

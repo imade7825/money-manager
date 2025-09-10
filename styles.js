@@ -115,6 +115,13 @@ input,select{
   border:1px solid var(--border); 
   border-radius:var(--radius-sm);
   padding:.5rem .6rem;
+  width: 100%;
+}
+label{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.9rem;
 }
 
 /* Focus sichtbar */
