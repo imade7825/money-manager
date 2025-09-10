@@ -21,7 +21,6 @@ export default function HomePage() {
 
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
 
-  
   //Data
   const {
     data: transactions = [],
@@ -36,7 +35,10 @@ export default function HomePage() {
   const baseTransactions = importedOnly ?? transactions;
 
   // Helpers
-  const filteredTransactions = getFilteredTransactions(baseTransactions, filters);
+  const filteredTransactions = getFilteredTransactions(
+    baseTransactions,
+    filters
+  );
   const {
     income: sumIncome,
     expense: sumExpense,
@@ -48,8 +50,6 @@ export default function HomePage() {
     start,
     start + pageSize
   );
-  
-
 
   //Early returns
   if (error) return <div>failed to load</div>;
@@ -142,6 +142,7 @@ export default function HomePage() {
         onFilter={setFilterType}
       />
       <ImportExportDataInCsv
+      importedItems={importedOnly}
         onImported={(newItems) => {
           setImportedOnly(newItems);
           setCurrentPage(1);

@@ -45,9 +45,21 @@ export default async function exportHandler(request, response) {
     const ownerEmail = session.user.email;
 
     await dbConnect();
+    // export only with ids
+    const idsParameter = request.query?.ids;
+    const query = { owner: ownerEmail };
+    if (idsParameter) {
+      const ids = String(idsParameter)
+        .split(",")
+        .map((string) => string.trim())
+        .filter(Boolean);
+      if (ids.length > 0) {
+        query._id = { $in: ids };
+      }
+    }
     //data step fetch current user transaction
-    const transactions = await Transaction.find({ owner: ownerEmail }).lean();
-    
+    const transactions = await Transaction.find(query).lean();
+
     const csv = buildCsvString(transactions);
     //set download headers and stream csv back
     response.setHeader("Content-Type", "text/csv; charset=utf-8");

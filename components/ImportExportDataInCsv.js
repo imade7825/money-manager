@@ -1,16 +1,26 @@
 import { useState } from "react";
 import styled from "styled-components";
 
-export default function ImportExportDataInCsv({ onImported }) {
+export default function ImportExportDataInCsv({ onImported, importedItems }) {
   const [statusMessage, setStatusMessage] = useState(null);
 
   //call api, receive csv, trigger file download
   async function handleExport() {
     try {
       setStatusMessage(null);
-      const response = await fetch("/api/transactions/export", {
-        method: "GET",
-      });
+
+      //export only the imported items
+      let url = "/api/transactions/export";
+      if (Array.isArray(importedItems) && importedItems.length > 0) {
+        const ids = importedItems
+          .map((t) => t && t._id)
+          .filter(Boolean)
+          .join(",");
+        if (ids) {
+          url += `?ids=${encodeURIComponent(ids)}`;
+        }
+      }
+      const response = await fetch(url, { method: "GET" });
       if (!response.ok) throw new Error("Export failed");
 
       const csvFileBlob = await response.blob();
@@ -133,9 +143,4 @@ const VisuallyHiddenInput = styled.input.attrs({ type: "file" })`
   width: 1px;
   height: 1px;
   padding: 0;
-  /* margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0; */
 `;
