@@ -19,7 +19,12 @@ export default function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
+  const [filters, setFilters] = useState({
+    category: "",
+    type: STATE.ALL,
+    dateFrom: "",
+    dateTo: "",
+  });
 
   //Data
   const {
@@ -84,6 +89,42 @@ export default function HomePage() {
   function handleFilterReset() {
     setFilters({ category: "", type: STATE.ALL });
     setCurrentPage(1);
+  }
+
+  function setFilterDates({ dateFrom, dateTo }) {
+    setFilters((filter) => ({
+      ...filter,
+      dateFrom: dateFrom ?? filter.dateFrom,
+      dateTo: dateTo ?? filter.dateTo,
+    }));
+    setCurrentPage(1);
+  }
+
+  function handleDatePreset(preset) {
+    const today = new Date();
+    const to = today.toISOString().slice(0, 10);
+    const firstDayOfThisMonthISO = () =>
+      new Date(today.getFullYear(), today.getMonth(), 1)
+        .toISOString()
+        .slice(0, 10);
+    let from = "";
+    if (preset === "today") {
+      from = to;
+    } else if (preset === "7") {
+      const date = new Date(today);
+      date.setDate(date.getDate() - 6);
+      from = date.toISOString().slice(0, 10);
+    } else if ((preset = "30")) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - 29);
+      from = date.toDateString().slice(0, 10);
+    } else if (preset === "month") {
+      form = firstDayOfThisMonthISO;
+    } else if (preset === "all") {
+      setFilterDates({ dateFrom: "", dateTo: "" });
+      return;
+    }
+    setFilterDates({ dateFrom: from, dateTo: to });
   }
 
   //pagination and values
