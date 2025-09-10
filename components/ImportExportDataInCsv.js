@@ -1,8 +1,7 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 export default function ImportExportDataInCsv({ onImported }) {
-  const fileInputRef = useRef(null);
   const [statusMessage, setStatusMessage] = useState(null);
 
   //call api, receive csv, trigger file download
@@ -31,68 +30,72 @@ export default function ImportExportDataInCsv({ onImported }) {
     }
   }
 
+  //read and import selected csv file
+  async function handleImportSubmit(event) {
+    event.preventDefault();
+    setStatusMessage(null);
 
-//open file dailog
-function handlePickFile() {
-  setStatusMessage(null);
-  fileInputRef.current?.click();
-}
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+    const file = formData.get("csvFile");
 
-//read and import selected csv file
-async function handleFileChange(event) {
-  try {
-    const selectedFile = event.target.files?.[0];
-    if (!selectedFile) return;
-
-    if (!/\.csv$/i.test(selectedFile.name)) {
+    if (!(file instanceof File)) {
+      setStatusMessage("Please choose a .csv file before importing.");
+      return;
+    }
+    if (!/\.csv$/i.test(file.name)) {
       setStatusMessage("Please select a .csv file.");
       return;
     }
 
-    const fileContent = await selectedFile.text();
-    setStatusMessage("Import in progress...");
+    try {
+      setStatusMessage("Import in progress...");
+      const fileContent = await file.text();
 
-    const response = await fetch("/api/transactions/import", {
-      method: "POST",
-      headers: { "Content-Type": "text/csv; charset=utf-8" },
-      body: fileContent,
-    });
+      const response = await fetch("/api/transactions/import", {
+        method: "POST",
+        headers: { "Content-Type": "text/csv; charset=utf-8" },
+        body: fileContent,
+      });
 
-    const result = await response.json().catch(() => ({}));
-    if (!response.ok) {
-      const errorMessage = result?.message || "Import failed.";
-      setStatusMessage(errorMessage);
-      return;
+      const result = await response.json();
+      if (!response.ok) {
+        setStatusMessage(result?.message || "Import failed.");
+        return;
+      }
+
+      setStatusMessage(result?.message || "Import successful.");
+      if (typeof onImported === "function") {
+        onImported(result.items ?? []);
+      }
+      form.reset(); // erlaubt, dieselbe Datei erneut zu wählen
+    } catch (err) {
+      console.error(err);
+      setStatusMessage("Import failed.");
     }
-
-    setStatusMessage(result?.message || "Import successful.");
-    onImported?.(result);
-    event.target.value = "";
-  } catch (error) {
-    console.error(error);
-    setStatusMessage("Import failed.");
   }
-}
-return (
-  <Wrapper>
-    <Row>
-      <Button type="button" onClick={handleExport}>
-        Export CSV
-      </Button>
-      <Button type="button" onClick={handlePickFile}>
-        Import CSV
-      </Button>
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept=".csv,text/csv"
-        style={{ display: "none" }}
-        onChange={handleFileChange}
-      />
-    </Row>
-    {statusMessage && <Status role="status">{statusMessage}</Status>}
-  </Wrapper>
-);
+
+  return (
+    <Wrapper>
+      <Row>
+        <Button type="button" onClick={handleExport}>
+          Export CSV
+        </Button>
+        <form onSubmit={handleImportSubmit}>
+          <VisuallyHiddenInput
+            id="csvFile"
+            name="csvFile"
+            accept=".csv,text/csv"
+            onChange={(event) => event.currentTarget.form?.requestSubmit()}
+          />
+          <Button as="label" htmlFor="csvFile">
+            Import CSV
+          </Button>
+        </form>
+      </Row>
+      {statusMessage && <Status role="status">{statusMessage}</Status>}
+    </Wrapper>
+  );
 }
 const Wrapper = styled.div`
   display: grid;
@@ -122,4 +125,16 @@ const Button = styled.button`
 const Status = styled.div`
   font-size: 14px;
   color: #333;
+`;
+
+const VisuallyHiddenInput = styled.input.attrs({ type: "file" })`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  /* margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0; */
 `;

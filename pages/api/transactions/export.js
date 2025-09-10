@@ -24,7 +24,7 @@ function buildCsvString(rows) {
         escapeCsvField(row.name),
         escapeCsvField(row.category),
         escapeCsvField(new Date(row.date || 0).toISOString().slice(0, 10)),
-        escapeCsvField(row.amount),
+        escapeCsvField(row.amount ?? 0),
         escapeCsvField(row.type),
       ].join(",")
     );
@@ -47,15 +47,8 @@ export default async function exportHandler(request, response) {
     await dbConnect();
     //data step fetch current user transaction
     const transactions = await Transaction.find({ owner: ownerEmail }).lean();
-    //map DB into CSV builder
-    const csvRows = transactions.map((transaction) => ({
-      name: transaction.name ?? "",
-      category: transaction.category ?? "",
-      date: transaction.date ?? "",
-      amount: Number(transaction.amount ?? 0),
-      type: transaction.type ?? "",
-    }));
-    const csv = buildCsvString(csvRows);
+    
+    const csv = buildCsvString(transactions);
     //set download headers and stream csv back
     response.setHeader("Content-Type", "text/csv; charset=utf-8");
     response.setHeader(

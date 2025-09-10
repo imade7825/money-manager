@@ -21,6 +21,9 @@ export default function HomePage() {
 
   const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
 
+  //import data
+  const [importedOnly, setImportedOnly] = useState(null);
+
   //Data
   const {
     data: transactions = [],
@@ -114,12 +117,11 @@ export default function HomePage() {
     <>
       <AccountBalance transactions={transactions} />
 
-      <FilterBar
+      <FilterBarStyle
         value={filters.category}
         categories={categories}
         onChangeCategory={setFilterCategory}
         onClearCategory={handleFilterClear}
-        style={{ flex: 1, minWidth: "200px" }}
       />
 
       <ActiveFilterRow>
@@ -135,7 +137,12 @@ export default function HomePage() {
         filterType={filters.type}
         onFilter={setFilterType}
       />
-      <ImportExportDataInCsv onImported={() => mutate()} />
+      <ImportExportDataInCsv
+        onImported={(newItems) => {
+          setImportedOnly(newItems);
+          setCurrentPage(1);
+        }}
+      />
       {isFormOpen && (
         <Form
           onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
@@ -204,3 +211,7 @@ const EmptyState = styled.p`
   opacity: 0.8;
 `;
 
+const FilterBarStyle = styled(FilterBar)`
+  flex: 1;
+  min-width: 200px;
+`;
