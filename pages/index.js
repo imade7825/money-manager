@@ -43,7 +43,11 @@ export default function HomePage() {
     balance: sumTotal,
   } = getTotals(filteredTransactions);
 
-  const isFiltered = Boolean(filters.category) || filters.type !== STATE.ALL;
+  const isFiltered =
+    Boolean(filters.category) ||
+    filters.type !== STATE.ALL ||
+    Boolean(filters.dateFrom) ||
+    Boolean(filters.dateTo);
 
   const start = (currentPage - 1) * pageSize;
   const paginatedTransactions = filteredTransactions.slice(
@@ -87,7 +91,7 @@ export default function HomePage() {
   }
 
   function handleFilterReset() {
-    setFilters({ category: "", type: STATE.ALL });
+    setFilters({ category: "", type: STATE.ALL, dateFrom: "", dateTo: "" });
     setCurrentPage(1);
   }
 
@@ -197,6 +201,10 @@ export default function HomePage() {
           categories={categories}
           onChangeCategory={setFilterCategory}
           onClearCategory={handleFilterClear}
+          dateFrom={filters.dateFrom}
+          dateTo={filters.dateTo}
+          onChangeDates={setFilterDates}
+          onPreset={handleDatePreset}
         />
 
         <ActiveFilterRow>
@@ -204,6 +212,12 @@ export default function HomePage() {
           <ActiveBadge role="label">{filters.category || "None"}</ActiveBadge>
         </ActiveFilterRow>
 
+  {(filters.dateFrom || filters.dateTo)&&(
+        <ActiveFilterRow>
+          <span role="label">Date:</span>
+          <ActiveBadge role="label">{filters.dateFrom || " ... "}- {filters.dateTo || "..."}</ActiveBadge>
+        </ActiveFilterRow>
+)}
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
           sumIncome={sumIncome}
