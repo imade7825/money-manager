@@ -181,7 +181,7 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Delete failed");
-
+      toast.error();
       return;
     }
     await mutate();
