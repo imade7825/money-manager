@@ -1,5 +1,7 @@
 import GlobalStyle from "@/styles";
 import { SWRConfig } from "swr";
+import { StyledToastContainer } from "@/components/ToastContainer";
+import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider, useSession } from "next-auth/react";
 import { Layout } from "@/components/ui/Primitives";
 import BottomNav from "@/components/BottomNav";
@@ -22,6 +24,7 @@ export default function App({
     >
       <SessionProvider session={session}>
         <GlobalStyle />
+        <StyledToastContainer />
         <Auth>
           <Layout>
             <Component {...pageProps} />
