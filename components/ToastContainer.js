@@ -13,7 +13,7 @@ export const StyledToastContainer = styled(ToastContainer).attrs({
   "aria-live": "polite",
 })`
   .Toastify__toast {
-    border-radius: var(--radius, 12px);
+    border-radius: var(--radius, 14px);
     border: 2px solid var(--pb-500);
     box-shadow: var(--shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
     font-weight: 600;
