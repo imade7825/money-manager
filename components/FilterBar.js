@@ -37,9 +37,9 @@ export default function FilterBar({
   }
 
   return (
-    <>
+    
       <Bar>
-        <div>
+       
           <label>
             Category
             <select
@@ -54,7 +54,7 @@ export default function FilterBar({
               ))}
             </select>
           </label>
-        </div>
+        
         <Field>
           <label htmlFor="time-filter">Time Filter</label>
           <TimeSelect
@@ -104,7 +104,7 @@ export default function FilterBar({
           </Backdrop>
         )}
       </Bar>
-    </>
+    
   );
 }
 
