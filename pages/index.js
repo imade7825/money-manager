@@ -100,10 +100,12 @@ export default function HomePage() {
   function handleDatePreset(preset) {
     const today = new Date();
     const to = today.toISOString().slice(0, 10);
-    const firstDayOfThisMonthISO = () =>
-      new Date(today.getFullYear(), today.getMonth(), 1)
-        .toISOString()
-        .slice(0, 10);
+    const firstDayOfThisMonthISO = () => {
+      const day = new Date(today.getFullYear(), today.getMonth(), 1);
+      const year = day.getFullYear();
+      const month = String(day.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}-01`;
+    };
     let from = "";
     if (preset === "today") {
       from = to;
