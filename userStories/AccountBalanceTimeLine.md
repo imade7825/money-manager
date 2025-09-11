@@ -10,7 +10,7 @@
 
 ## Description
 
-The chart shown inside the  Charts tab (see wireframe).
+The chart shown inside the Charts tab (see wireframe).
 The chart is filterable by time ranges (e.g last week, month, 3 months, year or custom range)
 Tapping/Clicking shows the exact balance on graph
 If no data exists, page shows a prompt - "no transactions available"
@@ -19,6 +19,7 @@ If no data exists, page shows a prompt - "no transactions available"
 
 - Time range presets are available: last week, month, 3 months, year or custom range.
 - The line shows your daily balance (incomes add, expenses subtract).
+- The line chart will be displayed as submenu on the `Analytics` page with two buttons to switch between charts.
 - Empty state "no transactions available".
 - Chart is wrapped with a figure and accessible title and caption.
 - Tooltip shows date + exact balance.
@@ -32,7 +33,7 @@ If no data exists, page shows a prompt - "no transactions available"
 - [ ] Implement custom range selection - with date pickers for start and end
 - [ ] Store current range in local component state (`useState`).
 - [ ] Render the chart with Recharts inside a styled card.
-- [ ] Integrate into Analytics page, as new tab next to the PieChart 
+- [ ] Integrate into Analytics page, as new tab next to the PieChart
 - [ ] Add time range presets (last week, month, 3 months, year or custom range)
-    - [ ] Create small buttons for presets above or below chart
-    - [ ] When clicked, update the selected `timeRange`state
+  - [ ] Create small buttons for presets above or below chart
+  - [ ] When clicked, update the selected `timeRange`state
