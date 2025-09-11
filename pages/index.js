@@ -11,6 +11,8 @@ import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import { Card } from "@/components/ui/Primitives";
 import AuthButtons from "@/components/AuthButtons";
 import TransactionForm from "@/components/TransactionForm.js";
+import { toast } from "react-toastify";
+import { notify } from "@/lib/toast";
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -152,12 +154,14 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Update Failed");
+      toast.error("Please try again.");
       return;
     }
     await response.json();
     setEditingTransaction(null);
     setIsFormOpen(false);
     await mutate();
+    notify.saved();
   }
 
   function handleEdit(transaction) {
@@ -177,9 +181,11 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Delete failed");
+      toast.error("Please try again.");
       return;
     }
     await mutate();
+    notify.deleted();
   }
 
   return (

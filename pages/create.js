@@ -1,5 +1,7 @@
 import { useRouter } from "next/router";
 import Form from "@/components/TransactionForm";
+import { toast } from "react-toastify";
+import { notify } from "@/lib/toast";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -13,9 +15,11 @@ export default function CreatePage() {
 
     if (!response.ok) {
       console.log("POST failed");
+      console.error("Please try again.");
       return;
     }
     await response.json();
+    notify.saved();
     router.push("/");
   }
 
