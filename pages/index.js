@@ -154,7 +154,7 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Update Failed");
-      toast.error("Please try again.");
+
       return;
     }
     await response.json();
@@ -181,7 +181,7 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Delete failed");
-      toast.error("Please try again.");
+
       return;
     }
     await mutate();
