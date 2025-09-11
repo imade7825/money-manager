@@ -4,7 +4,7 @@
 
 As a User
 **I want to** sort my transactions
-**so that** I can easily see the newest and teh oldest ones.
+**so that** I can easily see the newest and the oldest ones.
 
 ## Description
 
@@ -20,7 +20,7 @@ A sort button allows the user to toggle between ascending and descending transac
 
 ## Tasks
 
-- [ ] Add sort toggle button to the transaction list UI component.
-- [ ] Extend API to support `sort asc|desc`by date.
-- [ ] Update frontend to request sorted data from the API.
+- [ ] Add sort toggle button to the transaction list UI component with visible states for `ascending`/ `descending`.
+- [ ] Add local state + handler to flip sort options.
+- [ ] Write a helper function for -> toSorted() compared with id or createdAt
 - [ ] Preserve the chosen sort order so it remains after navigation or reload.
