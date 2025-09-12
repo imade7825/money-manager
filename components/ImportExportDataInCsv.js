@@ -3,8 +3,8 @@ import styled from "styled-components";
 import Papa from "papaparse";
 
 export default function ImportExportDataInCsv({
-  onImported, //callback-funktin vom parent: bekommt die importierte zeilen[Array]
-  importedItems = [], //list der datensätze aus dem frontend, standard leer verhinder (undefined)
+  importedItems = [],
+  onImported, //list der datensätze aus dem frontend, standard leer verhinder (undefined)
 }) {
   //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
   const [statusMessage, setStatusMessage] = useState(null);
@@ -69,10 +69,11 @@ export default function ImportExportDataInCsv({
       const response = await fetch("/api/transactions/save-many", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({transactions}), //backend erwartet: { name, amount, category, type, date }
+        body: JSON.stringify({ transactions }), //backend erwartet: { name, amount, category, type, date }
       });
       if (!response.ok) {
         console.error("Save failed(Server-Error).");
+        onImported?.();
       }
     } catch (error) {
       // netzwerkfehler (z. B. offline) oder clientfehler
@@ -140,8 +141,6 @@ export default function ImportExportDataInCsv({
                 (normalized.type === "income" || normalized.type === "expense") //typ muss gültig sein
             );
 
-          onImported?.(importedRows); //sofort im ui zeigen
-
           setStatusMessage("Import successful.");
           await saveImportedTransactionsToDB(importedRows);
           setStatusMessage("Done: Data saved");
@@ -171,6 +170,7 @@ export default function ImportExportDataInCsv({
         {/* import formular: datei wählen und auto-submit durch onChange */}
         <form onSubmit={handleImportSubmit}>
           <VisuallyHiddenInput
+            type="file"
             id="csvFile" //fürs label
             name="csvFile" //name im formdata
             accept=".csv,text/csv" //nur csv erlauben
@@ -217,8 +217,7 @@ const Status = styled.div`
   color: #333;
 `;
 
-const VisuallyHiddenInput = styled.input.attrs({ type: "file" })`
-  position: absolute;
+const VisuallyHiddenInput = styled.input`
   width: 1px;
   height: 1px;
   padding: 0;

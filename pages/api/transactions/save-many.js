@@ -2,13 +2,7 @@ import dbConnect from "@/db/connect";
 import Transaction from "@/db/models/Transaction";
 import { getToken } from "next-auth/jwt";
 
-export default async function handleBulkInsertTransactions(request, response) {
-  //nur post erlauben (sammel-daten speichern)
-  if (request.method !== "POST") {
-    response.setHeader("Allow", ["POST"]);
-    return response.status(405).json({ message: "Method Not Allowed" });
-  }
-
+export default async function handleSaveMany(request, response) {
   //nutzer muss eingeloggt sein
   //gettoken liest die session-info aus dem request
   const token = await getToken({ req: request });

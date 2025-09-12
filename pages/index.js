@@ -30,15 +30,8 @@ export default function HomePage() {
   } = useSWR("/api/transactions");
   const { data: categories = [] } = useSWR("/api/categories");
 
-  //import data
-  const [importedOnly, setImportedOnly] = useState(null);
-  const baseTransactions = importedOnly ?? transactions;
-
   // Helpers
-  const filteredTransactions = getFilteredTransactions(
-    baseTransactions,
-    filters
-  );
+  const filteredTransactions = getFilteredTransactions(transactions, filters);
   const {
     income: sumIncome,
     expense: sumExpense,
@@ -142,13 +135,8 @@ export default function HomePage() {
         onFilter={setFilterType}
       />
       <ImportExportDataInCsv
-      importedItems={filteredTransactions}  //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
-      //child ruft diese funktion auf, sobald enine csv eigelsen wurde 
-      //rows: die neu importierten zeiles aus der csv
-      onImported={(importedRows) => {
-          setImportedOnly(importedRows);  //überschreibt die server daten
-          setCurrentPage(1);  //nach import auf seite 1 springen
-        }}
+        importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+        onImported={mutate}
       />
       {isFormOpen && (
         <Form
