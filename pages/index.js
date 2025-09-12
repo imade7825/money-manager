@@ -13,6 +13,7 @@ import AuthButtons from "@/components/AuthButtons";
 import TransactionForm from "@/components/TransactionForm.js";
 import { toast } from "react-toastify";
 import { notify } from "@/lib/toast";
+import { toCurrencyEUR } from "@/lib/format";
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -205,7 +206,7 @@ export default function HomePage() {
               aria-live="polite"
               aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
             >
-              Filtered Balance: {sumTotal.toFixed(2)} €
+              Filtered Balance: {toCurrencyEUR(sumTotal)} €
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
@@ -245,7 +246,12 @@ export default function HomePage() {
           <EmptyState>No Results Available</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
-            <TransactionsListItem key={transaction._id}>
+            <TransactionsListItem
+              key={transaction._id}
+              aria-label={`${transaction.name ?? "unknown"}:${
+                transaction.amount
+              }€ ${transaction.date}`}
+            >
               <TransactionItem
                 onEdit={handleEdit}
                 onDelete={handleDelete}

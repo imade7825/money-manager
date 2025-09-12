@@ -13,7 +13,8 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
 
-    let amount = Math.abs(Number(data.amount));
+    let rawAmount = data.amount.replace(",", ".");
+    let amount = Math.abs(Number(rawAmount));
     if (data.type === "expense") {
       amount = -amount;
     }
@@ -39,7 +40,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
       <FormWrapper>
         <HeaderForm>Please fill out all fields</HeaderForm>
         <FormContainer onSubmit={handleSubmit}>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Transaction Name</Label>
           <Input
             id="name"
             name="name"
@@ -53,10 +54,10 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
           <Input
             id="amount"
             name="amount"
-            min="1"
-            type="number"
+            type="text"
             placeholder="Please add amount"
             inputMode="decimal"
+            pattern="[0-9]+([,.][0-9]{1,2})?"
             required
             defaultValue={
               typeof defaultValues?.amount === "number"
