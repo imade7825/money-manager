@@ -99,9 +99,8 @@ export default function CategoryPieChart({ transactions = [] }) {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={130}
-                innerRadius={70}
-                label={({ name, value }) => `${name}: ${toCurrencyEUR(value)}`}
+                outerRadius={100}
+                innerRadius={45}
                 isAnimationActive
               >
                 {data.map((entry, idx) => (
