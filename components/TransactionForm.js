@@ -40,7 +40,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
       <FormWrapper>
         <HeaderForm>Please fill out all fields</HeaderForm>
         <FormContainer onSubmit={handleSubmit}>
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">Transactions Name</Label>
           <Input
             id="name"
             name="name"
