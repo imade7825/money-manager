@@ -25,7 +25,6 @@ const GlobalStyle = createGlobalStyle`
   --border:#e5e7eb;
   --primary:var(--pb-600); 
   --primary-contrast:#ffffff;
-
   --positive:#16a34a; 
   --negative:#dc2626;
   --radius:16px; 
@@ -79,6 +78,7 @@ html[data-theme="dark"]{
   --border:#2a2f36; 
   --primary:var(--pb-500); 
   --primary-contrast:#fff;
+  
 }
 
 /* Baseline */
@@ -96,6 +96,10 @@ body{
      ,var(--background);
   color:var(--foreground);
   font-family: system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
+}
+
+body{
+  padding: 10px;
 }
 
 /* Elements */

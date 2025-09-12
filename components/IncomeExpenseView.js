@@ -61,7 +61,8 @@ const Legend = styled.legend`
 `;
 
 const Pills = styled.div`
-  display: inline-flex;
+  display: flex;
+  justify-content: space-evenly;
   gap: 6px;
   padding: 8px;
   border-radius: 25px;

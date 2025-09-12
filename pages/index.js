@@ -132,6 +132,7 @@ export default function HomePage() {
       setCurrentPage(1);
       return;
     }
+    
     setFilters((filter) => ({
       ...filter,
       dateFrom: from,
@@ -206,7 +207,7 @@ export default function HomePage() {
               aria-live="polite"
               aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
             >
-              Filtered Balance: {toCurrencyEUR(sumTotal)} €
+              Filtered Balance: {toCurrencyEUR(sumTotal)} 
             </FilteredBalance>
           </FilteredBalanceRow>
         )}

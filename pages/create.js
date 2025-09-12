@@ -1,6 +1,5 @@
 import { useRouter } from "next/router";
 import Form from "@/components/TransactionForm";
-import { toast } from "react-toastify";
 import { notify } from "@/lib/toast";
 
 export default function CreatePage() {

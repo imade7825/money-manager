@@ -1,7 +1,7 @@
 import { ToastContainer } from "react-toastify";
 import styled from "styled-components";
 
-export const StyledToastContainer = styled(ToastContainer).attrs({
+export const StyledToastContainer = styled(ToastContainer).attrs(() => ({
   position: "bottom-right",
   autoClose: 3500,
   hideProgressBar: false,
@@ -11,7 +11,7 @@ export const StyledToastContainer = styled(ToastContainer).attrs({
   draggable: true,
   role: "status",
   "aria-live": "polite",
-})`
+}))`
   .Toastify__toast {
     border-radius: var(--radius, 14px);
     border: 2px solid var(--pb-500);
@@ -25,13 +25,13 @@ export const StyledToastContainer = styled(ToastContainer).attrs({
   .Toastify__toast--success {
     border-color: var(--pb-500);
     background: var(--pb-50);
-    color: var(--pb-900);
+    color: var(--pb-950);
   }
 
   .Toastify__toast--error {
-    border-color: red;
-    background: #fee2e2;
-    color: #991b1b;
+    border-color: var(--negative);
+    background: var(--pb-900);
+    color: var(--pb-950);
   }
 
   .Toastify_close-button {
