@@ -24,14 +24,14 @@ export const StyledToastContainer = styled(ToastContainer).attrs(() => ({
 
   .Toastify__toast--success {
     border-color: var(--pb-500);
-    background: var(--toast-success-background);
-    color: var(--toast-success-foreground);
+    background: var(--pb-50);
+    color: var(--pb-950);
   }
 
   .Toastify__toast--error {
     border-color: var(--negative);
-    background: var(--toast-error-background);
-    color: var(--toast-error-foreground);
+    background: var(--pb-900);
+    color: var(--pb-950);
   }
 
   .Toastify_close-button {
