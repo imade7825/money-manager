@@ -26,6 +26,13 @@ const GlobalStyle = createGlobalStyle`
   --primary:var(--pb-600); 
   --primary-contrast:#ffffff;
 
+  /* toasters */
+
+   --toast-success-background: var(--pb-50);
+  --toast-success-foreground: var(--pb-900);
+  --toast-error-background: #fee2e2;
+  --toast-error-foreground: #991b1b;
+
   --positive:#16a34a; 
   --negative:#dc2626;
   --radius:16px; 
@@ -79,6 +86,11 @@ html[data-theme="dark"]{
   --border:#2a2f36; 
   --primary:var(--pb-500); 
   --primary-contrast:#fff;
+  /* toasters */
+  --toast-success-bg: #0f243f;
+  --toast-success-fg: #cfe3ff;
+  --toast-error-bg: #3b0a0a;
+  --toast-error-fg: #fecaca;
 }
 
 /* Baseline */
