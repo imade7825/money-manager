@@ -13,6 +13,7 @@ import AuthButtons from "@/components/AuthButtons";
 import TransactionForm from "@/components/TransactionForm.js";
 import { toast } from "react-toastify";
 import { notify } from "@/lib/toast";
+import { toCurrencyEUR } from "@/lib/format";
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -205,7 +206,7 @@ export default function HomePage() {
               aria-live="polite"
               aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
             >
-              Filtered Balance: {sumTotal.toFixed(2)} €
+              Filtered Balance: {toCurrencyEUR(sumTotal)} €
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
@@ -251,7 +252,6 @@ export default function HomePage() {
                 transaction.amount
               }€ ${transaction.date}`}
             >
-             
               <TransactionItem
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -365,8 +365,6 @@ const InlineEdit = styled.div`
   background: var(--surface);
   padding: 8px 0;
 `;
-
-
 
 /* a11y */
 
