@@ -8,6 +8,7 @@ import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
+import ImportExportDataInCsv from "@/components/ImportExportDataInCsv";
 import { Card } from "@/components/ui/Primitives";
 import AuthButtons from "@/components/AuthButtons";
 import TransactionForm from "@/components/TransactionForm.js";
@@ -132,7 +133,7 @@ export default function HomePage() {
       setCurrentPage(1);
       return;
     }
-    
+
     setFilters((filter) => ({
       ...filter,
       dateFrom: from,
@@ -207,7 +208,7 @@ export default function HomePage() {
               aria-live="polite"
               aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
             >
-              Filtered Balance: {toCurrencyEUR(sumTotal)} 
+              Filtered Balance: {toCurrencyEUR(sumTotal)}
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
@@ -272,6 +273,9 @@ export default function HomePage() {
             </TransactionsListItem>
           ))
         )}
+        <ImportExportDataInCsv
+          importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+        />
 
         {
           <Pagination
