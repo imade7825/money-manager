@@ -10,26 +10,27 @@ export default function Pagination({
   return (
     <PaginationWrapper>
       {/* previous button */}
-      <Button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-      >
-        Previous
-      </Button>
+      {totalPages > 1 && (
+        <>
+          <Button
+            onClick={() => onPageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </Button>
 
-      {/* page info */}
-      <PageInfo>
-        Page {currentPage} of {totalPages}
-      </PageInfo>
+          <PageInfo>
+            Page {currentPage} of {totalPages}
+          </PageInfo>
 
-      {/* next button */}
-      <Button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-      >
-        Next
-      </Button>
-
+          <Button
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </Button>
+        </>
+      )}
       {/* items per page */}
       <Select
         value={pageSize}
@@ -53,17 +54,16 @@ export default function Pagination({
 
 const PaginationWrapper = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   gap: 0.5rem;
   align-items: center;
-  justify-content: center;
   margin: 20px 0 80px;
   flex-wrap: wrap;
-  width: 100%;
 `;
 
 const Button = styled.button`
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.7rem;
   border: 1px solid var(--border);
   background: var(--surface-elevated);
   border-radius: var(--radius-sm);
@@ -78,14 +78,16 @@ const Button = styled.button`
 `;
 
 const PageInfo = styled.span`
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   font-weight: bold;
 `;
 
 const Select = styled.select`
-  padding: 0.45rem 0.6rem;
+  padding: 0.2rem 0.4rem;
   border-radius: var(--radius-sm);
   border: 1px solid var(--border);
   background: var(--surface-elevated);
   color: var(--foreground);
+  font-size: small;
+  width: 30%;
 `;
