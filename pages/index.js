@@ -245,7 +245,13 @@ export default function HomePage() {
           <EmptyState>No Results Available</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
-            <TransactionsListItem key={transaction._id}>
+            <TransactionsListItem
+              key={transaction._id}
+              aria-label={`${transaction.name ?? "unknown"}:${
+                transaction.amount
+              }€ ${transaction.date}`}
+            >
+             
               <TransactionItem
                 onEdit={handleEdit}
                 onDelete={handleDelete}
@@ -359,6 +365,8 @@ const InlineEdit = styled.div`
   background: var(--surface);
   padding: 8px 0;
 `;
+
+
 
 /* a11y */
 
