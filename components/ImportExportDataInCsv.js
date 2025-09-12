@@ -1,37 +1,58 @@
 import { useState } from "react";
 import styled from "styled-components";
+import Papa from "papaparse";
 
-export default function ImportExportDataInCsv({ onImported, importedItems }) {
+export default function ImportExportDataInCsv({
+  onImported, //callback-funktin vom parent: bekommt die importierte zeilen[Array]
+  importedItems = [], //list der datensätze aus dem frontend, standard leer verhinder (undefined)
+}) {
+  //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
   const [statusMessage, setStatusMessage] = useState(null);
 
-  //call api, receive csv, trigger file download
+  //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
+  //und erstellt daraus eine csv datei
   async function handleExport() {
     try {
-      setStatusMessage(null);
+      setStatusMessage(null); //alte meldung zurücksetzen
 
-      //export only the imported items
-      let url = "/api/transactions/export";
-      if (Array.isArray(importedItems) && importedItems.length > 0) {
-        const ids = importedItems
-          .map((t) => t && t._id)
-          .filter(Boolean)
-          .join(",");
-        if (ids) {
-          url += `?ids=${encodeURIComponent(ids)}`;
-        }
+      //exportiere die bereits im Frontend vorhandenen Items
+      if (importedItems.length === 0) {
+        setStatusMessage("No data to Export!");
+        return;
       }
-      const response = await fetch(url, { method: "GET" });
-      if (!response.ok) throw new Error("Export failed");
 
-      const csvFileBlob = await response.blob();
-      const downloadUrl = URL.createObjectURL(csvFileBlob);
-      const downloadLink = document.createElement("a");
-      downloadLink.href = downloadUrl;
-      downloadLink.download = "transactions.csv";
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      downloadLink.remove();
-      URL.revokeObjectURL(downloadUrl);
+      //papaparse macht aus einem Array von Objekten eine csv datei
+      const rowsForCsv = importedItems.map((item) => ({
+        name: item?.name ?? "",
+        category: item?.category ?? "",
+        date: item?.date ? new Date(item.date).toISOString().slice(0, 10) : "",
+        amount: Number(item?.amount ?? 0),
+        type: item?.type ?? "",
+      }));
+      const csvText = Papa.unparse(rowsForCsv, {
+        columns: ["name", "category", "date", "amount", "type"],
+      });
+
+      //csv im browser zum downlod anbieten
+      //aus dem csv-text ein blob-objekt bauen(datei ähnlicher speicher im browser)
+      const csvBlob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
+
+      //aus dem blob temporäre url erzeugen, auf die der browser zugreifen kann
+      const objectUrl = URL.createObjectURL(csvBlob);
+
+      //ein <a>element(link) browser starten downloads zuverlässig über link
+      const anchorElement = document.createElement("a");
+
+      //den link so konfigurieren, dass er auf der temporäre datei zeigt
+      anchorElement.href = objectUrl;
+
+      //dem browser sagen unter werlchen namen gespeichert wird
+      anchorElement.download = "transactions.csv";
+
+      document.body.appendChild(anchorElement); //link ins DOM hängen
+      anchorElement.click(); //click simulieren download
+      anchorElement.remove(); //aufräumen
+      URL.revokeObjectURL(objectUrl); //temporäre URL freigeben
 
       setStatusMessage("Export successful. File has been downloaded.");
     } catch (error) {
@@ -40,69 +61,127 @@ export default function ImportExportDataInCsv({ onImported, importedItems }) {
     }
   }
 
+  //schickt alle importierte zeilen in einem request and die save-many route
+  async function saveImportedTransactionsToDB(transactions) {
+    //post an die neue api-route /api/transactions/save-many
+    //senden {transactions:[..]im json-body}
+    try {
+      const response = await fetch("/api/transactions/save-many", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({transactions}), //backend erwartet: { name, amount, category, type, date }
+      });
+      if (!response.ok) {
+        console.error("Save failed(Server-Error).");
+      }
+    } catch (error) {
+      // netzwerkfehler (z. B. offline) oder clientfehler
+      console.error("Save failed(network/client)");
+    }
+  }
+
   //read and import selected csv file
   async function handleImportSubmit(event) {
-    event.preventDefault();
+    event.preventDefault(); //formular nicht klassisch abschicken
     setStatusMessage(null);
 
-    const form = event.currentTarget;
-    const formData = new FormData(form);
-    const file = formData.get("csvFile");
+    const formElement = event.currentTarget; //das <form> element
+    const formData = new FormData(formElement); //formdata aus dem formular
+    const selectedFile = formData.get("csvFile"); //datei aus dem <input name="csvFile">
 
-    if (!(file instanceof File)) {
+    if (!selectedFile) {
       setStatusMessage("Please choose a .csv file before importing.");
       return;
     }
-    if (!/\.csv$/i.test(file.name)) {
+    //prüfe ob der dateiname mit .csv endet
+    if (!/\.csv$/i.test(selectedFile.name)) {
       setStatusMessage("Please select a .csv file.");
       return;
     }
 
     try {
-      setStatusMessage("Import in progress...");
-      const fileContent = await file.text();
+      setStatusMessage("Import in progress…");
 
-      const response = await fetch("/api/transactions/import", {
-        method: "POST",
-        headers: { "Content-Type": "text/csv; charset=utf-8" },
-        body: fileContent,
+      //papaparse liest die datei direkt im browser
+      Papa.parse(selectedFile, {
+        header: true, //erste zeile = spaltennamen
+        skipEmptyLines: true, //leere zeilen ignorieren
+
+        //wenn papaparse fertig ist
+        complete: async (results) => {
+          //falls parser fehler gemeldet hat: anzeigen & abbrechen
+          if (results?.errors?.length) {
+            console.error(results.errors);
+            setStatusMessage("Import failed: CSV conatins errors");
+            return;
+          }
+          //rohdaten in ein einheitliches format bringen
+          const importedRows = (results?.data ?? []) //data ist ein array je csv zeile
+            .map((row) => {
+              //jede zeile aus der csv in unser objekt-format übertragen
+              return {
+                name: String(row?.name ?? "").trim(), //text trimmen
+                category: String(row?.category ?? "").trim(), //text trimmen
+                //datum: wenn vorhanden, so belassen. sonst leer
+                date: row?.date ?? "",
+                //betrag: erst , durch . ersetzen dann Number()
+                amount: Number(String(row?.amount ?? "").replace(",", ".")),
+                //typ klein schreiben (erwartet: "income" oder "expense")
+                type: String(row?.type ?? "")
+                  .trim()
+                  .toLowerCase(),
+              };
+            })
+            //validierung: pflichtfelder prüfen
+            .filter(
+              (normalized) =>
+                normalized.name && //name muss vorhanden
+                Number.isFinite(normalized.amount) && //betrag muss zahl sein
+                (normalized.type === "income" || normalized.type === "expense") //typ muss gültig sein
+            );
+
+          onImported?.(importedRows); //sofort im ui zeigen
+
+          setStatusMessage("Import successful.");
+          await saveImportedTransactionsToDB(importedRows);
+          setStatusMessage("Done: Data saved");
+          //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
+          formElement.reset();
+        },
+
+        //falls beim lesen/parsen der datei fehler passiert
+        error: (parseError) => {
+          console.error(parseError);
+          setStatusMessage("Import failed: cant read data.");
+        },
       });
-
-      const result = await response.json();
-      if (!response.ok) {
-        setStatusMessage(result?.message || "Import failed.");
-        return;
-      }
-
-      setStatusMessage(result?.message || "Import successful.");
-      if (typeof onImported === "function") {
-        onImported(result.items ?? []);
-      }
-      form.reset(); // erlaubt, dieselbe Datei erneut zu wählen
-    } catch (err) {
-      console.error(err);
-      setStatusMessage("Import failed.");
+    } catch (error) {
+      console.error(error);
+      setStatusMessage("Import failed");
     }
   }
 
   return (
     <Wrapper>
       <Row>
+        {/* export button: startet den csv download aus vorhandenen frontend-daten */}
         <Button type="button" onClick={handleExport}>
           Export CSV
         </Button>
+        {/* import formular: datei wählen und auto-submit durch onChange */}
         <form onSubmit={handleImportSubmit}>
           <VisuallyHiddenInput
-            id="csvFile"
-            name="csvFile"
-            accept=".csv,text/csv"
-            onChange={(event) => event.currentTarget.form?.requestSubmit()}
+            id="csvFile" //fürs label
+            name="csvFile" //name im formdata
+            accept=".csv,text/csv" //nur csv erlauben
+            onChange={(event) => event.currentTarget.form?.requestSubmit()} //direkt abschicken
           />
           <Button as="label" htmlFor="csvFile">
             Import CSV
           </Button>
         </form>
       </Row>
+      {/* kurze status-/fehlermeldung für nutzer */}
       {statusMessage && <Status role="status">{statusMessage}</Status>}
     </Wrapper>
   );

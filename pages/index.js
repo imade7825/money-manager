@@ -142,10 +142,12 @@ export default function HomePage() {
         onFilter={setFilterType}
       />
       <ImportExportDataInCsv
-      importedItems={importedOnly}
-        onImported={(newItems) => {
-          setImportedOnly(newItems);
-          setCurrentPage(1);
+      importedItems={filteredTransactions}  //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+      //child ruft diese funktion auf, sobald enine csv eigelsen wurde 
+      //rows: die neu importierten zeiles aus der csv
+      onImported={(importedRows) => {
+          setImportedOnly(importedRows);  //überschreibt die server daten
+          setCurrentPage(1);  //nach import auf seite 1 springen
         }}
       />
       {isFormOpen && (
