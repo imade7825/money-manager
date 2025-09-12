@@ -95,6 +95,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
               value="expense"
               name="type"
               type="radio"
+              checked
               required
               defaultChecked={defaultValues?.type === "expense"}
             />
@@ -112,18 +113,19 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
                 : today
             }
           />
-
-          <AddButton type="submit" disabled={isButtonDisabled}>
-            {defaultValues ? "Save" : "Add"}
-          </AddButton>
-          <CancelButton
-            type="reset"
-            onClick={handleReset}
-            disabled={isButtonDisabled}
-            aria-label="Cancel and close the form"
-          >
-            Cancel
-          </CancelButton>
+          <ButtonContainer>
+            <AddButton type="submit" disabled={isButtonDisabled}>
+              {defaultValues ? "Save" : "Add"}
+            </AddButton>
+            <CancelButton
+              type="reset"
+              onClick={handleReset}
+              disabled={isButtonDisabled}
+              aria-label="Cancel and close the form"
+            >
+              Cancel
+            </CancelButton>
+          </ButtonContainer>
         </FormContainer>
       </FormWrapper>
     </>
@@ -146,7 +148,7 @@ const HeaderForm = styled.h3`
 
 const FormContainer = styled.form`
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 10px;
   width: 100%;
   padding-bottom: calc(
@@ -160,12 +162,6 @@ const Input = styled.input`
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   width: 100%;
-  &[type="radio"] {
-    width: auto;
-    padding: 0;
-    border: 0;
-    background: transparent;
-  }
 `;
 
 const TypeRow = styled.div`
@@ -201,19 +197,28 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+`;
+
 const AddButton = styled.button`
   grid-column: 1/-1;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--primary);
   color: var(--primary);
+  width: 100%;
 `;
 const CancelButton = styled.button`
   grid-column: 1/-1;
   padding: 12px 16px;
   border-radius: var(--radius-sm);
   border: 1px solid var(--primary);
-  color: var(--primary);
+  color: var(--negative);
+  width: 100%;
 `;
 
 const Select = styled.select`
