@@ -1,10 +1,10 @@
 import { useState } from "react";
 import styled from "styled-components";
 import Papa from "papaparse";
+import { mutate } from "swr";
 
 export default function ImportExportDataInCsv({
-  importedItems = [],
-  onImported, //list der datensätze aus dem frontend, standard leer verhinder (undefined)
+  transactions= [],  //list der datensätze aus dem frontend, standard leer verhinder (undefined)
 }) {
   //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
   const [statusMessage, setStatusMessage] = useState(null);
@@ -16,13 +16,13 @@ export default function ImportExportDataInCsv({
       setStatusMessage(null); //alte meldung zurücksetzen
 
       //exportiere die bereits im Frontend vorhandenen Items
-      if (importedItems.length === 0) {
+      if (transactions.length === 0) {
         setStatusMessage("No data to Export!");
         return;
       }
 
       //papaparse macht aus einem Array von Objekten eine csv datei
-      const rowsForCsv = importedItems.map((item) => ({
+      const rowsForCsv = transactions.map((item) => ({
         name: item?.name ?? "",
         category: item?.category ?? "",
         date: item?.date ? new Date(item.date).toISOString().slice(0, 10) : "",
