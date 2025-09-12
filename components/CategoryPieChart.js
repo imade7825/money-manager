@@ -10,16 +10,16 @@ import {
 } from "recharts";
 
 const COLORS = [
-  "#3b82f6",
-  "#10b981",
-  "#f59e0b",
-  "#ef4444",
-  "#8b5cf6",
-  "#14b8a6",
-  "#f97316",
-  "#22c55e",
-  "#eab308",
-  "#06b6d4",
+  "#2e70ff" /* pb-500 */,
+  "#0b43ff" /* pb-600 */,
+  "#0239ff" /* pb-700 */,
+  "#559aff" /* pb-400 */,
+  "#85c3ff" /* pb-300 */,
+  "#0532c7" /* pb-800 */,
+  "#0f34a0" /* pb-900 */,
+  "#091d5d" /* pb-950 */,
+  "#b3dcff" /* pb-200 */,
+  "#d4eeff" /* pb-100 */,
 ];
 
 function toCurrencyEUR(value) {
@@ -99,9 +99,8 @@ export default function CategoryPieChart({ transactions = [] }) {
                 nameKey="name"
                 cx="50%"
                 cy="50%"
-                outerRadius={130}
-                innerRadius={70}
-                label={({ name, value }) => `${name}: ${toCurrencyEUR(value)}`}
+                outerRadius={100}
+                innerRadius={45}
                 isAnimationActive
               >
                 {data.map((entry, idx) => (
@@ -126,9 +125,9 @@ const Wrapper = styled.section`
   max-width: 560px;
   margin: 0 auto;
   padding: 12px;
-  background: var(--surface, #fff);
+  background: var(--surface-elevated, #fff);
   border: 1px solid var(--border, #e5e7eb);
-  border-radius: 16px;
+  border-radius: var(--radius);
 `;
 
 const TopBar = styled.div`
@@ -144,10 +143,9 @@ const ModeButton = styled.button`
   border-radius: 10px;
   border: 1px solid var(--border, #e5e7eb);
   background: ${({ $active }) =>
-    $active ? "var(--muted, #f3f4f6)" : "var(--surface, #fff)"};
-  cursor: pointer;
+    $active ? "var(--pb-100)" : "var(--surface-elevated)"};
+  color: ${({ $active }) => ($active ? "var(--pb-800)" : "inherit")};
   transition: background 120ms ease, transform 80ms ease;
-
   &:hover {
     transform: translateY(-1px);
   }

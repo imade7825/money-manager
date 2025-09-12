@@ -13,7 +13,8 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData);
 
-    let amount = Math.abs(Number(data.amount));
+    let rawAmount = data.amount.replace(",", ".");
+    let amount = Math.abs(Number(rawAmount));
     if (data.type === "expense") {
       amount = -amount;
     }
@@ -32,106 +33,199 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
-  if (error) return <p>Failed to load categories</p>;
-  if (isLoading) return <p>Loading categories...</p>;
+  if (error) return <p role="alert">Failed to load categories</p>;
+  if (isLoading) return <p role="status">Loading categories...</p>;
   return (
     <>
-      <HeaderForm>Please fill out all fields</HeaderForm>
-      <FormContainer onSubmit={handleSubmit}>
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Please add your name"
-          required
-          defaultValue={defaultValues?.name}
-        />
-        <Label htmlFor="amount">Amount</Label>
-        <Input
-          id="amount"
-          name="amount"
-          min="1"
-          type="number"
-          placeholder="Please add amount"
-          required
-          defaultValue={defaultValues?.amount}
-        />
-        <select
-          id="category"
-          name="category"
-          defaultValue={defaultValues?.category}
-          required
-        >
-          <option value="" disabled>
-            Choose category
-          </option>
-          {categories.map((category) => (
-            <option key={category._id} value={category.name}>
-              {category.name}
+      <FormWrapper>
+        <HeaderForm>Please fill out all fields</HeaderForm>
+        <FormContainer onSubmit={handleSubmit}>
+          <Label htmlFor="name">Transaction Name</Label>
+          <Input
+            id="name"
+            name="name"
+            type="text"
+            placeholder="Please add your name"
+            autoComplete="off"
+            required
+            defaultValue={defaultValues?.name}
+          />
+          <Label htmlFor="amount">Amount</Label>
+          <Input
+            id="amount"
+            name="amount"
+            type="text"
+            placeholder="Please add amount"
+            inputMode="decimal"
+            pattern="[0-9]+([,.][0-9]{1,2})?"
+            required
+            defaultValue={
+              typeof defaultValues?.amount === "number"
+                ? Math.abs(defaultValues.amount)
+                : defaultValues?.amount
+            }
+          />
+          <Select
+            id="category"
+            name="category"
+            defaultValue={defaultValues?.category}
+            required
+          >
+            <option value="" disabled>
+              Choose category
             </option>
-          ))}
-        </select>
-        <Label htmlFor="option1">Income</Label>
-        <Input id="option1" value="income" name="type" type="radio" required />
-        <Label htmlFor="option2">Expense</Label>
-        <Input id="option2" value="expense" name="type" type="radio" required />
-        <Label htmlFor="date">Date</Label>
-        <Input
-          id="date"
-          name="date"
-          type="date"
-          required
-          defaultValue={
-            defaultValues?.date
-              ? new Date(defaultValues.date).toISOString().slice(0, 10)
-              : today
-          }
-        />
-        <AddButton type="submit" disabled={isButtonDisabled}>
-          Add
-        </AddButton>
-        <CancelButton
-          type="reset"
-          onClick={handleReset}
-          disabled={isButtonDisabled}
-        >
-          Cancel
-        </CancelButton>
-      </FormContainer>
+            {categories.map((category) => (
+              <option key={category._id} value={category.name}>
+                {category.name}
+              </option>
+            ))}
+          </Select>
+          <TypeRow aria-label="Type">
+            <HiddenRadio
+              id="type-income"
+              value="income"
+              name="type"
+              type="radio"
+              required
+              defaultChecked={defaultValues?.type === "income"}
+            />
+            <Label htmlFor="type-income">Income</Label>
+            <HiddenRadio
+              id="type-expense"
+              value="expense"
+              name="type"
+              type="radio"
+              checked
+              required
+              defaultChecked={defaultValues?.type === "expense"}
+            />
+            <Label htmlFor="type-expense">Expense</Label>
+          </TypeRow>
+          <Label htmlFor="date">Date</Label>
+          <Input
+            id="date"
+            name="date"
+            type="date"
+            required
+            defaultValue={
+              defaultValues?.date
+                ? new Date(defaultValues.date).toISOString().slice(0, 10)
+                : today
+            }
+          />
+          <ButtonContainer>
+            <AddButton type="submit" disabled={isButtonDisabled}>
+              {defaultValues ? "Save" : "Add"}
+            </AddButton>
+            <CancelButton
+              type="reset"
+              onClick={handleReset}
+              disabled={isButtonDisabled}
+              aria-label="Cancel and close the form"
+            >
+              Cancel
+            </CancelButton>
+          </ButtonContainer>
+        </FormContainer>
+      </FormWrapper>
     </>
   );
 }
 
+const FormWrapper = styled.div`
+  padding: 0 24px;
+  max-width: 650px;
+  margin: 45px auto 0;
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  grid-column: 1 / -1;
+`;
+
 const HeaderForm = styled.h3`
-  margin: 0 0 0.25rem;
+  margin: 0 0 20px;
 `;
 
 const FormContainer = styled.form`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  width: 100%;
+  padding-bottom: calc(
+    var(--bottom-nav-h, 64px) + env(safe-area-inset-bottom, 0px) + 24px
+  );
 `;
+
 const Input = styled.input`
-  padding: 0.5rem;
-  font-size: inherit;
-  border: 2px solid black;
-  border-radius: 10px;
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  width: 100%;
+`;
+
+const TypeRow = styled.div`
+  grid-column: 1 / -1;
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  Label {
+    grid-column: auto;
+    padding: 6px 12px;
+    border-radius: 25px;
+    cursor: pointer;
+  }
+
+  input[type="radio"]:checked + Label {
+    background: var(--pb-100, #d4eeff);
+    color: var(--pb-900, #0f34a0);
+    box-shadow: inset 0 0 0 1px var(--pb-400, #559aff);
+  }
+`;
+
+const HiddenRadio = styled.input`
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
 `;
 
 const Label = styled.label`
+  grid-column: 1/-1;
   font-weight: 600;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+`;
+
 const AddButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: #000;
-  color: #fff;
+  grid-column: 1/-1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  width: 100%;
 `;
 const CancelButton = styled.button`
-  padding: 0.6rem 1rem;
-  border-radius: 10px;
-  border: 2px solid #000;
-  background: transparent;
+  grid-column: 1/-1;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--primary);
+  color: var(--negative);
+  width: 100%;
+`;
+
+const Select = styled.select`
+  background: var(--surface-elevated);
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  grid-column: 1 / -1;
+  width: 100%;
 `;

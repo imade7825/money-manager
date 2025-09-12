@@ -4,22 +4,32 @@ import { STATE } from "@/constants/state";
 import { useState } from "react";
 import AccountBalance from "@/components/AccountBalance";
 import TransactionItem from "@/components/TransactionItem";
-import Form from "@/components/TransactionForm";
 import IncomeExpenseView from "@/components/IncomeExpenseView";
 import Pagination from "@/components/Pagination";
 import FilterBar from "@/components/FilterBar";
 import { getFilteredTransactions, getTotals } from "@/lib/home-calcs";
 import ImportExportDataInCsv from "@/components/ImportExportDataInCsv";
+import { Card } from "@/components/ui/Primitives";
+import AuthButtons from "@/components/AuthButtons";
+import TransactionForm from "@/components/TransactionForm.js";
+import { toast } from "react-toastify";
+import { notify } from "@/lib/toast";
+import { toCurrencyEUR } from "@/lib/format";
 
 export default function HomePage() {
-  const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
-
+  const [isFormOpen, setIsFormOpen] = useState(false);
   //pagination States
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const [filters, setFilters] = useState({ category: "", type: STATE.ALL });
+  const [filters, setFilters] = useState({
+    category: "",
+    type: STATE.ALL,
+    dateFrom: "",
+    dateTo: "",
+    timePreset: "all",
+  });
 
   //Data
   const {
@@ -38,6 +48,12 @@ export default function HomePage() {
     balance: sumTotal,
   } = getTotals(filteredTransactions);
 
+  const isFiltered =
+    Boolean(filters.category) ||
+    filters.type !== STATE.ALL ||
+    Boolean(filters.dateFrom) ||
+    Boolean(filters.dateTo);
+
   const start = (currentPage - 1) * pageSize;
   const paginatedTransactions = filteredTransactions.slice(
     start,
@@ -45,8 +61,18 @@ export default function HomePage() {
   );
 
   //Early returns
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <p>Loading...</p>;
+  if (error)
+    return (
+      <Status role="status" aria-live="polite">
+        failed to load
+      </Status>
+    );
+  if (isLoading)
+    return (
+      <Status role="status" aria-live="polite">
+        Loading...
+      </Status>
+    );
 
   // Handler
   function handleCancelEdit() {
@@ -57,13 +83,64 @@ export default function HomePage() {
   //Filter section
   function setFilterCategory(value) {
     setFilters((filter) => ({ ...filter, category: value }));
+    setCurrentPage(1);
   }
 
   function setFilterType(value) {
     setFilters((filter) => ({ ...filter, type: value }));
+    setCurrentPage(1);
   }
-  function handleFilterClear() {
-    setFilterCategory("");
+
+  function setFilterDates({ dateFrom, dateTo }) {
+    setFilters((filter) => ({
+      ...filter,
+      dateFrom: dateFrom ?? filter.dateFrom,
+      dateTo: dateTo ?? filter.dateTo,
+      timePreset: "custom",
+    }));
+    setCurrentPage(1);
+  }
+
+  function handleDatePreset(preset) {
+    const today = new Date();
+    const to = today.toISOString().slice(0, 10);
+    const firstDayOfThisMonthISO = () => {
+      const day = new Date(today.getFullYear(), today.getMonth(), 1);
+      const year = day.getFullYear();
+      const month = String(day.getMonth() + 1).padStart(2, "0");
+      return `${year}-${month}-01`;
+    };
+    let from = "";
+    if (preset === "today") {
+      from = to;
+    } else if (preset === "7") {
+      const date = new Date(today);
+      date.setDate(date.getDate() - 6);
+      from = date.toISOString().slice(0, 10);
+    } else if (preset === "30") {
+      const date = new Date(today);
+      date.setDate(date.getDate() - 29);
+      from = date.toISOString().slice(0, 10);
+    } else if (preset === "month") {
+      from = firstDayOfThisMonthISO();
+    } else if (preset === "all") {
+      setFilters((filter) => ({
+        ...filter,
+        dateFrom: "",
+        dateTo: "",
+        timePreset: "all",
+      }));
+      setCurrentPage(1);
+      return;
+    }
+
+    setFilters((filter) => ({
+      ...filter,
+      dateFrom: from,
+      dateTo: to,
+      timePreset: preset,
+    }));
+    setCurrentPage(1);
   }
 
   //pagination and values
@@ -80,12 +157,14 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Update Failed");
+
       return;
     }
     await response.json();
     setEditingTransaction(null);
     setIsFormOpen(false);
     await mutate();
+    notify.saved();
   }
 
   function handleEdit(transaction) {
@@ -105,63 +184,102 @@ export default function HomePage() {
     });
     if (!response.ok) {
       console.error("Delete failed");
+      toast.error();
       return;
     }
     await mutate();
+    notify.deleted();
   }
 
   return (
-    <>
-      <AccountBalance transactions={transactions} />
+    <Main aria-label="Finance dashboard">
+      <CardControls>
+        <AuthButtons />
+      </CardControls>
+      <Card>
+        <AccountBalance transactions={transactions} />
+      </Card>
+      <CardFilter>
+        {isFiltered && (
+          <FilteredBalanceRow>
+            <FilteredBalance
+              $neg={sumTotal < 0}
+              title="Filtered Balance:"
+              aria-live="polite"
+              aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
+            >
+              Filtered Balance: {toCurrencyEUR(sumTotal)}
+            </FilteredBalance>
+          </FilteredBalanceRow>
+        )}
 
-      <FilterBarStyle
-        value={filters.category}
-        categories={categories}
-        onChangeCategory={setFilterCategory}
-        onClearCategory={handleFilterClear}
-      />
+        <FilterBar
+          value={filters.category}
+          categories={categories}
+          onChangeCategory={setFilterCategory}
+          dateFrom={filters.dateFrom}
+          dateTo={filters.dateTo}
+          preset={filters.timePreset}
+          onChangeDates={setFilterDates}
+          onPreset={handleDatePreset}
+        />
+        {(filters.dateFrom || filters.dateTo) && (
+          <ActiveFilterRow>
+            <span role="label">Time span:</span>
+            <ActiveBadge role="label">
+              {filters.dateFrom || " ... "}- {filters.dateTo || "..."}
+            </ActiveBadge>
+          </ActiveFilterRow>
+        )}
 
-      <ActiveFilterRow>
-        <span>Active filter:</span>
-        <ActiveBadge>{filters.category || "None"}</ActiveBadge>
-      </ActiveFilterRow>
+        <IncomeExpenseView
+          filteredTransactions={filteredTransactions}
+          sumIncome={sumIncome}
+          sumExpense={sumExpense}
+          sumTotal={sumTotal}
+          filterType={filters.type}
+          onFilter={setFilterType}
+        />
+      </CardFilter>
 
-      <IncomeExpenseView
-        filteredTransactions={filteredTransactions}
-        sumIncome={sumIncome}
-        sumExpense={sumExpense}
-        sumTotal={sumTotal}
-        filterType={filters.type}
-        onFilter={setFilterType}
-      />
-      <ImportExportDataInCsv
+      <TransactionsList aria-labelledby="transactions-title">
+        <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
+        {filteredTransactions.length === 0 ? (
+          <EmptyState>No Results Available</EmptyState>
+        ) : (
+          paginatedTransactions.map((transaction) => (
+            <TransactionsListItem
+              key={transaction._id}
+              aria-label={`${transaction.name ?? "unknown"}:${
+                transaction.amount
+              }€ ${transaction.date}`}
+            >
+              <TransactionItem
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                transaction={transaction}
+                onFilter={setFilterType}
+              />
+              {isFormOpen && editingTransaction?._id === transaction._id && (
+                <InlineEdit>
+                  <TransactionForm
+                    key={`edit-${transaction._id}`}
+                    defaultValues={editingTransaction}
+                    onSubmit={(data) => handleUpdate(transaction._id, data)}
+                    onCancel={handleCancelEdit}
+                  />
+                </InlineEdit>
+              )}
+            </TransactionsListItem>
+          ))
+        )}
+        <ImportExportDataInCsv
         importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
         onImported={mutate}
       />
-      {isFormOpen && (
-        <Form
-          onSubmit={(data) => handleUpdate(editingTransaction._id, data)}
-          defaultValues={editingTransaction}
-          onCancel={handleCancelEdit}
-        />
-      )}
-
-      <TransactionsList>
-        {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results available</EmptyState>
-        ) : (
-          paginatedTransactions.map((transaction) => (
-            <TransactionItem
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-              transaction={transaction}
-              key={transaction._id}
-              onFilter={setFilterType}
-            />
-          ))
-        )}
 
         {
+        
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -171,7 +289,8 @@ export default function HomePage() {
           />
         }
       </TransactionsList>
-    </>
+      
+    </Main>
   );
 }
 
@@ -181,32 +300,102 @@ const TransactionsList = styled.ul`
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  align-items: center;
+  gap: 0.6rem;
+  align-items: stretch;
+  max-width: 480px;
+  margin-inline: auto;
 `;
 
 const ActiveFilterRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin: 0 20px 10px;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 12px 8px;
+  min-width: 0;
   font-size: 0.95rem;
 `;
 
 const ActiveBadge = styled.span`
-  padding: 0.1rem 0.5rem;
-  border: 2px solid #000;
-  border-radius: 999px;
-  background: var(--background);
-  color: var(--foreground);
+  padding: 0.2rem 0.6rem;
+  border-radius: 25px;
+  background: var(--pb-100);
+  color: var(--pb-700);
+  border: 1px solid var(--pb-200);
 `;
 
 const EmptyState = styled.p`
-  margin: 0.5rem 20px;
+  margin: 0.5rem 12px;
   opacity: 0.8;
+  text-align: center;
 `;
 
-const FilterBarStyle = styled(FilterBar)`
-  flex: 1;
-  min-width: 200px;
+const CardControls = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const CardFilter = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 10px;
+`;
+
+const FilteredBalance = styled.span`
+  padding: 4px 10px;
+  border-radius: 25px;
+  border: 1px solid var(--pb-200);
+  background: var(--surface);
+  font-weight: 700;
+  white-space: nowrap;
+  color: ${({ $neg }) => ($neg ? "#b91c1c" : "#166534")};
+  min-width: 100%;
+  overflow: hidden;
+`;
+
+const FilteredBalanceRow = styled.div`
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 12px 8px;
+  min-width: 0;
+`;
+const InlineEdit = styled.div`
+  margin: 6px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 8px 0;
+`;
+
+/* a11y */
+
+const Main = styled.main`
+  display: block;
+`;
+
+const Status = styled.p`
+  margin: 16px 20px;
+`;
+
+const TransactionsListItem = styled.li`
+  list-style: none;
+`;
+
+const ScreenReaderH2 = styled.h2`
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 1px, 1px);
+  white-space: nowrap;
+  border: 0;
 `;
