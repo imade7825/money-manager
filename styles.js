@@ -98,6 +98,10 @@ body{
   font-family: system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif;
 }
 
+body{
+  padding: 10px;
+}
+
 /* Elements */
 button{
   font:inherit; 
