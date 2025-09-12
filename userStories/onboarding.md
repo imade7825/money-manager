@@ -2,15 +2,15 @@
 
 ## Value Proposition
 
-**As a new user** 
+**As a new user**
 
 **I want to** get a short, focused tour, that highlights the most important features of the Money Manager
 
-**so that** I can see how to: add a new transaction, delete transaction, edit a transaction, where are the features like charts, how work filter functions etc. 
+**so that** I can see how to: add a new transaction, delete transaction, edit a transaction, where are the features like charts, how work filter functions etc.
 
 ## Description
 
-A short, skippable, first-run guide users  driver.js to highlight key UI elements
+A short, skippable, first-run guide users driver.js to highlight key UI elements
 The tour runs runs once per device, (persisted in local storage)
 
 ## Acceptance Criteria
@@ -27,5 +27,5 @@ The tour runs runs once per device, (persisted in local storage)
 - [ ] Add data attributes **Research** to targeted elements data-tour="..."
 - [ ] Add button/ checkbox to restart tour or skip tour
 - [ ] Implement `TourManager`library utility that can:
-    - [ ] Check and set localStorage to hasSeen="true"
-    - [ ] Start, stop and restart or skip the tour
+  - [ ] Check and set localStorage to hasSeen="true"
+  - [ ] Start, stop and restart or skip the tour
