@@ -132,6 +132,7 @@ export default function HomePage() {
       setCurrentPage(1);
       return;
     }
+    
     setFilters((filter) => ({
       ...filter,
       dateFrom: from,
