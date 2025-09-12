@@ -73,7 +73,7 @@ export default function ImportExportDataInCsv({
       });
       if (!response.ok) {
         console.error("Save failed(Server-Error).");
-        onImported?.();
+        mutate('/api/transactions')
       }
     } catch (error) {
       // netzwerkfehler (z. B. offline) oder clientfehler

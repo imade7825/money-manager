@@ -274,12 +274,10 @@ export default function HomePage() {
           ))
         )}
         <ImportExportDataInCsv
-        importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
-        onImported={mutate}
-      />
+          importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+        />
 
         {
-        
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -289,7 +287,6 @@ export default function HomePage() {
           />
         }
       </TransactionsList>
-      
     </Main>
   );
 }
