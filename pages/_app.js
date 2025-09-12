@@ -5,11 +5,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider, useSession } from "next-auth/react";
 import { Layout } from "@/components/ui/Primitives";
 import BottomNav from "@/components/BottomNav";
+import "driver.js/dist/driver.css";
+import { useEffect } from "react";
+import { maybeStartTour } from "@TourManager";
 
 export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  useEffect(() => {
+    maybeStartTour();
+  }, []);
   return (
     <SWRConfig
       value={{

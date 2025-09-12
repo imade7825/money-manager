@@ -196,7 +196,7 @@ export default function HomePage() {
       <CardControls>
         <AuthButtons />
       </CardControls>
-      <Card>
+      <Card data-tour="balance-summary">
         <AccountBalance transactions={transactions} />
       </Card>
       <CardFilter>
@@ -242,7 +242,7 @@ export default function HomePage() {
         />
       </CardFilter>
 
-      <TransactionsList aria-labelledby="transactions-title">
+      <TransactionsList aria-labelledby="transactions-title" data-tour="transactions-list">
         <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results Available</EmptyState>
