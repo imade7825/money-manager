@@ -274,7 +274,7 @@ export default function HomePage() {
           ))
         )}
         <ImportExportDataInCsv
-          importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+          transactions={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
         />
 
         {

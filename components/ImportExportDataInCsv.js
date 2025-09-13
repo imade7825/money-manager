@@ -1,23 +1,18 @@
-import { useState } from "react";
 import styled from "styled-components";
 import Papa from "papaparse";
 import { mutate } from "swr";
+import { notify } from "@/lib/toast";
 
 export default function ImportExportDataInCsv({
-  transactions= [],  //list der datensätze aus dem frontend, standard leer verhinder (undefined)
+  transactions = [], //list der datensätze aus dem frontend, standard leer verhinder (undefined)
 }) {
-  //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
-  const [statusMessage, setStatusMessage] = useState(null);
-
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
   async function handleExport() {
     try {
-      setStatusMessage(null); //alte meldung zurücksetzen
-
       //exportiere die bereits im Frontend vorhandenen Items
       if (transactions.length === 0) {
-        setStatusMessage("No data to Export!");
+        notify.noDataToExport();
         return;
       }
 
@@ -53,11 +48,10 @@ export default function ImportExportDataInCsv({
       anchorElement.click(); //click simulieren download
       anchorElement.remove(); //aufräumen
       URL.revokeObjectURL(objectUrl); //temporäre URL freigeben
-
-      setStatusMessage("Export successful. File has been downloaded.");
+      notify.exportSuccessful();
     } catch (error) {
       console.error(error);
-      setStatusMessage("Export failed.");
+      notify.exportFailed();
     }
   }
 
@@ -71,10 +65,19 @@ export default function ImportExportDataInCsv({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transactions }), //backend erwartet: { name, amount, category, type, date }
       });
+
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch {}
+
       if (!response.ok) {
-        console.error("Save failed(Server-Error).");
-        mutate('/api/transactions')
+        throw new Error(payload?.message || `Failed (HTTP ${response.status})`); // (Toasts im Caller)
+        // console.error("Save failed(Server-Error).");
+        // notify.importFailedCantReadData();
       }
+
+      return payload;
     } catch (error) {
       // netzwerkfehler (z. B. offline) oder clientfehler
       console.error("Save failed(network/client)");
@@ -84,24 +87,23 @@ export default function ImportExportDataInCsv({
   //read and import selected csv file
   async function handleImportSubmit(event) {
     event.preventDefault(); //formular nicht klassisch abschicken
-    setStatusMessage(null);
 
     const formElement = event.currentTarget; //das <form> element
     const formData = new FormData(formElement); //formdata aus dem formular
     const selectedFile = formData.get("csvFile"); //datei aus dem <input name="csvFile">
 
     if (!selectedFile) {
-      setStatusMessage("Please choose a .csv file before importing.");
+      notify.missedSelectedFile();
       return;
     }
     //prüfe ob der dateiname mit .csv endet
     if (!/\.csv$/i.test(selectedFile.name)) {
-      setStatusMessage("Please select a .csv file.");
+      notify.selectCsvFile();
       return;
     }
 
     try {
-      setStatusMessage("Import in progress…");
+      notify.importImProgress();
 
       //papaparse liest die datei direkt im browser
       Papa.parse(selectedFile, {
@@ -110,53 +112,69 @@ export default function ImportExportDataInCsv({
 
         //wenn papaparse fertig ist
         complete: async (results) => {
-          //falls parser fehler gemeldet hat: anzeigen & abbrechen
-          if (results?.errors?.length) {
-            console.error(results.errors);
-            setStatusMessage("Import failed: CSV conatins errors");
-            return;
-          }
-          //rohdaten in ein einheitliches format bringen
-          const importedRows = (results?.data ?? []) //data ist ein array je csv zeile
-            .map((row) => {
-              //jede zeile aus der csv in unser objekt-format übertragen
-              return {
-                name: String(row?.name ?? "").trim(), //text trimmen
-                category: String(row?.category ?? "").trim(), //text trimmen
-                //datum: wenn vorhanden, so belassen. sonst leer
-                date: row?.date ?? "",
-                //betrag: erst , durch . ersetzen dann Number()
-                amount: Number(String(row?.amount ?? "").replace(",", ".")),
-                //typ klein schreiben (erwartet: "income" oder "expense")
-                type: String(row?.type ?? "")
-                  .trim()
-                  .toLowerCase(),
-              };
-            })
-            //validierung: pflichtfelder prüfen
-            .filter(
-              (normalized) =>
-                normalized.name && //name muss vorhanden
-                Number.isFinite(normalized.amount) && //betrag muss zahl sein
-                (normalized.type === "income" || normalized.type === "expense") //typ muss gültig sein
+          try {
+            //falls parser fehler gemeldet hat: anzeigen & abbrechen
+            if (results?.errors?.length) {
+              console.error(results.errors);
+              notify.parseImportFailed();
+              return;
+            }
+            //rohdaten in ein einheitliches format bringen
+            const importedRows = (results?.data ?? []) //data ist ein array je csv zeile
+              .map((row) => {
+                //jede zeile aus der csv in unser objekt-format übertragen
+                return {
+                  name: String(row?.name ?? "").trim(), //text trimmen
+                  category: String(row?.category ?? "").trim(), //text trimmen
+                  //datum: wenn vorhanden, so belassen. sonst leer
+                  date: row?.date ?? "",
+                  //betrag: erst , durch . ersetzen dann Number()
+                  amount: Number(String(row?.amount ?? "").replace(",", ".")),
+                  //typ klein schreiben (erwartet: "income" oder "expense")
+                  type: String(row?.type ?? "")
+                    .trim()
+                    .toLowerCase(),
+                };
+              })
+              //validierung: pflichtfelder prüfen
+              .filter(
+                (normalized) =>
+                  normalized.name && //name muss vorhanden
+                  normalized.category &&
+                  normalized.date &&
+                  Number.isFinite(normalized.amount) && //betrag muss zahl sein
+                  (normalized.type === "income" ||
+                    normalized.type === "expense") //typ muss gültig sein
+              );
+            if (!importedRows.length) {
+              notify.importFailed();
+              return;
+            }
+            const { inserted } = await saveImportedTransactionsToDB(
+              importedRows
             );
 
-          setStatusMessage("Import successful.");
-          await saveImportedTransactionsToDB(importedRows);
-          setStatusMessage("Done: Data saved");
-          //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
-          formElement.reset();
+            notify.importSuccessful();
+            notify.dataSaved();
+            notify.dataSavedCount(inserted);
+            mutate("/api/transactions");
+            //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
+            formElement.reset();
+          } catch (error) {
+            console.error(error);
+            notify.importFailed();
+          }
         },
 
         //falls beim lesen/parsen der datei fehler passiert
         error: (parseError) => {
           console.error(parseError);
-          setStatusMessage("Import failed: cant read data.");
+          notify.importFailedCantReadData();
         },
       });
     } catch (error) {
       console.error(error);
-      setStatusMessage("Import failed");
+      notify.importFailed();
     }
   }
 
@@ -181,8 +199,6 @@ export default function ImportExportDataInCsv({
           </Button>
         </form>
       </Row>
-      {/* kurze status-/fehlermeldung für nutzer */}
-      {statusMessage && <Status role="status">{statusMessage}</Status>}
     </Wrapper>
   );
 }
