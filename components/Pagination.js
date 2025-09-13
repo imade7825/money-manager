@@ -43,6 +43,7 @@ export default function Pagination({
             onPageChange(1);
           }
         }}
+        data-tour="per-page"
       >
         {[10, 15, 20].map((size) => (
           <option key={size} value={size}>

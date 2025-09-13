@@ -1,21 +1,16 @@
-import { useState } from "react";
 import styled from "styled-components";
 import Papa from "papaparse";
 import { mutate } from "swr";
+import { toast } from "react-toastify";
 
 export default function ImportExportDataInCsv({ transactions = [] }) {
-  //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
-  const [statusMessage, setStatusMessage] = useState(null);
-
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
   async function handleExport() {
     try {
-      setStatusMessage(null); //alte meldung zurücksetzen
-
       //exportiere die bereits im Frontend vorhandenen Items
       if (transactions.length === 0) {
-        setStatusMessage("No data to Export!");
+        toast.info("No data to Export!");
         return;
       }
 
@@ -52,10 +47,10 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
       anchorElement.remove(); //aufräumen
       URL.revokeObjectURL(objectUrl); //temporäre URL freigeben
 
-      setStatusMessage("Export successful. File has been downloaded.");
+      toast.success("Export successful. File has been downloaded.");
     } catch (error) {
       console.error(error);
-      setStatusMessage("Export failed.");
+      toast.error("Export failed.");
     }
   }
 
@@ -82,24 +77,23 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
   //read and import selected csv file
   async function handleImportSubmit(event) {
     event.preventDefault(); //formular nicht klassisch abschicken
-    setStatusMessage(null);
 
     const formElement = event.currentTarget; //das <form> element
     const formData = new FormData(formElement); //formdata aus dem formular
     const selectedFile = formData.get("csvFile"); //datei aus dem <input name="csvFile">
 
     if (!selectedFile) {
-      setStatusMessage("Please choose a .csv file before importing.");
+      toast.warn("Please choose a .csv file before importing.");
       return;
     }
     //prüfe ob der dateiname mit .csv endet
     if (!/\.csv$/i.test(selectedFile.name)) {
-      setStatusMessage("Please select a .csv file.");
+      toast.warn("Please select a .csv file.");
       return;
     }
 
     try {
-      setStatusMessage("Import in progress…");
+      toast.info("Import in progress…");
 
       //papaparse liest die datei direkt im browser
       Papa.parse(selectedFile, {
@@ -111,7 +105,7 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
           //falls parser fehler gemeldet hat: anzeigen & abbrechen
           if (results?.errors?.length) {
             console.error(results.errors);
-            setStatusMessage("Import failed: CSV conatins errors");
+            toast.error("Import failed: CSV conatins errors");
             return;
           }
           //rohdaten in ein einheitliches format bringen
@@ -139,9 +133,9 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
                 (normalized.type === "income" || normalized.type === "expense") //typ muss gültig sein
             );
 
-          setStatusMessage("Import successful.");
+          toast.success("Import successful.");
           await saveImportedTransactionsToDB(importedRows);
-          setStatusMessage("Done: Data saved");
+          toast.success("Done: Data saved");
           //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
           formElement.reset();
         },
@@ -149,12 +143,12 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
         //falls beim lesen/parsen der datei fehler passiert
         error: (parseError) => {
           console.error(parseError);
-          setStatusMessage("Import failed: cant read data.");
+          toast.error("Import failed: cant read data.");
         },
       });
     } catch (error) {
       console.error(error);
-      setStatusMessage("Import failed");
+      toast.error("Import failed");
     }
   }
 
@@ -162,7 +156,7 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
     <Wrapper>
       <Row>
         {/* export button: startet den csv download aus vorhandenen frontend-daten */}
-        <TinyButton type="button" onClick={handleExport}>
+        <TinyButton type="button" onClick={handleExport} data-tour="csv-export">
           Export CSV
         </TinyButton>
         {/* import formular: datei wählen und auto-submit durch onChange */}
@@ -174,13 +168,11 @@ export default function ImportExportDataInCsv({ transactions = [] }) {
             accept=".csv,text/csv" //nur csv erlauben
             onChange={(event) => event.currentTarget.form?.requestSubmit()} //direkt abschicken
           />
-          <TinyButton as="label" htmlFor="csvFile">
+          <TinyButton as="label" htmlFor="csvFile" data-tour="csv-export">
             Import CSV
           </TinyButton>
         </form>
       </Row>
-      {/* kurze status-/fehlermeldung für nutzer */}
-      {statusMessage && <TinyStatus role="status">{statusMessage}</TinyStatus>}
     </Wrapper>
   );
 }
