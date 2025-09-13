@@ -3,9 +3,7 @@ import styled from "styled-components";
 import Papa from "papaparse";
 import { mutate } from "swr";
 
-export default function ImportExportDataInCsv({
-  transactions= [],  //list der datensätze aus dem frontend, standard leer verhinder (undefined)
-}) {
+export default function ImportExportDataInCsv({ transactions = [] }) {
   //Statusmeldung für den benutzer (z. B. "Export erfolgreich")
   const [statusMessage, setStatusMessage] = useState(null);
 
@@ -73,7 +71,7 @@ export default function ImportExportDataInCsv({
       });
       if (!response.ok) {
         console.error("Save failed(Server-Error).");
-        mutate('/api/transactions')
+        mutate("/api/transactions");
       }
     } catch (error) {
       // netzwerkfehler (z. B. offline) oder clientfehler
@@ -164,9 +162,9 @@ export default function ImportExportDataInCsv({
     <Wrapper>
       <Row>
         {/* export button: startet den csv download aus vorhandenen frontend-daten */}
-        <Button type="button" onClick={handleExport}>
+        <TinyButton type="button" onClick={handleExport}>
           Export CSV
-        </Button>
+        </TinyButton>
         {/* import formular: datei wählen und auto-submit durch onChange */}
         <form onSubmit={handleImportSubmit}>
           <VisuallyHiddenInput
@@ -176,49 +174,70 @@ export default function ImportExportDataInCsv({
             accept=".csv,text/csv" //nur csv erlauben
             onChange={(event) => event.currentTarget.form?.requestSubmit()} //direkt abschicken
           />
-          <Button as="label" htmlFor="csvFile">
+          <TinyButton as="label" htmlFor="csvFile">
             Import CSV
-          </Button>
+          </TinyButton>
         </form>
       </Row>
       {/* kurze status-/fehlermeldung für nutzer */}
-      {statusMessage && <Status role="status">{statusMessage}</Status>}
+      {statusMessage && <TinyStatus role="status">{statusMessage}</TinyStatus>}
     </Wrapper>
   );
 }
 const Wrapper = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 12px;
-  align-items: start;
   max-width: 560px;
+  width: 100%;
+  margin-inline: auto;
+  margin-top: 24px;
 `;
 const Row = styled.div`
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+  gap: 16px;
+  margin-top: 8px;
 `;
 
-const Button = styled.button`
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+const TinyButton = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
   cursor: pointer;
-  background: #f7f7f7;
-  font-weight: 600;
-  transition: transform 0.05s ease-in-out;
+  text-underline-offset: 2px;
+  transition: color 120ms ease-in-out;
   &:hover {
-    transform: translateY(-1px);
+    color: var(--pb-600);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    text-decoration: none;
   }
 `;
 
-const Status = styled.div`
-  font-size: 14px;
-  color: #333;
+const TinyStatus = styled.div`
+  font-size: 12px;
+  color: var(--foreground);
+  text-align: right;
+  opacity: 0.8;
+  margin-top: 4px;
 `;
 
 const VisuallyHiddenInput = styled.input`
+  position: absolute;
   width: 1px;
   height: 1px;
   padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 `;

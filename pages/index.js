@@ -278,19 +278,15 @@ export default function HomePage() {
             </TransactionsListItem>
           ))
         )}
-        <ImportExportDataInCsv
-          importedItems={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
-        />
 
-        {
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
-          />
-        }
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          filteredTransactions={filteredTransactions}
+        />
       </TransactionsList>
     </Main>
   );
@@ -401,9 +397,10 @@ const ScreenReaderH2 = styled.h2`
   white-space: nowrap;
   border: 0;
 `;
+
 /* tour */
 
 const TourFocus = styled.div`
   position: relative;
-  border-radius: inherit; 
+  border-radius: inherit;
 `;
