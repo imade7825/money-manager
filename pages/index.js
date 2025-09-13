@@ -192,7 +192,7 @@ export default function HomePage() {
   }
 
   return (
-    <Main aria-label="Finance dashboard">
+    <Main aria-label="Finance dashboard" data-tour="introApp">
       <CardControls>
         <AuthButtons />
       </CardControls>

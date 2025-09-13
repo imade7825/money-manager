@@ -1,6 +1,16 @@
 export function getSteps() {
   return [
     {
+      element: '[data-tour="introApp"]',
+      popover: {
+        title: "Hello in Money Manager App",
+        description:
+          "This a simple way to overview your finances.",
+        side: "top",
+        align: "start",
+      },
+    },
+    {
       element: '[data-tour="balance-summary"]',
       popover: {
         title: "Balance overview",
