@@ -12,10 +12,10 @@ export default function PieChart() {
   if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
   return (
-    <ChartWrapper as="figure" aria-labelledby="chart-title" role="group">
+    <ChartWrapper as="figure" aria-labelledby="chart-title" role="group" data-tour="analytics-chart">
       <ChartTitle id="chart-title">Transactions by Category</ChartTitle>
       <Card>
-        <CategoryPieChart transactions={transactions} ari-hidden />
+        <CategoryPieChart transactions={transactions} aria-hidden />
       </Card>
       <ScreenReaderfigcaption>
         <p role="note" aria-label="Pie chart summary">

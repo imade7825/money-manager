@@ -7,7 +7,7 @@ import { Layout } from "@/components/ui/Primitives";
 import BottomNav from "@/components/BottomNav";
 import "driver.js/dist/driver.css";
 import { useEffect } from "react";
-import { maybeStartTour } from "@TourManager";
+import { maybeStartTour } from "@/tour/TourManager";
 
 export default function App({
   Component,

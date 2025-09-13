@@ -133,5 +133,29 @@ label{
   outline: var(--focus-ring); 
   outline-offset:2px;
 }
+
+/* driver.js theming */
+.mm-tour .driver-popover {
+  background: var(--surface-elevated);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.mm-tour .driver-popover-title {
+  color: var(--pb-800);
+  font-weight: 700;
+}
+.mm-tour .driver-popover-next-btn,
+.mm-tour .driver-popover-prev-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--foreground);
+  border-radius: var(--radius-sm);
+}
+.mm-tour .driver-popover-close-btn {
+  color: var(--muted-foreground);
+}
+
 `;
 export default GlobalStyle;

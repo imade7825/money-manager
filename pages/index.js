@@ -196,8 +196,11 @@ export default function HomePage() {
       <CardControls>
         <AuthButtons />
       </CardControls>
-      <Card data-tour="balance-summary">
-        <AccountBalance transactions={transactions} />
+      <Card>
+        <AccountBalance
+          transactions={transactions}
+          data-tour="balance-summary"
+        />
       </Card>
       <CardFilter>
         {isFiltered && (
@@ -242,7 +245,10 @@ export default function HomePage() {
         />
       </CardFilter>
 
-      <TransactionsList aria-labelledby="transactions-title" data-tour="transactions-list">
+      <TransactionsList
+        aria-labelledby="transactions-title"
+        data-tour="transactions-list"
+      >
         <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results Available</EmptyState>
