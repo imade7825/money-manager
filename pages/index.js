@@ -196,11 +196,10 @@ export default function HomePage() {
       <CardControls>
         <AuthButtons />
       </CardControls>
-      <Card>
-        <AccountBalance
-          transactions={transactions}
-          data-tour="balance-summary"
-        />
+      <Card data-tour="balance-summary">
+        <TourFocus data-tour-target="inner">
+          <AccountBalance transactions={transactions} />
+        </TourFocus>
       </Card>
       <CardFilter>
         {isFiltered && (
@@ -401,4 +400,10 @@ const ScreenReaderH2 = styled.h2`
   clip: rect(0, 0, 1px, 1px);
   white-space: nowrap;
   border: 0;
+`;
+/* tour */
+
+const TourFocus = styled.div`
+  position: relative;
+  border-radius: inherit; 
 `;

@@ -157,5 +157,31 @@ label{
   color: var(--muted-foreground);
 }
 
+.mm-glow {
+  position: relative;
+  border-radius: inherit;
+  outline: 2px solid var(--pb-500);
+  box-shadow:
+    0 0 0 6px rgba(46,112,255,0.20),
+    0 8px 24px rgba(0,0,0,0.25);
+  filter: drop-shadow(0 6px 18px rgba(46,112,255,0.35));
+  transition: outline-color .2s ease, box-shadow .2s ease;
+}
+
+@keyframes mmPulse {
+  0%   { box-shadow: 0 0 0 6px rgba(46,112,255,.20), 0 8px 24px rgba(0,0,0,.25); }
+  70%  { box-shadow: 0 0 0 14px rgba(46,112,255,0),  0 8px 24px rgba(0,0,0,.25); }
+  100% { box-shadow: 0 0 0 6px rgba(46,112,255,.20), 0 8px 24px rgba(0,0,0,.25); }
+}
+.mm-glow::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: inherit;
+  pointer-events: none;
+  animation: mmPulse 2s ease-out infinite;
+}
+
+
 `;
 export default GlobalStyle;

@@ -1,40 +1,59 @@
-import { driver } from 'driver.js'
-import { getSteps } from './steps'
+import { driver } from "driver.js";
+import { getSteps } from "./steps";
 
-const KEY = 'hasSeenTour'
+const KEY = "hasSeenTour";
 
-function createDriver() {
-  return driver({
-    showProgress: true,
-    allowClose: true,
-    overlayOpacity: 0.5,
-    stagePadding: 4,
-    popoverClass: 'mm-tour', // optional: for theming via CSS
-    steps: getSteps(),
-  })
+async function createDriver() {
+  const { driver } = await import("driver.js");
+  return driver(createOpts());
 }
 
-export function startTour() {
-  const d = createDriver()
-  d.drive()
+export async function startTour() {
+  const driver = await createDriver();
+  driver.drive();
 }
 
-export function restartTour() {
-  localStorage.removeItem(KEY)
-  startTour()
+export async function restartTour() {
+  localStorage.removeItem(KEY);
+  await startTour();
 }
 
-export function maybeStartTour() {
+export async function maybeStartTour() {
   try {
-    if (typeof window === 'undefined') return
-    const seen = localStorage.getItem(KEY)
-    if (seen === 'true') return
-    const d = createDriver()
-    d.drive()
-    d.on('destroyed', () => {
-      localStorage.setItem(KEY, 'true')
-    })
+    if (typeof window === "undefined") return;
+    const seen = localStorage.getItem(KEY);
+    if (seen === "true") return;
+    const driver = await createDriver();
+    driver.drive();
+    driver.on("destroyed", () => {
+      localStorage.setItem(KEY, "true");
+    });
   } catch {
     // fail silently
   }
+}
+
+function getEl(target) {
+  return target?.element || target;
+}
+
+function getGlowTarget(target) {
+  const el = getEl(target);
+  return el?.querySelector?.('[data-tour-target="inner"]') || el;
+}
+
+function createOpts() {
+  return {
+    showProgress: true,
+    allowClose: true,
+    overlayOpacity: 0.55,
+    stagePadding: 16,
+    stageRadius: 14,
+    overlayColor: "rgba(9, 29, 93, 0.55)",
+    popoverClass: "mm-tour",
+    steps: getSteps(),
+    onHighlightStarted: (t) => getGlowTarget(t)?.classList?.add("mm-glow"),
+    onHighlighted: (t) => getGlowTarget(t)?.classList?.add("mm-glow"),
+    onDeselected: (t) => getGlowTarget(t)?.classList?.remove("mm-glow"),
+  };
 }
