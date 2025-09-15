@@ -3,8 +3,13 @@ import { getSteps } from "./steps";
 
 const KEY = "hasSeenTour";
 
-export async function startTour() {
-  const tourDriver = driver(opts);
+export function startTour() {
+  const tourDriver = driver({
+    animate: true,
+    showProgress: true,
+    stageBackground: "rgba(255,165,0,0.3)",
+    steps,
+  });
   tourDriver.drive();
 }
 

@@ -169,8 +169,8 @@ label{
 }
 
 @keyframes mmPulse {
-  0%   { box-shadow: 0 0 0 6px rgba(46,112,255,.20), 0 8px 24px rgba(0,0,0,.25); }
-  70%  { box-shadow: 0 0 0 14px rgba(46,112,255,0),  0 8px 24px rgba(0,0,0,.25); }
+  0%   { box-shadow: 0 0 0 6px rgba(244, 101, 29, 0.89), 0 8px 24px rgba(0,0,0,.25); }
+  70%  { box-shadow: 0 0 0 14px rgba(255, 196, 46, 0),  0 8px 24px rgba(0,0,0,.25); }
   100% { box-shadow: 0 0 0 6px rgba(46,112,255,.20), 0 8px 24px rgba(0,0,0,.25); }
 }
 .mm-glow::after {
@@ -180,6 +180,16 @@ label{
   border-radius: inherit;
   pointer-events: none;
   animation: mmPulse 2s ease-out infinite;
+}
+
+
+.driver-highlighted-element {
+  box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.6); 
+  border-radius: 8px ;
+}
+
+.driver-popover {
+  border: 1px solid orange ;
 }
 
 

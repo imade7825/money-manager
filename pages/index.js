@@ -233,7 +233,6 @@ export default function HomePage() {
             </ActiveBadge>
           </ActiveFilterRow>
         )}
-        <ImportExportDataInCsv transactions={filteredTransactions} />
 
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}
@@ -289,6 +288,7 @@ export default function HomePage() {
           filteredTransactions={filteredTransactions}
         />
       </TransactionsList>
+      <ImportExportDataInCsv />
     </Main>
   );
 }
@@ -377,6 +377,7 @@ const InlineEdit = styled.div`
 
 const Main = styled.main`
   display: block;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
 `;
 
 const Status = styled.p`

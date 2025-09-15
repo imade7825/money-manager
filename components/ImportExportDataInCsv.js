@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import Papa from "papaparse";
-import { mutate } from "swr";
+import useSWR, { mutate } from "swr";
 import { toast } from "react-toastify";
 
-export default function ImportExportDataInCsv({ transactions = [] }) {
+export default function ImportExportDataInCsv() {
+  const { data: transactions = [] } = useSWR("/api/transactions");
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
   async function handleExport() {
@@ -183,8 +184,7 @@ const Wrapper = styled.div`
   gap: 12px;
   max-width: 560px;
   width: 100%;
-
-
+  margin-bottom: calc(88px + env(safe-area-inset-bottom));
 `;
 const Row = styled.div`
   display: flex;
@@ -217,8 +217,6 @@ const TinyButton = styled.button`
     text-decoration: none;
   }
 `;
-
-
 
 const VisuallyHiddenInput = styled.input`
   position: absolute;
