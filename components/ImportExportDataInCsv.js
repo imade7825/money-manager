@@ -1,17 +1,21 @@
 import styled from "styled-components";
 import Papa from "papaparse";
+
 import useSWR, { mutate } from "swr";
 import { toast } from "react-toastify";
 
 export default function ImportExportDataInCsv() {
   const { data: transactions = [] } = useSWR("/api/transactions");
+
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
   async function handleExport() {
     try {
       //exportiere die bereits im Frontend vorhandenen Items
       if (transactions.length === 0) {
+
         toast.info("No data to Export!");
+
         return;
       }
 
@@ -48,10 +52,12 @@ export default function ImportExportDataInCsv() {
       anchorElement.remove(); //aufräumen
       URL.revokeObjectURL(objectUrl); //temporäre URL freigeben
 
+
       toast.success("Export successful. File has been downloaded.");
     } catch (error) {
       console.error(error);
       toast.error("Export failed.");
+
     }
   }
 
@@ -65,10 +71,20 @@ export default function ImportExportDataInCsv() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transactions }), //backend erwartet: { name, amount, category, type, date }
       });
+
+      let payload = null;
+      try {
+        payload = await response.json();
+      } catch {}
+
       if (!response.ok) {
+
         console.error("Save failed(Server-Error).");
         mutate("/api/transactions");
+
       }
+
+      return payload;
     } catch (error) {
       // netzwerkfehler (z. B. offline) oder clientfehler
       console.error("Save failed(network/client)");
@@ -84,17 +100,23 @@ export default function ImportExportDataInCsv() {
     const selectedFile = formData.get("csvFile"); //datei aus dem <input name="csvFile">
 
     if (!selectedFile) {
+
       toast.warn("Please choose a .csv file before importing.");
+
       return;
     }
     //prüfe ob der dateiname mit .csv endet
     if (!/\.csv$/i.test(selectedFile.name)) {
+
       toast.warn("Please select a .csv file.");
+
       return;
     }
 
     try {
+
       toast.info("Import in progress…");
+
 
       //papaparse liest die datei direkt im browser
       Papa.parse(selectedFile, {
@@ -103,6 +125,7 @@ export default function ImportExportDataInCsv() {
 
         //wenn papaparse fertig ist
         complete: async (results) => {
+
           //falls parser fehler gemeldet hat: anzeigen & abbrechen
           if (results?.errors?.length) {
             console.error(results.errors);
@@ -139,17 +162,22 @@ export default function ImportExportDataInCsv() {
           toast.success("Done: Data saved");
           //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
           formElement.reset();
+
         },
 
         //falls beim lesen/parsen der datei fehler passiert
         error: (parseError) => {
           console.error(parseError);
+
           toast.error("Import failed: cant read data.");
+
         },
       });
     } catch (error) {
       console.error(error);
+
       toast.error("Import failed");
+
     }
   }
 
