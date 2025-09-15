@@ -114,7 +114,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
             }
           />
           <ButtonContainer>
-            <AddButton type="submit" disabled={isButtonDisabled}>
+            <AddButton type="submit" disabled={isButtonDisabled} data-tour="submit-transaction">
               {defaultValues ? "Save" : "Add"}
             </AddButton>
             <CancelButton
@@ -122,6 +122,7 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
               onClick={handleReset}
               disabled={isButtonDisabled}
               aria-label="Cancel and close the form"
+              data-tour="cancel-form"
             >
               Cancel
             </CancelButton>

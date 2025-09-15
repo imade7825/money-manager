@@ -38,7 +38,7 @@ export default function FilterBar({
 
   return (
     
-      <Bar>
+      <Bar data-tour="filter-bar">
        
           <label>
             Category
@@ -61,6 +61,7 @@ export default function FilterBar({
             id="time-filter"
             onChange={handleTimeFilterChange}
             value={preset}
+            data-tour="time-filter"
           >
             <option value="all">All</option>
             <option value="today">Today</option>

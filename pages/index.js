@@ -192,12 +192,14 @@ export default function HomePage() {
   }
 
   return (
-    <Main aria-label="Finance dashboard">
+    <Main aria-label="Finance dashboard" data-tour="introApp">
       <CardControls>
         <AuthButtons />
       </CardControls>
-      <Card>
-        <AccountBalance transactions={transactions} />
+      <Card data-tour="balance-summary">
+        <TourFocus data-tour-target="inner">
+          <AccountBalance transactions={transactions} />
+        </TourFocus>
       </Card>
       <CardFilter>
         {isFiltered && (
@@ -242,7 +244,10 @@ export default function HomePage() {
         />
       </CardFilter>
 
-      <TransactionsList aria-labelledby="transactions-title">
+      <TransactionsList
+        aria-labelledby="transactions-title"
+        data-tour="transactions-list"
+      >
         <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
         {filteredTransactions.length === 0 ? (
           <EmptyState>No Results Available</EmptyState>
@@ -277,16 +282,17 @@ export default function HomePage() {
           transactions={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
         />
 
-        {
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
-          />
-        }
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          filteredTransactions={filteredTransactions}
+        />
       </TransactionsList>
+      <ImportExportDataInCsv />
     </Main>
   );
 }
@@ -375,6 +381,7 @@ const InlineEdit = styled.div`
 
 const Main = styled.main`
   display: block;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
 `;
 
 const Status = styled.p`
@@ -395,4 +402,11 @@ const ScreenReaderH2 = styled.h2`
   clip: rect(0, 0, 1px, 1px);
   white-space: nowrap;
   border: 0;
+`;
+
+/* tour */
+
+const TourFocus = styled.div`
+  position: relative;
+  border-radius: inherit;
 `;

@@ -1,18 +1,21 @@
 import styled from "styled-components";
 import Papa from "papaparse";
-import { mutate } from "swr";
-import { notify } from "@/lib/toast";
 
-export default function ImportExportDataInCsv({
-  transactions = [], //list der datensätze aus dem frontend, standard leer verhinder (undefined)
-}) {
+import useSWR, { mutate } from "swr";
+import { toast } from "react-toastify";
+
+export default function ImportExportDataInCsv() {
+  const { data: transactions = [] } = useSWR("/api/transactions");
+
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
   async function handleExport() {
     try {
       //exportiere die bereits im Frontend vorhandenen Items
       if (transactions.length === 0) {
-        notify.noDataToExport();
+
+        toast.info("No data to Export!");
+
         return;
       }
 
@@ -48,10 +51,13 @@ export default function ImportExportDataInCsv({
       anchorElement.click(); //click simulieren download
       anchorElement.remove(); //aufräumen
       URL.revokeObjectURL(objectUrl); //temporäre URL freigeben
-      notify.exportSuccessful();
+
+
+      toast.success("Export successful. File has been downloaded.");
     } catch (error) {
       console.error(error);
-      notify.exportFailed();
+      toast.error("Export failed.");
+
     }
   }
 
@@ -72,9 +78,10 @@ export default function ImportExportDataInCsv({
       } catch {}
 
       if (!response.ok) {
-        throw new Error(payload?.message || `Failed (HTTP ${response.status})`); // (Toasts im Caller)
-        // console.error("Save failed(Server-Error).");
-        // notify.importFailedCantReadData();
+
+        console.error("Save failed(Server-Error).");
+        mutate("/api/transactions");
+
       }
 
       return payload;
@@ -93,17 +100,23 @@ export default function ImportExportDataInCsv({
     const selectedFile = formData.get("csvFile"); //datei aus dem <input name="csvFile">
 
     if (!selectedFile) {
-      notify.missedSelectedFile();
+
+      toast.warn("Please choose a .csv file before importing.");
+
       return;
     }
     //prüfe ob der dateiname mit .csv endet
     if (!/\.csv$/i.test(selectedFile.name)) {
-      notify.selectCsvFile();
+
+      toast.warn("Please select a .csv file.");
+
       return;
     }
 
     try {
-      notify.importImProgress();
+
+      toast.info("Import in progress…");
+
 
       //papaparse liest die datei direkt im browser
       Papa.parse(selectedFile, {
@@ -112,69 +125,59 @@ export default function ImportExportDataInCsv({
 
         //wenn papaparse fertig ist
         complete: async (results) => {
-          try {
-            //falls parser fehler gemeldet hat: anzeigen & abbrechen
-            if (results?.errors?.length) {
-              console.error(results.errors);
-              notify.parseImportFailed();
-              return;
-            }
-            //rohdaten in ein einheitliches format bringen
-            const importedRows = (results?.data ?? []) //data ist ein array je csv zeile
-              .map((row) => {
-                //jede zeile aus der csv in unser objekt-format übertragen
-                return {
-                  name: String(row?.name ?? "").trim(), //text trimmen
-                  category: String(row?.category ?? "").trim(), //text trimmen
-                  //datum: wenn vorhanden, so belassen. sonst leer
-                  date: row?.date ?? "",
-                  //betrag: erst , durch . ersetzen dann Number()
-                  amount: Number(String(row?.amount ?? "").replace(",", ".")),
-                  //typ klein schreiben (erwartet: "income" oder "expense")
-                  type: String(row?.type ?? "")
-                    .trim()
-                    .toLowerCase(),
-                };
-              })
-              //validierung: pflichtfelder prüfen
-              .filter(
-                (normalized) =>
-                  normalized.name && //name muss vorhanden
-                  normalized.category &&
-                  normalized.date &&
-                  Number.isFinite(normalized.amount) && //betrag muss zahl sein
-                  (normalized.type === "income" ||
-                    normalized.type === "expense") //typ muss gültig sein
-              );
-            if (!importedRows.length) {
-              notify.importFailed();
-              return;
-            }
-            const { inserted } = await saveImportedTransactionsToDB(
-              importedRows
+
+          //falls parser fehler gemeldet hat: anzeigen & abbrechen
+          if (results?.errors?.length) {
+            console.error(results.errors);
+            toast.error("Import failed: CSV conatins errors");
+            return;
+          }
+          //rohdaten in ein einheitliches format bringen
+          const importedRows = (results?.data ?? []) //data ist ein array je csv zeile
+            .map((row) => {
+              //jede zeile aus der csv in unser objekt-format übertragen
+              return {
+                name: String(row?.name ?? "").trim(), //text trimmen
+                category: String(row?.category ?? "").trim(), //text trimmen
+                //datum: wenn vorhanden, so belassen. sonst leer
+                date: row?.date ?? "",
+                //betrag: erst , durch . ersetzen dann Number()
+                amount: Number(String(row?.amount ?? "").replace(",", ".")),
+                //typ klein schreiben (erwartet: "income" oder "expense")
+                type: String(row?.type ?? "")
+                  .trim()
+                  .toLowerCase(),
+              };
+            })
+            //validierung: pflichtfelder prüfen
+            .filter(
+              (normalized) =>
+                normalized.name && //name muss vorhanden
+                Number.isFinite(normalized.amount) && //betrag muss zahl sein
+                (normalized.type === "income" || normalized.type === "expense") //typ muss gültig sein
             );
 
-            notify.importSuccessful();
-            notify.dataSaved();
-            notify.dataSavedCount(inserted);
-            mutate("/api/transactions");
-            //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
-            formElement.reset();
-          } catch (error) {
-            console.error(error);
-            notify.importFailed();
-          }
+          toast.success("Import successful.");
+          await saveImportedTransactionsToDB(importedRows);
+          toast.success("Done: Data saved");
+          //formular leeren, damit dieselbe datei ggf. erneut gewählt werden kann
+          formElement.reset();
+
         },
 
         //falls beim lesen/parsen der datei fehler passiert
         error: (parseError) => {
           console.error(parseError);
-          notify.importFailedCantReadData();
+
+          toast.error("Import failed: cant read data.");
+
         },
       });
     } catch (error) {
       console.error(error);
-      notify.importFailed();
+
+      toast.error("Import failed");
+
     }
   }
 
@@ -182,9 +185,9 @@ export default function ImportExportDataInCsv({
     <Wrapper>
       <Row>
         {/* export button: startet den csv download aus vorhandenen frontend-daten */}
-        <Button type="button" onClick={handleExport}>
+        <TinyButton type="button" onClick={handleExport} data-tour="csv-export">
           Export CSV
-        </Button>
+        </TinyButton>
         {/* import formular: datei wählen und auto-submit durch onChange */}
         <form onSubmit={handleImportSubmit}>
           <VisuallyHiddenInput
@@ -194,47 +197,63 @@ export default function ImportExportDataInCsv({
             accept=".csv,text/csv" //nur csv erlauben
             onChange={(event) => event.currentTarget.form?.requestSubmit()} //direkt abschicken
           />
-          <Button as="label" htmlFor="csvFile">
+          <TinyButton as="label" htmlFor="csvFile" data-tour="csv-export">
             Import CSV
-          </Button>
+          </TinyButton>
         </form>
       </Row>
     </Wrapper>
   );
 }
 const Wrapper = styled.div`
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 12px;
-  align-items: start;
   max-width: 560px;
+  width: 100%;
+  margin-bottom: calc(88px + env(safe-area-inset-bottom));
 `;
 const Row = styled.div`
   display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
+  gap: 16px;
+  margin-top: 8px;
 `;
 
-const Button = styled.button`
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+const TinyButton = styled.button`
+  display: flex;
+  justify-content: space-evenly;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 25px;
+  background: var(--surface, #f7f9fc);
+  box-shadow: inset 0 0 0 1px var(--pb-200, #b3dcff);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--foreground);
   cursor: pointer;
-  background: #f7f7f7;
-  font-weight: 600;
-  transition: transform 0.05s ease-in-out;
+  text-underline-offset: 2px;
+  transition: color 120ms ease-in-out;
   &:hover {
-    transform: translateY(-1px);
+    color: var(--pb-600);
+  }
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    text-decoration: none;
   }
 `;
 
-const Status = styled.div`
-  font-size: 14px;
-  color: #333;
-`;
-
 const VisuallyHiddenInput = styled.input`
+  position: absolute;
   width: 1px;
   height: 1px;
   padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
 `;
