@@ -3,14 +3,9 @@ import { getSteps } from "./steps";
 
 const KEY = "hasSeenTour";
 
-async function createDriver() {
-  const { driver } = await import("driver.js");
-  return driver(createOpts());
-}
-
 export async function startTour() {
-  const driver = await createDriver();
-  driver.drive();
+  const tourDriver = driver(opts);
+  tourDriver.drive();
 }
 
 export async function restartTour() {
@@ -23,9 +18,9 @@ export async function maybeStartTour() {
     if (typeof window === "undefined") return;
     const seen = localStorage.getItem(KEY);
     if (seen === "true") return;
-    const driver = await createDriver();
-    driver.drive();
-    driver.on("destroyed", () => {
+    const tourDriver = await driver(opts);
+    tourDriver.drive();
+    tourDriver.on("destroyed", () => {
       localStorage.setItem(KEY, "true");
     });
   } catch {
@@ -42,18 +37,17 @@ function getGlowTarget(target) {
   return el?.querySelector?.('[data-tour-target="inner"]') || el;
 }
 
-function createOpts() {
-  return {
-    showProgress: true,
-    allowClose: true,
-    overlayOpacity: 0.55,
-    stagePadding: 16,
-    stageRadius: 14,
-    overlayColor: "rgba(9, 29, 93, 0.55)",
-    popoverClass: "mm-tour",
-    steps: getSteps(),
-    onHighlightStarted: (t) => getGlowTarget(t)?.classList?.add("mm-glow"),
-    onHighlighted: (t) => getGlowTarget(t)?.classList?.add("mm-glow"),
-    onDeselected: (t) => getGlowTarget(t)?.classList?.remove("mm-glow"),
-  };
-}
+const opts = {
+  showProgress: true,
+  allowClose: true,
+  overlayOpacity: 0.55,
+  stagePadding: 16,
+  stageRadius: 14,
+  overlayColor: "rgba(9, 29, 93, 0.55)",
+  popoverClass: "mm-tour",
+  steps: getSteps(),
+  onHighlightStarted: (target) =>
+    getGlowTarget(target)?.classList?.add("mm-glow"),
+  onHighlighted: (target) => getGlowTarget(target)?.classList?.add("mm-glow"),
+  onDeselected: (target) => getGlowTarget(target)?.classList?.remove("mm-glow"),
+};

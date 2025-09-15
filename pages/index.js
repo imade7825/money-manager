@@ -233,6 +233,7 @@ export default function HomePage() {
             </ActiveBadge>
           </ActiveFilterRow>
         )}
+        <ImportExportDataInCsv transactions={filteredTransactions} />
 
         <IncomeExpenseView
           filteredTransactions={filteredTransactions}

@@ -20,13 +20,13 @@ export default function TransactionItem({ transaction, onEdit, onDelete }) {
       <Actions>
         <button
           onClick={() => onEdit(transaction)}
-          data-tour="edit-transaction"
+          
         >
           Edit
         </button>
         <button
           onClick={() => onDelete(transaction._id)}
-          data-tour="delete-transaction"
+          
         >
           Delete
         </button>

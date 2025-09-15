@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import ImportExportDataInCsv from "./ImportExportDataInCsv";
+
 
 export default function Pagination({
   currentPage,
@@ -51,7 +51,7 @@ export default function Pagination({
           </option>
         ))}
       </Select>
-      <ImportExportDataInCsv transactions={filteredTransactions} />
+      
     </PaginationWrapper>
   );
 }

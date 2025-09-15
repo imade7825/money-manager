@@ -49,24 +49,7 @@ export function getSteps() {
         align: "start",
       },
     },
-    {
-      element: '[data-tour="edit-transaction"]',
-      popover: {
-        title: "Edit a transaction",
-        description: "Update name, amount, type, category, or date.",
-        side: "left",
-        align: "center",
-      },
-    },
-    {
-      element: '[data-tour="delete-transaction"]',
-      popover: {
-        title: "Delete a transaction",
-        description: "Remove an entry. You will be asked to confirm.",
-        side: "left",
-        align: "center",
-      },
-    },
+   
     {
       element: '[data-tour="nav-create"]',
       popover: {

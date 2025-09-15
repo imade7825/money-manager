@@ -183,8 +183,8 @@ const Wrapper = styled.div`
   gap: 12px;
   max-width: 560px;
   width: 100%;
-  margin-inline: auto;
-  margin-top: 24px;
+
+
 `;
 const Row = styled.div`
   display: flex;
@@ -195,9 +195,13 @@ const Row = styled.div`
 `;
 
 const TinyButton = styled.button`
-  background: none;
-  border: none;
-  padding: 0;
+  display: flex;
+  justify-content: space-evenly;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 25px;
+  background: var(--surface, #f7f9fc);
+  box-shadow: inset 0 0 0 1px var(--pb-200, #b3dcff);
   font-size: 12px;
   font-weight: 500;
   color: var(--foreground);
@@ -214,13 +218,7 @@ const TinyButton = styled.button`
   }
 `;
 
-const TinyStatus = styled.div`
-  font-size: 12px;
-  color: var(--foreground);
-  text-align: right;
-  opacity: 0.8;
-  margin-top: 4px;
-`;
+
 
 const VisuallyHiddenInput = styled.input`
   position: absolute;
