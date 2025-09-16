@@ -36,12 +36,12 @@ function computeRange(preset) {
 
   if (preset === "7") return { from: subtractDaysFromToday(6), to: toDateISO };
   if (preset === "30")
-    return { form: subtractDaysFromToday(29), to: toDateISO };
+    return { from: subtractDaysFromToday(29), to: toDateISO };
   if (preset === "90")
     return { from: subtractDaysFromToday(89), to: toDateISO };
   if (preset === "ytd") return { from: firstDayOfCurrentYear(), to: toDateISO };
   if (preset === "all") return { from: "", to: toDateISO };
-  return { form: "", to: toDateISO };
+  return { from: "", to: toDateISO };
 }
 
 export default function Analytics() {

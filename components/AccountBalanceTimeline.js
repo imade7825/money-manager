@@ -58,30 +58,32 @@ export default function AccountBalanceTimeLine({
     <Wrapper as="figure" aria-labelledby="timeline-title" role="group">
       <Title id="timeline-title">Transactions by Time</Title>
       <CardLike>
-        <ResponsiveContainer>
+        <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray={"3 3"}>
-              <XAxis
-                dataKey="date"
-                minTickGap={24}
-                tickFormatter={(value) => new Date(value).toDateString("de-DE")}
-              />
-              <YAxis width={72} tickFormatter={(value) => euro.format(value)} />
-              <ReferenceLine y={0} strokeDasharray={"2 2"} />
-              <Tooltip
-                labelFormatter={(value) =>
-                  new Date(value).toLocaleDateString("de-DE")
-                }
-                formatter={(value) => [euro.format(value), "Balance"]}
-              />
-              <Line
-                type="monotone"
-                dataKey="balance"
-                dot={false}
-                strokeWidth={2}
-                isAnimationActive={false}
-              />
-            </CartesianGrid>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis
+              dataKey="date"
+              minTickGap={24}
+              tickFormatter={(value) =>
+                new Date(value).toLocaleDateString("de-DE")
+              }
+              tickMargin={8}
+            />
+            <YAxis width={96} tickFormatter={(value) => euro.format(value)} />
+            <ReferenceLine y={0} strokeDasharray="2 2" />
+            <Tooltip
+              labelFormatter={(value) =>
+                new Date(value).toLocaleDateString("de-DE")
+              }
+              formatter={(value) => [euro.format(value), "Balance"]}
+            />
+            <Line
+              type="monotone"
+              dataKey="balance"
+              dot={true}
+              strokeWidth={2}
+              isAnimationActive={false}
+            />
           </LineChart>
         </ResponsiveContainer>
       </CardLike>
@@ -115,12 +117,6 @@ const Title = styled.h2`
   font-size: 1.2rem;
   font-weight: 600;
   text-align: left;
-`;
-
-const EmptyState = styled.p`
-  text-align: center;
-  margin: 12px 0;
-  color: var(--muted-foreground, #6b7280);
 `;
 
 const SrCaption = styled.figcaption`
