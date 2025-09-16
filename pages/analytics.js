@@ -1,7 +1,7 @@
 import useSWR from "swr";
 import styled from "styled-components";
 import CategoryPieChart from "@/components/CategoryPieChart";
-import AccountBalanceTimeLine from "@/components/AccountBalanceTimeline";
+import AccountBalanceTimeline from "@/components/AccountBalanceTimeline";
 import { Card } from "@/components/ui/Primitives";
 import { useState } from "react";
 
@@ -16,32 +16,44 @@ function formatDate(isoString) {
   });
 }
 
-function computeRange(preset) {
+function computeRange(presetKey) {
   const today = new Date();
-  const toDateISO = today.toISOString().slice(0, 10);
 
-  function toISODateString(date) {
-    return new Date(date).toISOString().slice(0, 10);
+  function toLocalISOString(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   }
 
+  const todayISO = toLocalISOString(today);
+
   function subtractDaysFromToday(numberOfDays) {
-    const date = new Date(today);
-    date.setDate(date.getDate() - numberOfDays);
-    return toISODateString(date);
+    const copy = new Date(today);
+    copy.setDate(copy.getDate() - numberOfDays);
+    return toLocalISOString(copy);
   }
 
   function firstDayOfCurrentYear() {
-    return today.getFullYear() + "-01-01";
+    return `${today.getFullYear()}-01-01`;
   }
 
-  if (preset === "7") return { from: subtractDaysFromToday(6), to: toDateISO };
-  if (preset === "30")
-    return { from: subtractDaysFromToday(29), to: toDateISO };
-  if (preset === "90")
-    return { from: subtractDaysFromToday(89), to: toDateISO };
-  if (preset === "ytd") return { from: firstDayOfCurrentYear(), to: toDateISO };
-  if (preset === "all") return { from: "", to: toDateISO };
-  return { from: "", to: toDateISO };
+  if (presetKey === "7") {
+    return { dateFrom: subtractDaysFromToday(6), dateTo: todayISO };
+  }
+  if (presetKey === "30") {
+    return { dateFrom: subtractDaysFromToday(29), dateTo: todayISO };
+  }
+  if (presetKey === "90") {
+    return { dateFrom: subtractDaysFromToday(89), dateTo: todayISO };
+  }
+  if (presetKey === "ytd") {
+    return { dateFrom: firstDayOfCurrentYear(), dateTo: todayISO };
+  }
+  if (presetKey === "all") {
+    return { dateFrom: "", dateTo: todayISO };
+  }
+  return { dateFrom: "", dateTo: todayISO };
 }
 
 export default function Analytics() {
@@ -58,18 +70,18 @@ export default function Analytics() {
 
   const initial = computeRange("30");
   const [preset, setPreset] = useState("30");
-  const [dateFrom, setDateFrom] = useState(initial.from);
-  const [dateTo, setDateTo] = useState(initial.to);
+  const [dateFrom, setDateFrom] = useState(initial.dateFrom);
+  const [dateTo, setDateTo] = useState(initial.dateTo);
 
   if (error) return <StatusMessage>Failed to load transactions</StatusMessage>;
   if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
-  function applyPreset(preset) {
-    const { from, to } = computeRange(preset);
-    setPreset(preset);
-    setDateFrom(from);
-    setDateTo(to);
-  }
+ function applyPreset(preset) {
+   const { dateFrom, dateTo } = computeRange(preset);
+   setPreset(preset);
+   setDateFrom(dateFrom);
+   setDateTo(dateTo);
+}
 
   function onCustomChange({ from, to }) {
     setPreset("custom");
@@ -165,10 +177,10 @@ export default function Analytics() {
             </ActiveRange>
           )}
 
-          <AccountBalanceTimeLine
+          <AccountBalanceTimeline
             transactions={transactions}
-            startDate={dateFrom || undefined}
-            endDate={dateTo || undefined}
+            startDate={dateFrom || null}
+            endDate={dateTo || null}
           />
         </section>
       )}

@@ -15,37 +15,39 @@ const euro = new Intl.NumberFormat("de-DE", {
   currency: "EUR",
 });
 
-function buildBalanceSeries(transactions = [], startDate, endDate) {
-  const start = startDate ? new Date(startDate) : null;
-  const end = endDate ? new Date(endDate) : null;
+function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
+  const startDate = dateFrom ? new Date(dateFrom) : null;
+  const endDate = dateTo ? new Date(dateTo) : null;
 
-  const filtered = transactions
+  const filteredTransactions = transactions
     .filter((transaction) => {
-      const date = new Date(transaction.date);
-      if (start && date < start) return false;
-      if (end && date > end) return false;
+      const transactionDate = new Date(transaction.date);
+      if (startDate && transactionDate < startDate) return false;
+      if (endDate && transactionDate > endDate) return false;
       return true;
     })
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
-  //Sum per day, then running balance
-
-  const byDay = new Map();
-  for (const transaction of filtered) {
-    const day = new Date(transaction.date).toISOString().slice(0, 10);
-    const amount = Number(transaction.amount);
-    if (!Number.isFinite(amount)) continue; // falls Wert Mist ist - wird übersprungen
-    byDay.set(day, (byDay.get(day) ?? 0) + amount);
+  const sumsByDay = new Map();
+  for (const transaction of filteredTransactions) {
+    const dayKey = new Date(transaction.date).toISOString().slice(0, 10);
+    const transactionAmount = Number(transaction.amount);
+    if (!Number.isFinite(transactionAmount)) continue;
+    sumsByDay.set(dayKey, (sumsByDay.get(dayKey) ?? 0) + transactionAmount);
   }
 
-  const days = Array.from(byDay.keys()).sort();
-  let running = 0;
-  const series = [];
-  for (const day of days) {
-    running += byDay.get(day);
-    series.push({ date: day, balance: Number(running.toFixed(2)) });
+  const sortedDays = Array.from(sumsByDay.keys()).sort();
+  let runningBalance = 0;
+  const balanceSeries = [];
+  for (const dayKey of sortedDays) {
+    runningBalance += sumsByDay.get(dayKey);
+    balanceSeries.push({
+      date: dayKey,
+      balance: Number(runningBalance.toFixed(2)),
+    });
   }
-  return series;
+
+  return balanceSeries;
 }
 
 export default function AccountBalanceTimeLine({
@@ -53,7 +55,7 @@ export default function AccountBalanceTimeLine({
   startDate,
   endDate,
 }) {
-  const data = buildBalanceSeries(transactions, startDate, endDate);
+  const data = buildAccountBalanceSeries(transactions, startDate, endDate);
   return (
     <Wrapper as="figure" aria-labelledby="timeline-title" role="group">
       <Title id="timeline-title">Transactions by Time</Title>
