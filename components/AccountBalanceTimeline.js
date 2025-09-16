@@ -16,8 +16,17 @@ const euro = new Intl.NumberFormat("de-DE", {
 });
 
 function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
-  const startDate = dateFrom ? new Date(dateFrom) : null;
-  const endDate = dateTo ? new Date(dateTo) : null;
+  const startDate = dateFrom ? new Date(dateFrom) : undefined;
+  const endDate = dateTo ? new Date(dateTo) : undefined;
+  if (startDate) startDate.setHours(0, 0, 0, 0);
+  if (endDate) endDate.setHours(23, 59, 59, 999);
+
+  const initialBalance = transactions
+    .filter((transaction) => {
+      const transactionDate = new Date(transaction.date);
+      return startDate ? transactionDate < startDate : false;
+    })
+    .reduce((sum, transaction) => sum + transaction.amount, 0);
 
   const filteredTransactions = transactions
     .filter((transaction) => {
@@ -31,13 +40,17 @@ function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
   const sumsByDay = new Map();
   for (const transaction of filteredTransactions) {
     const dayKey = new Date(transaction.date).toISOString().slice(0, 10);
-    const transactionAmount = Number(transaction.amount);
-    if (!Number.isFinite(transactionAmount)) continue;
-    sumsByDay.set(dayKey, (sumsByDay.get(dayKey) ?? 0) + transactionAmount);
+    const rawAmount = Number(transaction.amount);
+    if (!Number.isFinite(rawAmount)) continue;
+    const signedAmount =
+      transaction.type === "expense"
+        ? -Math.abs(rawAmount)
+        : Math.abs(rawAmount);
+    sumsByDay.set(dayKey, (sumsByDay.get(dayKey) ?? 0) + signedAmount);
   }
 
   const sortedDays = Array.from(sumsByDay.keys()).sort();
-  let runningBalance = 0;
+  let runningBalance = initialBalance;
   const balanceSeries = [];
   for (const dayKey of sortedDays) {
     runningBalance += sumsByDay.get(dayKey);
