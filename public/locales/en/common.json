@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "Home",
+    "add": "Add",
+    "charts": "Charts"
+  },
+  "balance": {
+    "title": "Account balance"
+  },
+  "filters": {
+    "title": "Filter Cat / Filter Income",
+    "filteredBalance": "Filtered Balance",
+    "filteredBalanceAria": "Filtered balance is {{value}} euros",
+    "timeSpan": "Time span"
+  },
+  "intl": {
+    "language": "Language",
+    "en": "English",
+    "de": "German"
+  },
+  "transactions": {
+    "date": "Date",
+    "category": "Category",
+    "amount": "Amount"
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete"
+  },
+  "errors": {
+    "required": "This field is required"
+  },
+  "screen": {
+    "failedToLoad": "Failed to load",
+    "transactionsTitle": "Transactions",
+    "noResults": "No Results Available",
+    "unknown": "unknown",
+    "transactionAria": "{{name}}: {{amount}}€ {{date}}"
+  },
+  "actions": {
+    "confirmDelete": "Are you sure that you want to delete this transaction?"
+  }
+}

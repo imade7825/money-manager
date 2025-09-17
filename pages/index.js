@@ -15,6 +15,9 @@ import TransactionForm from "@/components/TransactionForm.js";
 import { toast } from "react-toastify";
 import { notify } from "@/lib/toast";
 import { toCurrencyEUR } from "@/lib/format";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { useTranslation } from "next-i18next";
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -22,6 +25,8 @@ export default function HomePage() {
   //pagination States
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const { t: translate } = useTranslation("common");
 
   const [filters, setFilters] = useState({
     category: "",
@@ -64,13 +69,13 @@ export default function HomePage() {
   if (error)
     return (
       <Status role="status" aria-live="polite">
-        failed to load
+        {translate("screen.failedToLoad")}
       </Status>
     );
   if (isLoading)
     return (
       <Status role="status" aria-live="polite">
-        Loading...
+        {translate("common.loading")}
       </Status>
     );
 
@@ -173,9 +178,7 @@ export default function HomePage() {
   }
 
   async function handleDelete(id) {
-    const confirm = window.confirm(
-      "Are you sure that you want to delete this transaction?"
-    );
+    const confirm = window.confirm(translate("actions.confirmDelete"));
 
     if (!confirm) return;
 
@@ -196,6 +199,12 @@ export default function HomePage() {
       <CardControls>
         <AuthButtons />
       </CardControls>
+      <div className="p-4">
+        <div className="flex justify-end">
+          <LanguageSwitcher />
+        </div>
+        {/* ...rest */}
+      </div>
       <Card>
         <AccountBalance transactions={transactions} />
       </Card>
@@ -204,11 +213,11 @@ export default function HomePage() {
           <FilteredBalanceRow>
             <FilteredBalance
               $neg={sumTotal < 0}
-              title="Filtered Balance:"
+              title={translate("filters.filteredBalance")}
               aria-live="polite"
-              aria-label={`Filtered balance is ${sumTotal.toFixed(2)} euros`}
+              aria-label={translate("filters.filteredBalanceAria")}
             >
-              Filtered Balance: {toCurrencyEUR(sumTotal)}
+              {translate("filters.filteredBalance")}: {toCurrencyEUR(sumTotal)}
             </FilteredBalance>
           </FilteredBalanceRow>
         )}
@@ -225,7 +234,7 @@ export default function HomePage() {
         />
         {(filters.dateFrom || filters.dateTo) && (
           <ActiveFilterRow>
-            <span role="label">Time span:</span>
+            <span role="label">{translate("filters.timeSpan")}:</span>
             <ActiveBadge role="label">
               {filters.dateFrom || " ... "}- {filters.dateTo || "..."}
             </ActiveBadge>
@@ -243,16 +252,20 @@ export default function HomePage() {
       </CardFilter>
 
       <TransactionsList aria-labelledby="transactions-title">
-        <ScreenReaderH2 id="transactions-title">Transactions</ScreenReaderH2>
+        <ScreenReaderH2 id="transactions-title">
+          {translate("screen.transactionsTitle")}
+        </ScreenReaderH2>
         {filteredTransactions.length === 0 ? (
-          <EmptyState>No Results Available</EmptyState>
+          <EmptyState>{translate("screen.noResults")}</EmptyState>
         ) : (
           paginatedTransactions.map((transaction) => (
             <TransactionsListItem
               key={transaction._id}
-              aria-label={`${transaction.name ?? "unknown"}:${
-                transaction.amount
-              }€ ${transaction.date}`}
+              aria-label={translate("screen.transactionAria", {
+                name: transaction.name ?? translate("screen.unknown"),
+                amount: transaction.amount,
+                date: transaction.date,
+              })}
             >
               <TransactionItem
                 onEdit={handleEdit}
@@ -289,6 +302,14 @@ export default function HomePage() {
       </TransactionsList>
     </Main>
   );
+}
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ["common"])),
+    },
+  };
 }
 
 const TransactionsList = styled.ul`

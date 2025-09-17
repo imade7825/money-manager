@@ -1,0 +1,49 @@
+{
+  "nav": {
+    "home": "Start",
+    "add": "Hinzufügen",
+    "charts": "Diagramme"
+  },
+  "balance": {
+    "title": "Kontostand"
+  },
+  "filters": {
+    "title": "Filter Kat / Einkommen filtern",
+    "filteredBalance": "Gefilterter Saldo",
+    "filteredBalanceAria": "Gefilterter Saldo beträgt {{value}} Euro",
+    "timeSpan": "Zeitraum"
+  },
+  "intl": {
+    "language": "Sprache",
+    "en": "Englisch",
+    "de": "Deutsch"
+  },
+  "transactions": {
+    "date": "Datum",
+    "category": "Kategorie",
+    "amount": "Betrag"
+  },
+  "auth": {
+    "signIn": "Anmelden",
+    "signOut": "Abmelden"
+  },
+  "common": {
+    "loading": "Lädt...",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen"
+  },
+  "errors": {
+    "required": "Dieses Feld ist erforderlich"
+  },
+  "screen": {
+    "failedToLoad": "Laden fehlgeschlagen",
+    "transactionsTitle": "Transaktionen",
+    "noResults": "Keine Ergebnisse verfügbar",
+    "unknown": "unbekannt",
+    "transactionAria": "{{name}}: {{amount}}€ {{date}}"
+  },
+  "actions": {
+    "confirmDelete": "Möchtest du diese Transaktion wirklich löschen?"
+  }
+}
