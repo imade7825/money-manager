@@ -84,6 +84,10 @@ export default function HomePage() {
     setEditingTransaction(null);
     setIsFormOpen(false);
   }
+  function handleEdit(transaction) {
+    setEditingTransaction(transaction);
+    setIsFormOpen(true);
+  }
 
   //Filter section
   function setFilterCategory(value) {
@@ -172,11 +176,6 @@ export default function HomePage() {
     notify.saved();
   }
 
-  function handleEdit(transaction) {
-    setEditingTransaction(transaction);
-    setIsFormOpen(true);
-  }
-
   async function handleDelete(id) {
     const confirm = window.confirm(translate("actions.confirmDelete"));
 
@@ -195,18 +194,21 @@ export default function HomePage() {
   }
 
   return (
-    <Main aria-label="Finance dashboard">
+    <Main aria-label="Finance dashboard" data-tour="introApp">
       <CardControls>
         <AuthButtons />
       </CardControls>
+
       <div className="p-4">
         <div className="flex justify-end">
           <LanguageSwitcher />
         </div>
         {/* ...rest */}
       </div>
-      <Card>
-        <AccountBalance transactions={transactions} />
+      <Card data-tour="balance-summary">
+        <TourFocus data-tour-target="inner">
+          <AccountBalance transactions={transactions} />
+        </TourFocus>
       </Card>
       <CardFilter>
         {isFiltered && (
@@ -255,6 +257,7 @@ export default function HomePage() {
         <ScreenReaderH2 id="transactions-title">
           {translate("screen.transactionsTitle")}
         </ScreenReaderH2>
+
         {filteredTransactions.length === 0 ? (
           <EmptyState>{translate("screen.noResults")}</EmptyState>
         ) : (
@@ -286,20 +289,16 @@ export default function HomePage() {
             </TransactionsListItem>
           ))
         )}
-        <ImportExportDataInCsv
-          transactions={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+          filteredTransactions={filteredTransactions}
         />
-
-        {
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            pageSize={pageSize}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
-          />
-        }
       </TransactionsList>
+      <ImportExportDataInCsv />
     </Main>
   );
 }
@@ -396,6 +395,7 @@ const InlineEdit = styled.div`
 
 const Main = styled.main`
   display: block;
+  padding-bottom: calc(10px + env(safe-area-inset-bottom));
 `;
 
 const Status = styled.p`
@@ -416,4 +416,11 @@ const ScreenReaderH2 = styled.h2`
   clip: rect(0, 0, 1px, 1px);
   white-space: nowrap;
   border: 0;
+`;
+
+/* tour */
+
+const TourFocus = styled.div`
+  position: relative;
+  border-radius: inherit;
 `;

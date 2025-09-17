@@ -18,8 +18,18 @@ export default function TransactionItem({ transaction, onEdit, onDelete }) {
         {new Date(transaction.date).toLocaleDateString("de-DE")}
       </DateText>
       <Actions>
-        <button onClick={() => onEdit(transaction)}>Edit</button>
-        <button onClick={() => onDelete(transaction._id)}>Delete</button>
+        <button
+          onClick={() => onEdit(transaction)}
+          
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => onDelete(transaction._id)}
+          
+        >
+          Delete
+        </button>
       </Actions>
     </StyledTransactionItem>
   );

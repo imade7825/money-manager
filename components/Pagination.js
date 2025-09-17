@@ -1,11 +1,13 @@
 import styled from "styled-components";
 
+
 export default function Pagination({
   currentPage,
   totalPages,
   pageSize,
   onPageChange,
   onPageSizeChange,
+  filteredTransactions,
 }) {
   return (
     <PaginationWrapper>
@@ -41,6 +43,7 @@ export default function Pagination({
             onPageChange(1);
           }
         }}
+        data-tour="per-page"
       >
         {[10, 15, 20].map((size) => (
           <option key={size} value={size}>
@@ -48,6 +51,7 @@ export default function Pagination({
           </option>
         ))}
       </Select>
+      
     </PaginationWrapper>
   );
 }
@@ -58,7 +62,7 @@ const PaginationWrapper = styled.div`
   justify-content: space-between;
   gap: 0.5rem;
   align-items: center;
-  margin: 20px 0 80px;
+  margin: 20px 0 20px;
   flex-wrap: wrap;
 `;
 

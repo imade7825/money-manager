@@ -18,6 +18,7 @@ export default function BottomNav() {
         href="/create"
         $active={pathname === "/create"}
         aria-current={pathname === "/" ? "page" : undefined}
+        data-tour="nav-create"
       >
         Create
       </NavItem>
@@ -25,6 +26,7 @@ export default function BottomNav() {
         href="/analytics"
         $active={pathname === "/analytics"}
         aria-current={pathname === "/" ? "page" : undefined}
+        data-tour="nav-analytics"
       >
         Analytics
       </NavItem>

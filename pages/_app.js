@@ -9,7 +9,18 @@ import { appWithTranslation, useTranslation } from "next-i18next";
 
 const nextI18nextConfig = require("../next-i18next.config");
 
-function App({ Component, pageProps: { session, ...pageProps } }) {
+import "driver.js/dist/driver.css";
+import { useEffect } from "react";
+import { maybeStartTour } from "@/tour/TourManager";
+
+function App({
+  Component,
+  pageProps: { session, ...pageProps },
+}) {
+  useEffect(() => {
+    maybeStartTour();
+  }, []);
+
   return (
     <SWRConfig
       value={{
