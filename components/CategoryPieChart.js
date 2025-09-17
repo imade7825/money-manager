@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "next-i18next";
 import styled from "styled-components";
 import {
   ResponsiveContainer,
@@ -49,6 +50,7 @@ function buildCategoryData(transactions = [], type) {
 
 export default function CategoryPieChart({ transactions = [] }) {
   const [mode, setMode] = useState("expense");
+  const { t: translate, i18n } = useTranslation("common");
 
   const data = useMemo(
     () => buildCategoryData(transactions, mode),
@@ -61,7 +63,7 @@ export default function CategoryPieChart({ transactions = [] }) {
   );
 
   if (transactions.length === 0) {
-    return <EmptyState>No transactions available.</EmptyState>;
+    return <EmptyState>{translate("charts.noTransactions")}</EmptyState>;
   }
 
   return (
@@ -72,22 +74,22 @@ export default function CategoryPieChart({ transactions = [] }) {
           onClick={() => setMode("expense")}
           $active={mode === "expense"}
         >
-          Expense
+          {translate("charts.expense")}
         </ModeButton>
         <ModeButton
           type="button"
           onClick={() => setMode("income")}
           $active={mode === "income"}
         >
-          Income
+          {translate("charts.income")}
         </ModeButton>
       </TopBar>
       <TotalText>
-        Total: <strong>{toCurrencyEUR(total)}</strong>
+        {translate("charts.total")}: <strong>{toCurrencyEUR(total)}</strong>
       </TotalText>
       {data.length === 0 ? (
         <EmptyState>
-          No data for <strong>{mode}</strong> found.
+          {translate("charts.noDataFor", { mode: translate(`charts.${mode}`) })}
         </EmptyState>
       ) : (
         <div style={{ width: "100%", height: 360 }}>
@@ -108,7 +110,7 @@ export default function CategoryPieChart({ transactions = [] }) {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value) => [toCurrencyEUR(value), "Sum"]}
+                formatter={(value) => [toCurrencyEUR(value), translate("charts.sum")]}
                 separator=" "
               />
               <Legend />

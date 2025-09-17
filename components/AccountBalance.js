@@ -3,7 +3,7 @@ import { toCurrencyEUR } from "@/lib/format";
 import { useTranslation } from "next-i18next";
 
 export default function AccountBalance({ transactions }) {
-  const {t:translate}=useTranslation("common")
+  const { t: translate } = useTranslation("common");
   if (!transactions) return null;
 
   const balance = transactions.reduce(
@@ -17,7 +17,9 @@ export default function AccountBalance({ transactions }) {
       <BalanceValue
         $isNegative={balance < 0}
         aria-live="polite"
-        aria-label={`Account is ${toCurrencyEUR(balance)}`}
+        aria-label={translate("balance.aria", {
+          value: toCurrencyEUR(balance),
+        })}
       >
         {toCurrencyEUR(balance)}
       </BalanceValue>

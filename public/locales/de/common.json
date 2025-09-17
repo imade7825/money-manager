@@ -4,37 +4,81 @@
     "add": "Hinzufügen",
     "charts": "Diagramme"
   },
-  "balance": {
-    "title": "Kontostand"
-  },
-  "filters": {
-    "title": "Filter Kat / Einkommen filtern",
-    "filteredBalance": "Gefilterter Saldo",
-    "filteredBalanceAria": "Gefilterter Saldo beträgt {{value}} Euro",
-    "timeSpan": "Zeitraum"
-  },
   "intl": {
     "language": "Sprache",
     "en": "Englisch",
     "de": "Deutsch"
   },
-  "transactions": {
-    "date": "Datum",
-    "category": "Kategorie",
-    "amount": "Betrag"
-  },
   "auth": {
     "signIn": "Anmelden",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "notSignedIn": "Nicht angemeldet"
   },
   "common": {
     "loading": "Lädt...",
     "save": "Speichern",
     "cancel": "Abbrechen",
-    "delete": "Löschen"
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "apply": "Übernehmen"
   },
-  "errors": {
-    "required": "Dieses Feld ist erforderlich"
+  "balance": {
+    "title": "Kontostand",
+    "aria": "Kontostand ist {{value}}"
+  },
+  "filters": {
+    "title": "Filter Kat / Einkommen filtern",
+    "filteredBalance": "Gefilterter Saldo",
+    "filteredBalanceAria": "Gefilterter Saldo beträgt {{value}} Euro",
+    "timeSpan": "Zeitraum",
+    "category": "Kategorie",
+    "allCategories": "Alle Kategorien",
+    "timeFilter": "Zeitfilter",
+    "all": "Alle",
+    "today": "Heute",
+    "last7": "Letzte 7 Tage",
+    "last30": "Letzte 30 Tage",
+    "thisMonth": "Diesen Monat",
+    "custom": "Benutzerdefiniert…",
+    "customRange": "Benutzerdefinierter Zeitraum",
+    "from": "Von",
+    "to": "Bis",
+    "byType": "Nach Typ filtern",
+    "type": {
+      "all": "Alle",
+      "income": "Einnahme",
+      "expense": "Ausgabe"
+    }
+  },
+  "csv": {
+    "export": "CSV exportieren",
+    "import": "CSV importieren"
+  },
+  "pagination": {
+    "previous": "Zurück",
+    "next": "Weiter",
+    "pageOf": "Seite {{page}} von {{pages}}",
+    "perPage": "{{size}} pro Seite"
+  },
+  "transactions": {
+    "uncategorized": "Ohne Kategorie"
+  },
+  "create": {
+    "title": "Transaktion erstellen"
+  },
+  "form": {
+    "header": "Bitte alle Felder ausfüllen",
+    "name": "Name der Transaktion",
+    "namePh": "Bitte Namen eintragen",
+    "amount": "Betrag",
+    "amountPh": "Bitte Betrag eintragen",
+    "chooseCategory": "Kategorie wählen",
+    "type": "Typ",
+    "income": "Einnahme",
+    "expense": "Ausgabe",
+    "date": "Datum",
+    "add": "Hinzufügen",
+    "cancelAria": "Abbrechen und Formular schließen"
   },
   "screen": {
     "failedToLoad": "Laden fehlgeschlagen",
@@ -45,5 +89,33 @@
   },
   "actions": {
     "confirmDelete": "Möchtest du diese Transaktion wirklich löschen?"
+  },
+  "charts": {
+    "title": "Transaktionen nach Kategorie",
+    "failedToLoad": "Transaktionen konnten nicht geladen werden",
+    "loading": "Transaktionen werden geladen...",
+    "expense": "Ausgabe",
+    "income": "Einnahme",
+    "total": "Summe",
+    "sum": "Summe",
+    "noTransactions": "Keine Transaktionen vorhanden.",
+    "noDataFor": "Keine Daten für {{mode}} gefunden.",
+    "summaryAria": "Zusammenfassung Kreisdiagramm",
+    "summaryText": "Kreisdiagramm mit Ausgaben nach Kategorie."
+  },
+
+  "categories": {
+    "Restaurants": "Restaurants",
+    "Education": "Bildung",
+    "Salary": "Gehalt",
+    "Savings": "Sparen",
+    "Groceries": "Lebensmittel",
+    "Entertainment": "Unterhaltung",
+    "Utilities": "Nebenkosten",
+    "Health": "Gesundheit",
+    "Rent": "Miete",
+    "Transportation": "Verkehr",
+    "Insurance": "Versicherung",
+    "Investment": "Investitionen"
   }
 }

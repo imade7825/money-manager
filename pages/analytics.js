@@ -4,6 +4,7 @@ import CategoryPieChart from "@/components/CategoryPieChart";
 import AccountBalanceTimeline from "@/components/AccountBalanceTimeline";
 import { Card } from "@/components/ui/Primitives";
 import { useState } from "react";
+import { useTranslation } from "next-i18next";
 
 //helpers
 function formatDate(isoString) {
@@ -62,6 +63,7 @@ export default function Analytics() {
     error,
     isLoading,
   } = useSWR("/api/transactions");
+  const { t: translate } = useTranslation("common");
 
   // Tabs
   const [view, setView] = useState("pie");
@@ -73,8 +75,8 @@ export default function Analytics() {
   const [dateFrom, setDateFrom] = useState(initial.dateFrom);
   const [dateTo, setDateTo] = useState(initial.dateTo);
 
-  if (error) return <StatusMessage>Failed to load transactions</StatusMessage>;
-  if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
+  if (error) return <StatusMessage>{translate("charts.failedToLoad")}</StatusMessage>;
+  if (isLoading) return <StatusMessage>{translate("charts.loading")}</StatusMessage>;
 
   function applyPreset(preset) {
     const { dateFrom, dateTo } = computeRange(preset);
@@ -110,14 +112,13 @@ export default function Analytics() {
           role="group"
           data-tour="analytics-chart"
         >
-          <ChartTitle id="chart-title">Transactions by Category</ChartTitle>
+          <ChartTitle id="chart-title">{translate("charts.title")}</ChartTitle>
           <Card>
             <CategoryPieChart transactions={transactions} aria-hidden />
           </Card>
           <ScreenReaderfigcaption>
-            <p role="note" aria-label="Pie chart summary">
-              Pie chart showing expenses by category.Largest category is Food
-              (350€).
+            <p role="note" aria-label={translate("charts.summaryAria")} >
+              {translate("charts.summaryText")}
             </p>
           </ScreenReaderfigcaption>
         </ChartWrapper>

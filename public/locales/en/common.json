@@ -4,37 +4,81 @@
     "add": "Add",
     "charts": "Charts"
   },
-  "balance": {
-    "title": "Account balance"
-  },
-  "filters": {
-    "title": "Filter Cat / Filter Income",
-    "filteredBalance": "Filtered Balance",
-    "filteredBalanceAria": "Filtered balance is {{value}} euros",
-    "timeSpan": "Time span"
-  },
   "intl": {
     "language": "Language",
     "en": "English",
     "de": "German"
   },
-  "transactions": {
-    "date": "Date",
-    "category": "Category",
-    "amount": "Amount"
-  },
   "auth": {
     "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "notSignedIn": "Not signed in"
   },
   "common": {
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",
-    "delete": "Delete"
+    "delete": "Delete",
+    "edit": "Edit",
+    "apply": "Apply"
   },
-  "errors": {
-    "required": "This field is required"
+  "balance": {
+    "title": "Account balance",
+    "aria": "Account is {{value}}"
+  },
+  "filters": {
+    "title": "Filter Cat / Filter Income",
+    "filteredBalance": "Filtered Balance",
+    "filteredBalanceAria": "Filtered balance is {{value}} euros",
+    "timeSpan": "Time span",
+    "category": "Category",
+    "allCategories": "All Categories",
+    "timeFilter": "Time Filter",
+    "all": "All",
+    "today": "Today",
+    "last7": "Last 7 Days",
+    "last30": "Last 30 Days",
+    "thisMonth": "This Month",
+    "custom": "Custom...",
+    "customRange": "Custom range",
+    "from": "From",
+    "to": "To",
+    "byType": "Filter by type",
+    "type": {
+      "all": "All",
+      "income": "Income",
+      "expense": "Expense"
+    }
+  },
+  "csv": {
+    "export": "Export CSV",
+    "import": "Import CSV"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageOf": "Page {{page}} of {{pages}}",
+    "perPage": "{{size}} per page"
+  },
+  "transactions": {
+    "uncategorized": "Uncategorized"
+  },
+  "create": {
+    "title": "Create Transaction"
+  },
+  "form": {
+    "header": "Please fill out all fields",
+    "name": "Transaction Name",
+    "namePh": "Please add your name",
+    "amount": "Amount",
+    "amountPh": "Please add amount",
+    "chooseCategory": "Choose category",
+    "type": "Type",
+    "income": "Income",
+    "expense": "Expense",
+    "date": "Date",
+    "add": "Add",
+    "cancelAria": "Cancel and close the form"
   },
   "screen": {
     "failedToLoad": "Failed to load",
@@ -45,5 +89,33 @@
   },
   "actions": {
     "confirmDelete": "Are you sure that you want to delete this transaction?"
+  },
+  "charts": {
+    "title": "Transactions by Category",
+    "failedToLoad": "Failed to load transactions",
+    "loading": "Loading transactions...",
+    "expense": "Expense",
+    "income": "Income",
+    "total": "Total",
+    "sum": "Sum",
+    "noTransactions": "No transactions available.",
+    "noDataFor": "No data for {{mode}} found.",
+    "summaryAria": "Pie chart summary",
+    "summaryText": "Pie chart showing expenses by category."
+  },
+
+  "categories": {
+    "Restaurants": "Restaurants",
+    "Education": "Education",
+    "Salary": "Salary",
+    "Savings": "Savings",
+    "Groceries": "Groceries",
+    "Entertainment": "Entertainment",
+    "Utilities": "Utilities",
+    "Health": "Health",
+    "Rent": "Rent",
+    "Transportation": "Transportation",
+    "Insurance": "Insurance",
+    "Investment": "Investment"
   }
 }

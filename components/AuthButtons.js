@@ -1,20 +1,22 @@
 import styled from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/react";
+import { useTranslation } from "next-i18next";
 
 export default function AuthButtons() {
   const { data: session } = useSession();
+  const { t: translate } = useTranslation("common");
 
   if (session) {
     return (
       <>
-        <ButtonAuth onClick={() => signOut()}>Sign out</ButtonAuth>
+        <ButtonAuth onClick={() => signOut()}>{translate("auth.signOut")}</ButtonAuth>
       </>
     );
   }
   return (
     <>
-      Not signed in <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      {translate("auth.notSignedIn")} <br />
+      <button onClick={() => signIn()}>{translate("auth.signIn")}</button>
     </>
   );
 }

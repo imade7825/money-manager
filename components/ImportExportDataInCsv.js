@@ -1,11 +1,12 @@
 import styled from "styled-components";
 import Papa from "papaparse";
-
+import { useTranslation } from "next-i18next";
 import useSWR, { mutate } from "swr";
 import { toast } from "react-toastify";
 
 export default function ImportExportDataInCsv() {
   const { data: transactions = [] } = useSWR("/api/transactions");
+  const { t: translate } = useTranslation("common");
 
   //Nimmt die bereits vorhandenen Datensätze aus dem Frontend(hier: importedItems)
   //und erstellt daraus eine csv datei
@@ -186,7 +187,7 @@ export default function ImportExportDataInCsv() {
       <Row>
         {/* export button: startet den csv download aus vorhandenen frontend-daten */}
         <TinyButton type="button" onClick={handleExport} data-tour="csv-export">
-          Export CSV
+          {translate("csv.export")}
         </TinyButton>
         {/* import formular: datei wählen und auto-submit durch onChange */}
         <form onSubmit={handleImportSubmit}>
@@ -198,7 +199,7 @@ export default function ImportExportDataInCsv() {
             onChange={(event) => event.currentTarget.form?.requestSubmit()} //direkt abschicken
           />
           <TinyButton as="label" htmlFor="csvFile" data-tour="csv-export">
-            Import CSV
+            {translate("csv.import")}
           </TinyButton>
         </form>
       </Row>
