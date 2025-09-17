@@ -21,12 +21,22 @@ function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
   if (startDate) startDate.setHours(0, 0, 0, 0);
   if (endDate) endDate.setHours(23, 59, 59, 999);
 
-  const initialBalance = transactions
-    .filter((transaction) => {
-      const transactionDate = new Date(transaction.date);
-      return startDate ? transactionDate < startDate : false;
-    })
-    .reduce((sum, transaction) => sum + transaction.amount, 0);
+  function toLocalISO(date) {
+    `${date.getFullYear()} - ${String(date.getMonth() + 1).padStart(
+      2,
+      "0"
+    )} - ${String(date.getDate()).padStart(2, "0")}}`;
+  }
+
+  const initialBalance = startDate
+    ? transactions.reduce((acc, t) => {
+        const date = new Date(t.date);
+        const raw = Number(t.amount);
+        if (!Number.isFinite(raw)) return acc;
+        const signed = t.type === "expense" ? -Math.abs(raw) : Math.abs(raw);
+        return date < startDate ? acc + signed : acc;
+      }, 0)
+    : 0;
 
   const filteredTransactions = transactions
     .filter((transaction) => {
@@ -39,7 +49,8 @@ function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
 
   const sumsByDay = new Map();
   for (const transaction of filteredTransactions) {
-    const dayKey = new Date(transaction.date).toISOString().slice(0, 10);
+    const day = new Date(transaction.date);
+    const dayKey = toLocalISO(day);
     const rawAmount = Number(transaction.amount);
     if (!Number.isFinite(rawAmount)) continue;
     const signedAmount =
@@ -60,6 +71,13 @@ function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
     });
   }
 
+  // Startpunkt zum gewählten Startdatum hinzufügen
+  if (startDate) {
+    balanceSeries.unshift({
+      date: toLocalISO(startDate),
+      balance: Number(initialBalance.toFixed(2)),
+   });
+  }
   return balanceSeries;
 }
 

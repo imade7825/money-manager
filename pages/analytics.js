@@ -76,12 +76,12 @@ export default function Analytics() {
   if (error) return <StatusMessage>Failed to load transactions</StatusMessage>;
   if (isLoading) return <StatusMessage>Loading transactions...</StatusMessage>;
 
- function applyPreset(preset) {
-   const { dateFrom, dateTo } = computeRange(preset);
-   setPreset(preset);
-   setDateFrom(dateFrom);
-   setDateTo(dateTo);
-}
+  function applyPreset(preset) {
+    const { dateFrom, dateTo } = computeRange(preset);
+    setPreset(preset);
+    setDateFrom(dateFrom);
+    setDateTo(dateTo);
+  }
 
   function onCustomChange({ from, to }) {
     setPreset("custom");
@@ -89,7 +89,9 @@ export default function Analytics() {
     setDateTo(to || "");
   }
 
-  const showRangeBadge = preset !== "all" && (dateFrom || dateTo);
+  const showRangeBadge = +Boolean(
+    (dateFrom && dateFrom.trim()) || (dateTo && dateTo.trim())
+  );
 
   return (
     <div>
