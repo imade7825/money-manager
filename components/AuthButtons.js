@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function AuthButtons() {
   const { data: session } = useSession();
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
 
   if (session) {
     return (

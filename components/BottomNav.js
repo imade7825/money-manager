@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import styled from "styled-components";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function BottomNav() {
   const { pathname } = useRouter();
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
   
   return (
     <Bar role="navigation" aria-label="Main navigation">

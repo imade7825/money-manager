@@ -1,6 +1,6 @@
 import { STATE } from "@/constants/state";
 import styled from "styled-components";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function IncomeExpenseView({ onFilter, filterType }) {
   //Change radio button
@@ -10,14 +10,13 @@ export default function IncomeExpenseView({ onFilter, filterType }) {
   };
 
   const formatLabel = (key) => key.charAt(0) + key.slice(1).toLowerCase();
-  const { t: translate } = useTranslation("common");
-
+  const { translate } = useI18n();
   return (
     <form aria-labelledby="type-legend">
       <Legend id="type-legend">{translate("filters.byType")}</Legend>
       <Pills>
-        {Object.entries(STATE).map(([key, value]) => (
-          <PillLabel key={key}>
+        {Object.values(STATE).map((value) => (
+          <PillLabel key={value}>
             <HiddenRadio
               type="radio"
               name="state"
@@ -25,7 +24,7 @@ export default function IncomeExpenseView({ onFilter, filterType }) {
               checked={filterType === value}
               onChange={handleFilterType}
             />
-            {formatLabel(key)}
+            {translate(`filters.type.${value}`)}
           </PillLabel>
         ))}
       </Pills>

@@ -117,5 +117,24 @@
     "Transportation": "Transportation",
     "Insurance": "Insurance",
     "Investment": "Investment"
+  },
+
+  "toasts": {
+    "saved": "Transaction saved!",
+    "deleted": "Transaction deleted!",
+    "error": "Please try again.",
+    "dataSaved": "Done: Data saved.",
+    "importSuccess": "Import successful.",
+    "exportSuccess": "Export successful. File has been downloaded.",
+    "dataSavedCount": "{{count}} row saved",
+    "dataSavedCount_plural": "{{count}} rows saved",
+    "importInProgress": "Import in progress.",
+    "selectFileBefore": "Please choose a .csv file before importing.",
+    "onlyCsv": "Please select a .csv file.",
+    "importFail": "Import failed!",
+    "parseFail": "Import failed: CSV contains errors.",
+    "readFail": "Import failed: can't read data.",
+    "exportFail": "Export failed!",
+    "noData": "No data to export!"
   }
 }

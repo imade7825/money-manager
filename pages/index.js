@@ -17,7 +17,7 @@ import { notify } from "@/lib/toast";
 import { toCurrencyEUR } from "@/lib/format";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -26,7 +26,7 @@ export default function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
 
   const [filters, setFilters] = useState({
     category: "",
@@ -173,7 +173,7 @@ export default function HomePage() {
     setEditingTransaction(null);
     setIsFormOpen(false);
     await mutate();
-    notify.saved();
+    notify.saved(translate);
   }
 
   async function handleDelete(id) {
@@ -190,7 +190,7 @@ export default function HomePage() {
       return;
     }
     await mutate();
-    notify.deleted();
+    notify.deleted(translate);
   }
 
   return (

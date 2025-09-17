@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 import styled from "styled-components";
 import {
   ResponsiveContainer,
@@ -50,7 +50,7 @@ function buildCategoryData(transactions = [], type) {
 
 export default function CategoryPieChart({ transactions = [] }) {
   const [mode, setMode] = useState("expense");
-  const { t: translate, i18n } = useTranslation("common");
+  const { translate } = useI18n();
 
   const data = useMemo(
     () => buildCategoryData(transactions, mode),

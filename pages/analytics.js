@@ -4,7 +4,7 @@ import CategoryPieChart from "@/components/CategoryPieChart";
 import AccountBalanceTimeline from "@/components/AccountBalanceTimeline";
 import { Card } from "@/components/ui/Primitives";
 import { useState } from "react";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 //helpers
 function formatDate(isoString) {

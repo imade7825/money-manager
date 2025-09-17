@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function Pagination({
   currentPage,
@@ -8,7 +8,7 @@ export default function Pagination({
   onPageChange,
   onPageSizeChange,
 }) {
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
   return (
     <PaginationWrapper>
       {/* previous button */}

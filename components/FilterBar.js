@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 import { labelForCategory } from "@/lib/i18n-utils";
 import styled from "styled-components";
 
@@ -16,7 +16,7 @@ export default function FilterBar({
   const [showCustomModal, setShowCustomModal] = useState(false);
   const [customFrom, setCustomFrom] = useState(dateFrom ?? "");
   const [customTo, setCustomTo] = useState(dateTo ?? "");
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
 
   function handleTimeFilterChange(event) {
     const value = event.target.value;

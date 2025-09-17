@@ -1,13 +1,13 @@
 import { useState } from "react";
 import styled from "styled-components";
 import useSWR from "swr";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function Form({ onSubmit, defaultValues, onCancel }) {
   const { data: categories, isLoading, error } = useSWR("/api/categories");
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
 
   async function handleSubmit(event) {
     event.preventDefault();

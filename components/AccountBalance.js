@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { toCurrencyEUR } from "@/lib/format";
-import { useTranslation } from "next-i18next";
+import { useI18n } from "@/lib/use-i18n";
 
 export default function AccountBalance({ transactions }) {
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n(); 
   if (!transactions) return null;
 
   const balance = transactions.reduce(
