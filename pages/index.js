@@ -278,11 +278,6 @@ export default function HomePage() {
             </TransactionsListItem>
           ))
         )}
-        <ImportExportDataInCsv
-          transactions={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
-        />
-
-
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
