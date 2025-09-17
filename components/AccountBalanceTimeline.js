@@ -22,11 +22,14 @@ function buildAccountBalanceSeries(transactions = [], dateFrom, dateTo) {
   if (endDate) endDate.setHours(23, 59, 59, 999);
 
   function toLocalISO(date) {
-    `${date.getFullYear()} - ${String(date.getMonth() + 1).padStart(
-      2,
-      "0"
-    )} - ${String(date.getDate()).padStart(2, "0")}}`;
-  }
+  return (
+     date.getFullYear() +
+     "-" +
+     String(date.getMonth() + 1).padStart(2, "0") +
+     "-" +
+     String(date.getDate()).padStart(2, "0")
+   );
+ }
 
   const initialBalance = startDate
     ? transactions.reduce((acc, t) => {

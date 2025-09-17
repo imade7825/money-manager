@@ -89,7 +89,7 @@ export default function Analytics() {
     setDateTo(to || "");
   }
 
-  const showRangeBadge = +Boolean(
+  const showRangeBadge = Boolean(
     (dateFrom && dateFrom.trim()) || (dateTo && dateTo.trim())
   );
 
