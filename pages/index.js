@@ -79,6 +79,10 @@ export default function HomePage() {
     setEditingTransaction(null);
     setIsFormOpen(false);
   }
+  function handleEdit(transaction) {
+    setEditingTransaction(transaction);
+    setIsFormOpen(true);
+  }
 
   //Filter section
   function setFilterCategory(value) {
@@ -167,10 +171,6 @@ export default function HomePage() {
     notify.saved();
   }
 
-  function handleEdit(transaction) {
-    setEditingTransaction(transaction);
-    setIsFormOpen(true);
-  }
 
   async function handleDelete(id) {
     const confirm = window.confirm(
@@ -278,11 +278,6 @@ export default function HomePage() {
             </TransactionsListItem>
           ))
         )}
-        <ImportExportDataInCsv
-          transactions={filteredTransactions} //parent (homepage)gibt die aktuell sichtbare sätze an child iecsv
-        />
-
-
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
