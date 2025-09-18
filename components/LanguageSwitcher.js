@@ -1,6 +1,7 @@
 import { useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useTranslation } from "next-i18next";
+import styled from "styled-components";
 
 const PERSISTED_LANGUAGE_KEY = "app.lang";
 
@@ -56,22 +57,27 @@ export default function LanguageSwitcher() {
     ? "de"
     : "en";
 
-  const handleLanguageSelectChange = (changeEvent) => {
-    const selectedLanguage = changeEvent.target.value;
-    applyLanguageChange(selectedLanguage);
-  };
-
   return (
-    <label className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-100">
-      <select
-        className="rounded-md border px-2 py-1 text-sm"
+    <div style={{ marginLeft: "auto" }}>
+      <LanguageButton
         value={currentUiLanguage}
-        onChange={handleLanguageSelectChange}
+        onChange={(e) => applyLanguageChange(e.target.value)}
         aria-label={translate("intl.language")}
       >
         <option value="en">{translate("intl.en")}</option>
         <option value="de">{translate("intl.de")}</option>
-      </select>
-    </label>
+      </LanguageButton>
+    </div>
   );
 }
+
+const RightSlot = styled.div`
+  margin-left: auto;
+`;
+
+/** Select mit Button-Optik – abgestimmt auf deinen Sign-out-Button */
+const LanguageButton = styled.select`
+  color: var(--foreground);
+  margin: 5px;
+  padding: 12px 11px;
+`;
