@@ -71,13 +71,12 @@ export default function LanguageSwitcher() {
   );
 }
 
-const RightSlot = styled.div`
-  margin-left: auto;
-`;
+
 
 /** Select mit Button-Optik – abgestimmt auf deinen Sign-out-Button */
 const LanguageButton = styled.select`
   color: var(--foreground);
   margin-bottom: 10px;
-  padding: 12px 11px;
+  margin-top: 8px;
+  padding: 12px 8px;
 `;
