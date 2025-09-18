@@ -6,8 +6,8 @@
   },
   "intl": {
     "language": "Language",
-    "en": "English",
-    "de": "German"
+    "en": "En",
+    "de": "Ger"
   },
   "auth": {
     "signIn": "Sign in",
@@ -78,7 +78,7 @@
     "expense": "Expense",
     "date": "Date",
     "add": "Add",
-    "cancelAria": "Cancel and close the form"
+    "cancelAria": "Cancel"
   },
   "screen": {
     "failedToLoad": "Failed to load",
