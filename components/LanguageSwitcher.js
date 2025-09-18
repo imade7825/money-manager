@@ -44,7 +44,10 @@ export default function LanguageSwitcher() {
         ? localStorage.getItem(PERSISTED_LANGUAGE_KEY)
         : null;
 
-    if (savedLanguage && savedLanguage !== (i18nInstance?.language?? router.locale)) {
+    if (
+      savedLanguage &&
+      savedLanguage !== (i18nInstance?.language ?? router.locale)
+    ) {
       applyLanguageChange(savedLanguage);
     }
   }, [applyLanguageChange, i18nInstance?.language, router.locale]);
@@ -60,7 +63,6 @@ export default function LanguageSwitcher() {
 
   return (
     <label className="inline-flex items-center gap-2 px-2 py-1 rounded-lg bg-slate-100">
-      <span className="text-sm">{translate("intl.language")}</span>
       <select
         className="rounded-md border px-2 py-1 text-sm"
         value={currentUiLanguage}

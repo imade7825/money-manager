@@ -197,14 +197,10 @@ export default function HomePage() {
     <Main aria-label="Finance dashboard" data-tour="introApp">
       <CardControls>
         <AuthButtons />
+        <LanguageSwitcher />
       </CardControls>
 
-      <div className="p-4">
-        <div className="flex justify-end">
-          <LanguageSwitcher />
-        </div>
-        {/* ...rest */}
-      </div>
+    
       <Card data-tour="balance-summary">
         <TourFocus data-tour-target="inner">
           <AccountBalance transactions={transactions} />
@@ -424,3 +420,4 @@ const TourFocus = styled.div`
   position: relative;
   border-radius: inherit;
 `;
+
