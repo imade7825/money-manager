@@ -7,10 +7,10 @@ import { useState } from "react";
 import { useI18n } from "@/lib/use-i18n";
 
 //helpers
-function formatDate(isoString) {
+function formatDate(isoString, locale = "en") {
   if (!isoString) return "...";
 
-  return new Date(isoString).toLocaleDateString("de-DE", {
+  return new Date(isoString).toLocaleDateString(locale, {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -41,6 +41,9 @@ function computeRange(presetKey) {
 
   if (presetKey === "7") {
     return { dateFrom: subtractDaysFromToday(6), dateTo: todayISO };
+    {
+      translate("charts.range.7d");
+    }
   }
   if (presetKey === "30") {
     return { dateFrom: subtractDaysFromToday(29), dateTo: todayISO };
@@ -63,7 +66,7 @@ export default function Analytics() {
     error,
     isLoading,
   } = useSWR("/api/transactions");
-  const { t: translate } = useTranslation("common");
+  const { translate } = useI18n();
 
   // Tabs
   const [view, setView] = useState("pie");
@@ -75,8 +78,10 @@ export default function Analytics() {
   const [dateFrom, setDateFrom] = useState(initial.dateFrom);
   const [dateTo, setDateTo] = useState(initial.dateTo);
 
-  if (error) return <StatusMessage>{translate("charts.failedToLoad")}</StatusMessage>;
-  if (isLoading) return <StatusMessage>{translate("charts.loading")}</StatusMessage>;
+  if (error)
+    return <StatusMessage>{translate("charts.failedToLoad")}</StatusMessage>;
+  if (isLoading)
+    return <StatusMessage>{translate("charts.loading")}</StatusMessage>;
 
   function applyPreset(preset) {
     const { dateFrom, dateTo } = computeRange(preset);
@@ -99,10 +104,10 @@ export default function Analytics() {
     <div>
       <Tabs role="tablist" aria-label="Analytics views">
         <TabButton role="tab" onClick={() => setView("pie")}>
-          Categories
+          {translate("charts.categories")}
         </TabButton>
         <TabButton role="tab" onClick={() => setView("time")}>
-          Time
+          {translate("charts.time")}
         </TabButton>
       </Tabs>
       {view === "pie" && (
@@ -117,7 +122,7 @@ export default function Analytics() {
             <CategoryPieChart transactions={transactions} aria-hidden />
           </Card>
           <ScreenReaderfigcaption>
-            <p role="note" aria-label={translate("charts.summaryAria")} >
+            <p role="note" aria-label={translate("charts.summaryAria")}>
               {translate("charts.summaryText")}
             </p>
           </ScreenReaderfigcaption>
@@ -131,29 +136,29 @@ export default function Analytics() {
               onClick={() => applyPreset("7")}
               $active={preset === "7"}
             >
-              7d
+              {translate("charts.range.7d")}
             </PresetButton>
             <PresetButton
               onClick={() => applyPreset("30")}
               $active={preset === "30"}
             >
-              30d
+              {translate("charts.range.30d")}
             </PresetButton>
             <PresetButton
               onClick={() => applyPreset("90")}
               $active={preset === "90"}
             >
-              90d
+              {translate("charts.range.90d")}
             </PresetButton>
             <PresetButton
               onClick={() => applyPreset("ytd")}
               $active={preset === "ytd"}
             >
-              YTD
+              {translate("charts.range.ytd")}
             </PresetButton>
             <Spacer />
             <label>
-              From
+              {translate("charts.range.from")}
               <input
                 type="date"
                 value={dateFrom}
@@ -163,7 +168,7 @@ export default function Analytics() {
               />
             </label>
             <label>
-              To
+              {translate("charts.range.to")}
               <input
                 type="date"
                 value={dateTo}
@@ -176,7 +181,8 @@ export default function Analytics() {
 
           {showRangeBadge && (
             <ActiveRange aria-live="polite">
-              {formatDate(dateFrom)} – {formatDate(dateTo)}
+              {formatDate(dateFrom, typeof navigator !== "undefined" ? navigator.language : "en")}
+              {formatDate(dateTo, typeof navigator !== "undefined" ? navigator.language : "en")}
             </ActiveRange>
           )}
 

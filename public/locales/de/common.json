@@ -101,7 +101,17 @@
     "noTransactions": "Keine Transaktionen vorhanden.",
     "noDataFor": "Keine Daten für {{mode}} gefunden.",
     "summaryAria": "Zusammenfassung Kreisdiagramm",
-    "summaryText": "Kreisdiagramm mit Ausgaben nach Kategorie."
+    "summaryText": "Kreisdiagramm mit Ausgaben nach Kategorie.",
+    "categories": "Kategorien",
+    "time": "Zeit",
+    "range": {
+    "7d": "7 Tage",
+    "30d": "30 Tage",
+    "90d": "90 Tage",
+    "ytd": "Seit Jahresbeginn",
+    "from": "Von",
+    "to": "Bis"
+  }
   },
 
   "categories": {
@@ -136,5 +146,57 @@
     "readFail": "Import fehlgeschlagen: Daten konnten nicht gelesen werden.",
     "exportFail": "Export fehlgeschlagen!",
     "noData": "Keine Daten zum Exportieren!"
+  },
+  "tour": {
+    "intro": {
+      "title": "Willkommen in Money Manager",
+      "desc": "So behältst du deine Finanzen einfach im Blick."
+    },
+    "balance": {
+      "title": "Kontostand",
+      "desc": "Zeigt deinen Gesamtsaldo. Aktualisiert sich beim Hinzufügen, Bearbeiten oder Löschen."
+    },
+    "filters": {
+      "title": "Ansicht filtern",
+      "desc": "Nach Kategorie oder Zeitraum filtern. Voreinstellungen oder eigener Zeitraum."
+    },
+    "timePresets": {
+      "title": "Zeit-Voreinstellungen",
+      "desc": "Wechsle schnell zwischen Heute, Letzte 7 Tage, Dieser Monat oder eigener Bereich."
+    },
+    "list": {
+      "title": "Transaktionen",
+      "desc": "Hier erscheinen deine Einträge. Du kannst sie jederzeit bearbeiten oder löschen."
+    },
+    "add": {
+      "title": "Neue Transaktion",
+      "desc": "Tippe hier, um Einnahmen oder Ausgaben hinzuzufügen."
+    },
+    "analytics": {
+      "title": "Diagramme & Insights",
+      "desc": "Öffne Analytics, um Ausgaben nach Kategorie zu sehen."
+    },
+    "perPage": {
+      "title": "Einträge pro Seite",
+      "desc": "Wähle 10, 15 oder 20. Beim Ändern springt die Liste auf Seite 1."
+    },
+    "csvExport": {
+      "title": "Daten exportieren",
+      "desc": "Lade deine Transaktionen als CSV herunter."
+    },
+    "csvImport": {
+      "title": "Daten importieren",
+      "desc": "Eigene CSV importieren und Transaktionen hinzufügen."
+    },
+    "chart": {
+      "title": "Kategorie-Übersicht",
+      "desc": "Ein Kreisdiagramm fasst Kategorien zusammen und zeigt Trends."
+    },
+    "buttons": {
+      "next": "Weiter",
+      "prev": "Zurück",
+      "done": "Fertig",
+      "close": "Schließen"
+    }
   }
 }

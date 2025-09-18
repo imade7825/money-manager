@@ -101,7 +101,17 @@
     "noTransactions": "No transactions available.",
     "noDataFor": "No data for {{mode}} found.",
     "summaryAria": "Pie chart summary",
-    "summaryText": "Pie chart showing expenses by category."
+    "summaryText": "Pie chart showing expenses by category.",
+    "time": "Time",
+    "categories": "Categories",
+    "range": {
+    "7d": "7d",
+    "30d": "30d",
+    "90d": "90d",
+    "ytd": "YTD",
+    "from": "From",
+    "to": "To"
+  }
   },
 
   "categories": {
@@ -136,5 +146,57 @@
     "readFail": "Import failed: can't read data.",
     "exportFail": "Export failed!",
     "noData": "No data to export!"
+  },
+  "tour": {
+    "intro": {
+      "title": "Welcome to Money Manager",
+      "desc": "An easy way to keep an overview of your finances."
+    },
+    "balance": {
+      "title": "Balance overview",
+      "desc": "Shows your total balance. Updates when you add, edit or delete."
+    },
+    "filters": {
+      "title": "Filter your view",
+      "desc": "Filter by category or time. Use presets or a custom range."
+    },
+    "timePresets": {
+      "title": "Time presets",
+      "desc": "Quickly switch between Today, Last 7 days, This month, or set a custom range."
+    },
+    "list": {
+      "title": "Transactions",
+      "desc": "Your entries appear here. Edit or delete them anytime."
+    },
+    "add": {
+      "title": "Add new transaction",
+      "desc": "Tap here to add income or expense."
+    },
+    "analytics": {
+      "title": "Charts & insights",
+      "desc": "Open analytics to see your spending by category."
+    },
+    "perPage": {
+      "title": "Items per page",
+      "desc": "Choose 10, 15, or 20. Changing resets to page 1."
+    },
+    "csvExport": {
+      "title": "Export your data",
+      "desc": "Download your transactions as a CSV file."
+    },
+    "csvImport": {
+      "title": "Import data",
+      "desc": "Bring your CSV and import transactions into the app."
+    },
+    "chart": {
+      "title": "Category breakdown",
+      "desc": "A pie chart summarizes your categories to spot trends."
+    },
+    "buttons": {
+      "next": "Next",
+      "prev": "Previous",
+      "done": "Done",
+      "close": "Close"
+    }
   }
 }

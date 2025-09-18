@@ -11,7 +11,7 @@ export default function LanguageSwitcher() {
   const applyLanguageChange = useCallback(
     async (newLanguage) => {
       const currentResolved =
-        i18nInstance.resolvedLanguage || i18nInstance.language;
+        i18nInstance?.resolvedLanguage || i18nInstance?.language;
 
       //nichts tun wenn bereits aktiv
       if (newLanguage === currentResolved || newLanguage === router.locale) {
@@ -21,7 +21,7 @@ export default function LanguageSwitcher() {
         return;
       }
       // 1) i18next umschalten
-      await i18nInstance.changeLanguage(newLanguage);
+      await i18nInstance?.changeLanguage?.(newLanguage);
 
       // 2) für zukünftige Sessions speichern
       if (typeof window !== "undefined") {
@@ -29,7 +29,10 @@ export default function LanguageSwitcher() {
       }
 
       // 3) Next.js Locale für Routing/SSR aktualisieren
-      router.replace(router.asPath, undefined, { locale: newLanguage });
+      router.replace(router.asPath, undefined, {
+        locale: newLanguage,
+        scroll: false,
+      });
     },
     [i18nInstance, router]
   );
@@ -41,10 +44,10 @@ export default function LanguageSwitcher() {
         ? localStorage.getItem(PERSISTED_LANGUAGE_KEY)
         : null;
 
-    if (savedLanguage && savedLanguage !== i18nInstance.language) {
+    if (savedLanguage && savedLanguage !== (i18nInstance?.language?? router.locale)) {
       applyLanguageChange(savedLanguage);
     }
-  }, [applyLanguageChange, i18nInstance.language]);
+  }, [applyLanguageChange, i18nInstance?.language, router.locale]);
 
   const currentUiLanguage = i18nInstance.language?.startsWith("de")
     ? "de"

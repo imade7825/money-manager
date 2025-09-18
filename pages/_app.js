@@ -5,22 +5,21 @@ import "react-toastify/dist/ReactToastify.css";
 import { SessionProvider, useSession } from "next-auth/react";
 import { Layout } from "@/components/ui/Primitives";
 import BottomNav from "@/components/BottomNav";
-import { appWithTranslation, useTranslation } from "next-i18next";
-
-const nextI18nextConfig = require("../next-i18next.config");
-
 import "driver.js/dist/driver.css";
 import { useEffect } from "react";
 import { maybeStartTour } from "@/tour/TourManager";
+import { appWithTranslation, useTranslation } from "next-i18next";
 
+const nextI18nextConfig = require("../next-i18next.config");
 function App({
   Component,
   pageProps: { session, ...pageProps },
 }) {
+  const { t: translate, i18n } = useTranslation("common");
+  
   useEffect(() => {
-    maybeStartTour();
-  }, []);
-
+    maybeStartTour(translate);
+  }, [i18n.resolvedLanguage, translate]);
   return (
     <SWRConfig
       value={{
@@ -49,12 +48,10 @@ function App({
 
 function Auth({ children }) {
   const { status } = useSession({ required: true });
-  const { t: translate } = useTranslation("common");
 
   if (status === "loading") {
-    return <div>{translate("common.loading")}</div>;
+    return <div>Loading...</div>;
   }
   return children;
 }
-
 export default appWithTranslation(App, nextI18nextConfig);
