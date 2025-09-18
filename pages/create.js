@@ -20,7 +20,7 @@ export default function CreatePage() {
       return;
     }
     await response.json();
-    notify.saved();
+    notify.saved(translate);
     router.push("/");
   }
 

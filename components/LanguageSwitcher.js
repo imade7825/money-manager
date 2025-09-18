@@ -61,7 +61,7 @@ export default function LanguageSwitcher() {
     <div style={{ marginLeft: "auto" }}>
       <LanguageButton
         value={currentUiLanguage}
-        onChange={(e) => applyLanguageChange(e.target.value)}
+        onChange={(event) => applyLanguageChange(event.target.value)}
         aria-label={translate("intl.language")}
       >
         <option value="en">{translate("intl.en")}</option>
@@ -78,6 +78,6 @@ const RightSlot = styled.div`
 /** Select mit Button-Optik – abgestimmt auf deinen Sign-out-Button */
 const LanguageButton = styled.select`
   color: var(--foreground);
-  margin: 5px;
+  margin-bottom: 10px;
   padding: 12px 11px;
 `;
