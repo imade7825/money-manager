@@ -78,7 +78,7 @@
     "expense": "Ausgabe",
     "date": "Datum",
     "add": "Hinzufügen",
-    "cancelAria": "Abbrechen und Formular schließen"
+    "cancelAria": "Abbrechen"
   },
   "screen": {
     "failedToLoad": "Laden fehlgeschlagen",
@@ -105,10 +105,10 @@
     "categories": "Kategorien",
     "time": "Zeit",
     "range": {
-    "7d": "7 Tage",
-    "30d": "30 Tage",
-    "90d": "90 Tage",
-    "ytd": "Seit Jahresbeginn",
+    "7d": "7 T",
+    "30d": "30 T",
+    "90d": "90 T",
+    "ytd": "JMT",
     "from": "Von",
     "to": "Bis"
   }
