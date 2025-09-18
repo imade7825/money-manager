@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import { useI18n } from "@/lib/use-i18n";
 import styled from "styled-components";
+import { labelForCategory } from "@/lib/i18n-utils";
+
 import {
   ResponsiveContainer,
   PieChart,
@@ -110,10 +112,15 @@ export default function CategoryPieChart({ transactions = [] }) {
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value) => [toCurrencyEUR(value), translate("charts.sum")]}
+                formatter={(val, name) => [
+                  toCurrencyEUR(val),
+                  labelForCategory(translate, name),
+                ]}
                 separator=" "
               />
-              <Legend />
+              <Legend
+                formatter={(value) => labelForCategory(translate, value)}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>

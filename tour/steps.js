@@ -1,4 +1,7 @@
+import { useI18n } from "@/lib/use-i18n";
+
 export function getSteps(translate) {
+  
   return [
     {
       element: '[data-tour="introApp"]',
