@@ -105,13 +105,13 @@
     "time": "Time",
     "categories": "Categories",
     "range": {
-    "7d": "7d",
-    "30d": "30d",
-    "90d": "90d",
-    "ytd": "YTD",
-    "from": "From",
-    "to": "To"
-  }
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d",
+      "ytd": "YTD",
+      "from": "From",
+      "to": "To"
+    }
   },
 
   "categories": {
@@ -198,5 +198,10 @@
       "done": "Done",
       "close": "Close"
     }
+  },
+  "timeline": {
+    "title": "Account balance over time",
+    "balance": "Balance",
+    "caption": "Cumulative daily balances. The zero line separates negative from positive values."
   }
 }

@@ -2,12 +2,12 @@
   "nav": {
     "home": "Start",
     "add": "Hinzufügen",
-    "charts": "Diagramme"
+    "charts": "Diagram"
   },
   "intl": {
     "language": "Sprache",
     "en": "En",
-    "de": "Deu"
+    "de": "De"
   },
   "auth": {
     "signIn": "Anmelden",
@@ -105,13 +105,13 @@
     "categories": "Kategorien",
     "time": "Zeit",
     "range": {
-    "7d": "7 T",
-    "30d": "30 T",
-    "90d": "90 T",
-    "ytd": "JMT",
-    "from": "Von",
-    "to": "Bis"
-  }
+      "7d": "7 T",
+      "30d": "30 T",
+      "90d": "90 T",
+      "ytd": "JMT",
+      "from": "Von",
+      "to": "Bis"
+    }
   },
 
   "categories": {
@@ -198,5 +198,10 @@
       "done": "Fertig",
       "close": "Schließen"
     }
+  },
+  "timeline": {
+    "title": "Kontoverlauf über die Zeit",
+    "balance": "Kontostand",
+    "caption": "Kumulierte Tagesstände. Die Nulllinie trennt negative von positiven Werten."
   }
 }

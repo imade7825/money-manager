@@ -16,8 +16,8 @@ import { toast } from "react-toastify";
 import { notify } from "@/lib/toast";
 import { toCurrencyEUR } from "@/lib/format";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useI18n } from "@/lib/use-i18n";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"; //so kennt die seite beim ersten laden alle texte
+import { useI18n } from "@/lib/use-i18n"; //hook, der translate bereitstellt
 
 export default function HomePage() {
   const [editingTransaction, setEditingTransaction] = useState(null);
@@ -299,10 +299,12 @@ export default function HomePage() {
   );
 }
 
+//Der Wrapper gibt deiner App den i18n-Context,
+//damit useTranslation() überall funktioniert (auch beim Server-Rendern).
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ["common"])),
+      ...(await serverSideTranslations(locale, ["common"])), //lädt das common namespace für die aktuelle sprache
     },
   };
 }

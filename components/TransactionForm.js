@@ -97,7 +97,6 @@ export default function Form({ onSubmit, defaultValues, onCancel }) {
               value="expense"
               name="type"
               type="radio"
-              checked
               required
               defaultChecked={defaultValues?.type === "expense"}
             />

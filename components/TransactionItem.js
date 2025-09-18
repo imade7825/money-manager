@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useTranslation } from "next-i18next";
-import { labelForCategory } from "@/lib/i18n-utils";
+import { labelForCategory } from "@/lib/use-i18n";
 
 export default function TransactionItem({ transaction, onEdit, onDelete }) {
   const { t: translate, i18n } = useTranslation("common");
@@ -29,7 +29,7 @@ export default function TransactionItem({ transaction, onEdit, onDelete }) {
   );
 }
 
-const StyledTransactionItem = styled.li`
+const StyledTransactionItem = styled.div`
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto auto;

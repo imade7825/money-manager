@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useI18n } from "@/lib/use-i18n";
-import { labelForCategory } from "@/lib/i18n-utils";
+import { labelForCategory } from "@/lib/use-i18n";
 import styled from "styled-components";
 
 export default function FilterBar({
